@@ -2,6 +2,10 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import BuildIcon from "@mui/icons-material/Build";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 export const drawerItem = [
   { link: "/dashboard", name: "Dashboard", icon: <DashboardIcon /> },
@@ -11,4 +15,11 @@ export const drawerItem = [
 export const drawerSettings = [
   { link: "/settings", name: "Settings", icon: <SettingsIcon /> },
   { link: "/profile", name: "Profile", icon: <PersonIcon /> },
+];
+
+export const statusSectionItems = [
+  { count: 10, icon: <InventoryIcon />, title: "Iventory total", color: "success.main" },
+  { count: 10, icon: <BuildIcon />, title: "Need repair", color: "warning.main" },
+  { count: 10, icon: <PendingActionsIcon />, title: "To condemn", color: "info.main" },
+  { count: 10, icon: <RemoveIcon />, title: "Condemned", color: "error.main" },
 ];
