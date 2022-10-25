@@ -5,14 +5,7 @@ import type { Session } from "next-auth";
 import type { AppType } from "next/app";
 import { trpc } from "../utils/trpc";
 
-import { ThemeProvider } from "@mui/material/styles";
-import { CssBaseline } from "@mui/material";
-
-import { muiTheme } from "../styles/themes";
-
-import { Box } from "@mui/material";
-
-import MiniDrawer from "../components/Drawer";
+import Layout from "../components/Layout";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -20,15 +13,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <ThemeProvider theme={muiTheme}>
-        <CssBaseline />
-        <Box display="flex">
-          <MiniDrawer />
-          <Box component="main" sx={{ flexGrow: 1, p: 3, bgcolor: "#dcd5f5", minHeight: "100vh" }}>
-            <Component {...pageProps} />
-          </Box>
-        </Box>
-      </ThemeProvider>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </SessionProvider>
   );
 };

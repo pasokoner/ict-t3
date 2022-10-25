@@ -1,15 +1,15 @@
 import * as React from "react";
-import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
-import Box from "@mui/material/Box";
+import { styled, Theme, CSSObject } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { Stack } from "@mui/material";
 
 import DrawerItem from "./DrawerItem";
-import { drawerItem } from "../utils/constant";
+import { drawerItem, drawerSettings } from "../utils/constant";
 
 const drawerWidth = 240;
 
@@ -61,7 +61,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" 
 );
 
 export default function MiniDrawer() {
-  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = () => {
@@ -97,6 +96,10 @@ export default function MiniDrawer() {
       <Divider />
       <List>
         {drawerItem.map(({ name, link, icon }) => (
+          <DrawerItem key={name} open={open} name={name} link={link} icon={icon} />
+        ))}
+
+        {drawerSettings.map(({ name, link, icon }) => (
           <DrawerItem key={name} open={open} name={name} link={link} icon={icon} />
         ))}
       </List>
