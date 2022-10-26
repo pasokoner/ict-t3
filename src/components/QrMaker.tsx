@@ -27,7 +27,6 @@ const QrMaker = ({ value }: Props) => {
         value={value}
         viewBox={`0 0 256 256`}
       />
-      <p>{value}</p>
     </div>
   );
 };

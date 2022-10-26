@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography, useMediaQuery } from "@mui/material";
 
 import DrawerItem from "./DrawerItem";
 import { drawerItem, drawerSettings } from "../utils/constant";
@@ -73,6 +73,18 @@ export default function MiniDrawer() {
     setOpen((prevState) => !prevState);
   };
 
+  const matches = useMediaQuery("(max-width:600px)");
+
+  console.log(matches);
+
+  React.useEffect(() => {
+    if (matches) {
+      setOpen(false);
+    } else {
+      setOpen(true);
+    }
+  }, [matches]);
+
   return (
     <Drawer
       variant="permanent"
@@ -102,12 +114,12 @@ export default function MiniDrawer() {
       </DrawerHeader>
       {sessionData && (
         <Stack
-          pl={2}
           direction="row"
           gap={2}
           my={3}
           sx={{
             alignItems: "center",
+            pl: { sm: 2, xs: 1 },
           }}
         >
           <Image

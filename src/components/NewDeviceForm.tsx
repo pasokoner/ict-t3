@@ -139,7 +139,6 @@ const NewDeviceForm = ({ handleClose }: Props) => {
             </Button>
           </Stack>
         )}
-
         {isSuccess && showCode && data && <QrMaker value={data.id} />}
 
         {isLoading && (

@@ -13,7 +13,6 @@ import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 
 import { useTheme } from "@mui/material";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 
 type Props = {
   children: React.ReactNode;
@@ -21,8 +20,6 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
   const theme = useTheme();
-
-  const { data: sessionData } = useSession();
 
   return (
     <ThemeProvider theme={muiTheme}>
@@ -41,7 +38,7 @@ const Layout = ({ children }: Props) => {
           </Box>
         </Box>
       </Box>
-      <Link href="/camera">
+      <Link href="/">
         <Fab sx={{ position: "fixed", bottom: theme.spacing(4), right: theme.spacing(4) }}>
           <QrCodeScannerIcon />
         </Fab>
