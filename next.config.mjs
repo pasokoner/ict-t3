@@ -15,6 +15,9 @@ function defineNextConfig(config) {
 
 export default defineNextConfig({
   reactStrictMode: true,
+  images: {
+    domains: ["lh3.googleusercontent.com"],
+  },
   swcMinify: true,
   /** Next.js i18n docs:
    * @see https://nextjs.org/docs/advanced-features/i18n-routing

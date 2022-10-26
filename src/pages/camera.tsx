@@ -1,15 +1,9 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import Scanner from "../components/Scanner";
 import { trpc } from "../utils/trpc";
 
-import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-
-type EquipmentType = {
-  name: string;
-  id: string;
-  status: string;
-};
 
 const CameraPage = () => {
   const [cameraResult, setCameraResult] = useState("");

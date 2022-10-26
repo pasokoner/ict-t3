@@ -1,11 +1,14 @@
-
-
-import { router, publicProcedure } from "../trpc";
+import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 
 export const equiptmentRouter = router({
-  add: publicProcedure
-    .input(z.object({ name: z.string(), status: z.string() }))
+  add: protectedProcedure
+    .input(
+      z.object({
+        name: z.string().trim().min(1),
+        status: z.string(),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
       const data = await ctx.prisma.equipment.create({
         data: { name: input.name, status: input.status },
