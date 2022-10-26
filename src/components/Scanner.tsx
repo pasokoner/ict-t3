@@ -1,5 +1,6 @@
+import { Box } from "@mui/material";
 import QrScanner from "qr-scanner";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 
 type Props = {
   setCameraResult: React.Dispatch<React.SetStateAction<string>>;
@@ -24,16 +25,17 @@ const Scanner = ({ setCameraResult }: Props) => {
     myScanner.start();
 
     return () => {
-      console.log("AM I RENDERING");
       myScanner.destroy();
     };
   }, [qrScanner]);
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         margin: "0 auto",
-        height: "50vh",
+        height: { sm: "50vh" },
+        width: "100%",
+        mb: 3,
       }}
     >
       <video
@@ -41,10 +43,10 @@ const Scanner = ({ setCameraResult }: Props) => {
         style={{
           width: "100%",
           height: "100%",
-          // outline: "none"
+          // outline: "none",
         }}
       ></video>
-    </div>
+    </Box>
   );
 };
 

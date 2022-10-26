@@ -58,6 +58,7 @@ CREATE TABLE "VerificationToken" (
 CREATE TABLE "Equipment" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
 
     CONSTRAINT "Equipment_pkey" PRIMARY KEY ("id")
 );

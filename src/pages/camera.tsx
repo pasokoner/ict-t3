@@ -1,38 +1,56 @@
-import React, { useState, useRef, useEffect } from "react";
-import Scanner from "../components/scanner";
-import QrMaker from "../components/QrMaker";
+import React, { useState, useMemo } from "react";
+import Scanner from "../components/Scanner";
 import { trpc } from "../utils/trpc";
+
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+
+type EquipmentType = {
+  name: string;
+  id: string;
+  status: string;
+};
 
 const CameraPage = () => {
   const [cameraResult, setCameraResult] = useState("");
 
-  const deviceRef = useRef<HTMLInputElement>(null);
-
-  const { data } = trpc.qrcode.detect.useQuery({ id: cameraResult });
-
-  const { mutate, data: equiptmentData } = trpc.qrcode.add.useMutation();
-
-  const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    if (deviceRef.current?.value) {
-      mutate({ name: deviceRef.current?.value });
-
-      deviceRef.current.value = "";
-    }
-  };
+  const { data } = trpc.equiptment.detect.useQuery({ id: cameraResult });
 
   return (
-    <div>
+    <Box>
       <Scanner setCameraResult={setCameraResult} />
-      {data && <p>{data.name}</p>}
+      {data && (
+        <Stack>
+          <Typography>name: {data.name}</Typography>
+          <Typography>id: {data.id}</Typography>
+        </Stack>
+      )}
+      <Stack gap={2}>
+        <Typography variant="h4">Camera result here:</Typography>
+        <Stack
+          direction="row"
+          sx={{
+            justifyContent: "space-between",
+            alighItems: "center",
+            border: 2,
+            p: 2,
 
-      <form onSubmit={handleSubmit}>
-        <input type="text" ref={deviceRef} />
-        <button type="submit">Submit Hardware</button>
-      </form>
+            "&:hover": {
+              cursor: "pointer",
+            },
+          }}
+        >
+          <Box>
+            <Typography>name: Lenovo</Typography>
+            <Typography>id: 12342134-2v5312-cwqercq2e5</Typography>
+          </Box>
 
-      {equiptmentData && <QrMaker value={equiptmentData.id} />}
-    </div>
+          <IconButton>
+            <KeyboardArrowRightIcon />
+          </IconButton>
+        </Stack>
+      </Stack>
+    </Box>
   );
 };
 
