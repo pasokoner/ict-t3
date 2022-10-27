@@ -1,19 +1,27 @@
 import * as React from "react";
+import Image from "next/image";
+
 import { styled, Theme, CSSObject } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
+
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
-import { Button, Stack, Typography, useMediaQuery } from "@mui/material";
+import {
+  Button,
+  Stack,
+  Typography,
+  useMediaQuery,
+  Box,
+  IconButton,
+  Divider,
+  List,
+} from "@mui/material";
 
 import DrawerItem from "./DrawerItem";
 import { drawerItem, drawerSettings } from "../utils/constant";
+
 import { useSession, signIn, signOut } from "next-auth/react";
-import Image from "next/image";
-import { Box } from "@mui/system";
 
 const drawerWidth = 240;
 
@@ -73,9 +81,7 @@ export default function MiniDrawer() {
     setOpen((prevState) => !prevState);
   };
 
-  const matches = useMediaQuery("(max-width:600px)");
-
-  console.log(matches);
+  const matches = useMediaQuery("(max-width:900px)");
 
   React.useEffect(() => {
     if (matches) {

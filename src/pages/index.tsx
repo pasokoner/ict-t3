@@ -36,10 +36,18 @@ const Home: NextPage = () => {
               },
             }}
           >
-            <Box>
-              <Typography>Equiptment Name: {data.name}</Typography>
-              <Typography>Equiptment Given ID: {data.id}</Typography>
-            </Box>
+            {cameraResult && data && (
+              <Stack>
+                <Typography>name: {data.name}</Typography>
+                <Typography>id: {data.id}</Typography>
+              </Stack>
+            )}
+
+            {cameraResult && data === null && (
+              <Stack>
+                <Typography>Qr Code does not exist on our end</Typography>
+              </Stack>
+            )}
             {!sessionData && (
               <Link href="https://intranet.bataan.gov.ph">
                 <IconButton>

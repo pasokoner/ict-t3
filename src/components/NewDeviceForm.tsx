@@ -16,13 +16,22 @@ import CloseIcon from "@mui/icons-material/Close";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
+import { Dayjs } from "dayjs";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
 import { useForm, SubmitHandler } from "react-hook-form";
 import { trpc } from "../utils/trpc";
 import QrMaker from "./QrMaker";
+import { useSession } from "next-auth/react";
 
 type FormValues = {
   equiptmentName: string;
   equiptmentStatus: "inInventory" | "forRepair" | "forCondemn" | "condemned";
+  date: string;
+
+  reminder: string;
 };
 
 type Props = {
@@ -35,6 +44,14 @@ const NewDeviceForm = ({ handleClose }: Props) => {
       reset();
     },
   });
+
+  const { data: sessionData } = useSession();
+
+  const [value, setValue] = React.useState<Dayjs | null>(null);
+
+  const handleDateChange = (newValue: Dayjs | null) => {
+    setValue(newValue);
+  };
 
   const [showCode, setShowCode] = React.useState(false);
   const [age, setAge] = React.useState("");
@@ -49,7 +66,18 @@ const NewDeviceForm = ({ handleClose }: Props) => {
     formState: { errors },
   } = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    mutate({ name: data.equiptmentName.trim(), status: data.equiptmentStatus.trim() });
+    // mutate({ name: data.equiptmentName.trim(), status: data.equiptmentStatus.trim() });
+
+    if (value) {
+      mutate({
+        name: data.equiptmentName,
+        status: data.equiptmentStatus,
+        reminder: data.reminder,
+        date: value.toDate(),
+      });
+    } else {
+      mutate({ name: data.equiptmentName, status: data.equiptmentStatus, reminder: data.reminder });
+    }
   };
 
   return (
@@ -62,7 +90,6 @@ const NewDeviceForm = ({ handleClose }: Props) => {
         bgcolor: "white",
         color: "primary.main",
         p: 3,
-
         borderRadius: 2,
       }}
     >
@@ -112,6 +139,35 @@ const NewDeviceForm = ({ handleClose }: Props) => {
             This is required
           </Typography>
         )}
+
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DesktopDatePicker
+            label="Date ( leave empty if same date )"
+            inputFormat="MM/DD/YYYY"
+            value={value}
+            onChange={handleDateChange}
+            renderInput={(params) => (
+              <TextField {...params} sx={{ minWidth: 200, alignSelf: "flex-end" }} fullWidth />
+            )}
+          />
+        </LocalizationProvider>
+
+        <TextField
+          id="outlined-basic"
+          variant="outlined"
+          label={"Handler: " + `${sessionData && sessionData.user?.name}`}
+          disabled
+          value={sessionData && sessionData.user?.id}
+        ></TextField>
+
+        <TextField
+          id="outlined-basic"
+          variant="outlined"
+          label="Reminder"
+          {...register("reminder")}
+          multiline
+          rows={6}
+        ></TextField>
       </Stack>
 
       <Stack mt="auto" gap={2}>
@@ -147,6 +203,7 @@ const NewDeviceForm = ({ handleClose }: Props) => {
           </Button>
         )}
 
+        {/* {isError && <Typography color="error">{JSON.parse(error.message)[0].message}</Typography>} */}
         {!isLoading && (
           <Button variant="outlined" type="submit">
             Submit

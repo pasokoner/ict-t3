@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER');
+
 -- CreateTable
 CREATE TABLE "Example" (
     "id" TEXT NOT NULL,
@@ -29,8 +32,8 @@ CREATE TABLE "Account" (
 CREATE TABLE "Session" (
     "id" TEXT NOT NULL,
     "sessionToken" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "Session_pkey" PRIMARY KEY ("id")
 );
@@ -42,7 +45,7 @@ CREATE TABLE "User" (
     "email" TEXT,
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
-    "role" TEXT,
+    "role" "Role",
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -58,9 +61,20 @@ CREATE TABLE "VerificationToken" (
 CREATE TABLE "Equipment" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "status" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "Equipment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "EquipmentHistory" (
+    "id" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "reminder" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
+    "equiptmentId" TEXT NOT NULL,
+
+    CONSTRAINT "EquipmentHistory_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -83,3 +97,9 @@ ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Equipment" ADD CONSTRAINT "Equipment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EquipmentHistory" ADD CONSTRAINT "EquipmentHistory_equiptmentId_fkey" FOREIGN KEY ("equiptmentId") REFERENCES "Equipment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

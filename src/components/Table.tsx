@@ -14,19 +14,21 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 function createData(
+  id: string,
   name: string,
   calories: number,
   fat: number,
   carbs: number,
-  protein: number,
+  status: string,
   price: number
 ) {
   return {
+    id,
     name,
     calories,
     fat,
     carbs,
-    protein,
+    status,
     price,
     history: [
       {
@@ -50,13 +52,26 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset", py: 3 } }}>
-        <TableCell component="th" scope="row">
-          {row.name}
+        <TableCell>
+          <Typography
+            fontWeight="bold"
+            sx={{
+              color: "#00b3ff",
+
+              "&:hover": {
+                cursor: "pointer",
+                color: "#55ccff",
+              },
+            }}
+          >
+            #{row.id.slice(0, 10) + "..."}
+          </Typography>
         </TableCell>
-        <TableCell align="right">{row.calories}</TableCell>
-        <TableCell align="right">{row.fat}</TableCell>
-        <TableCell align="right">{row.carbs}</TableCell>
-        <TableCell align="right">{row.protein}</TableCell>
+        <TableCell>{row.name}</TableCell>
+        <TableCell>{row.calories}</TableCell>
+        <TableCell>{row.fat}</TableCell>
+        <TableCell>{row.carbs}</TableCell>
+        <TableCell>{row.status}</TableCell>
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -109,25 +124,26 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 }
 
 const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0, 3.99),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3, 4.99),
-  createData("Eclair", 262, 16.0, 24, 6.0, 3.79),
-  createData("Cupcake", 305, 3.7, 67, 4.3, 2.5),
-  createData("Gingerbread", 356, 16.0, 49, 3.9, 1.5),
+  createData("213", "Frozen yoghurt", 159, 6.0, 24, "condemned", 3.99),
+  createData("123", "Ice cream sandwich", 237, 9.0, 37, "condemned", 4.99),
+  createData("213", "Eclair", 262, 16.0, 24, "condemned", 3.79),
+  createData("123", "Cupcake", 305, 3.7, 67, "condemned", 2.5),
+  createData("123", "Gingerbread", 356, 16.0, 49, "condemned", 1.5),
 ];
 
 export default function CollapsibleTable() {
   return (
-    <TableContainer component={Paper}>
+    <TableContainer>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-            <TableCell />
+            <TableCell>Item ID</TableCell>
+            <TableCell>Equiptment</TableCell>
+            <TableCell>Handler</TableCell>
+            <TableCell>Order Count</TableCell>
+            <TableCell>Last checked</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell align="right" />
           </TableRow>
         </TableHead>
         <TableBody>

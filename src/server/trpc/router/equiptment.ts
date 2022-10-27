@@ -7,11 +7,30 @@ export const equiptmentRouter = router({
       z.object({
         name: z.string().trim().min(1),
         status: z.string(),
+        date: z.date().nullish(),
+        reminder: z.string().trim().nullish(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const data = await ctx.prisma.equipment.create({
-        data: { name: input.name, status: input.status },
+        data: {
+          name: input.name,
+
+          equipmentHistory: {
+            create: [
+              {
+                userId: ctx.session.user.id,
+                date: input.date ? input.date : new Date(),
+                status: input.status,
+                reminder: input.reminder ? input.reminder : null,
+              },
+            ],
+          },
+        },
+
+        include: {
+          equipmentHistory: true,
+        },
       });
 
       return data;

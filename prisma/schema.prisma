@@ -42,8 +42,8 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String
   expires      DateTime
+  userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -53,14 +53,15 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  role          Role?
-  accounts      Account[]
-  sessions      Session[]
+  id               String             @id @default(cuid())
+  name             String?
+  email            String?            @unique
+  emailVerified    DateTime?
+  image            String?
+  role             Role?
+  accounts         Account[]
+  sessions         Session[]
+  EquipmentHistory EquipmentHistory[]
 }
 
 model VerificationToken {
@@ -72,7 +73,19 @@ model VerificationToken {
 }
 
 model Equipment {
-  id     String @id @default(uuid())
-  name   String
-  status String
+  id   String @id @default(uuid())
+  name String
+
+  equipmentHistory EquipmentHistory[]
+}
+
+model EquipmentHistory {
+  id           String    @id @default(uuid())
+  status       String
+  reminder     String?
+  date         DateTime
+  equiptmentId String
+  equiptment   Equipment @relation(fields: [equiptmentId], references: [id])
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
 }
