@@ -28,7 +28,7 @@ import { useSession } from "next-auth/react";
 
 type FormValues = {
   equiptmentName: string;
-  equiptmentStatus: "inInventory" | "forRepair" | "forCondemn" | "condemned";
+  equiptmentStatus: "In inventory" | "For repair" | "To Condemn" | "Condemned";
   date: string;
 
   reminder: string;
@@ -128,10 +128,10 @@ const NewDeviceForm = ({ handleClose }: Props) => {
             label="Equiptment Status"
             {...register("equiptmentStatus", { onChange: handleChange, required: true })}
           >
-            <MenuItem value={"inInventory"}>In Inventory</MenuItem>
-            <MenuItem value={"forRepair"}>For Repair</MenuItem>
-            <MenuItem value={"toCondemn"}>To Condemn</MenuItem>
-            <MenuItem value={"condemned"}>Condemned</MenuItem>
+            <MenuItem value={"In inventory"}>In Inventory</MenuItem>
+            <MenuItem value={"For repair"}>For Repair</MenuItem>
+            <MenuItem value={"To condemn"}>To Condemn</MenuItem>
+            <MenuItem value={"Condemned"}>Condemned</MenuItem>
           </Select>
         </FormControl>
         {errors.equiptmentStatus && errors.equiptmentStatus.type === "required" && (

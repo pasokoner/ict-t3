@@ -9,41 +9,72 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
+
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { trpc } from "../utils/trpc";
+
+type TableFormat = {
+  id: string;
+  name: string;
+  handler: string;
+  numOfTransactions: number;
+  lastChecked: Date;
+  status: string;
+  history: {
+    date: Date;
+    handler: string;
+    status: string;
+  }[];
+};
 
 function createData(
   id: string,
   name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
+  handler: string,
+  numOfTransactions: number,
+  lastChecked: Date,
   status: string,
-  price: number
+  history: {
+    date: Date;
+    handler: string;
+    status: string;
+  }[]
 ) {
   return {
     id,
     name,
-    calories,
-    fat,
-    carbs,
+    handler,
+    numOfTransactions,
+    lastChecked,
     status,
-    price,
-    history: [
-      {
-        date: "2020-01-05",
-        customerId: "11091700",
-        amount: 3,
-      },
-      {
-        date: "2020-01-02",
-        customerId: "Anonymous",
-        amount: 1,
-      },
-    ],
+    history,
   };
 }
+
+type History = {
+  date: Date;
+  handler: string;
+  status: string;
+}[];
+
+const statusColorGenerator = (status: string) => {
+  if (status === "In inventory") {
+    return "success.main";
+  }
+
+  if (status === "For repair") {
+    return "#e3d100";
+  }
+
+  if (status === "To condemn") {
+    return "warning.main";
+  }
+
+  if (status === "Condemned") {
+    return "error.main";
+  }
+};
 
 function Row(props: { row: ReturnType<typeof createData> }) {
   const { row } = props;
@@ -68,10 +99,24 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           </Typography>
         </TableCell>
         <TableCell>{row.name}</TableCell>
-        <TableCell>{row.calories}</TableCell>
-        <TableCell>{row.fat}</TableCell>
-        <TableCell>{row.carbs}</TableCell>
-        <TableCell>{row.status}</TableCell>
+        <TableCell>{row.handler}</TableCell>
+        <TableCell>{row.numOfTransactions}</TableCell>
+        <TableCell>{new Date(row.lastChecked).toDateString()}</TableCell>
+        <TableCell>
+          <Typography
+            align="center"
+            noWrap
+            sx={{
+              bgcolor: statusColorGenerator(row.status),
+              width: "120px",
+              borderRadius: "5px",
+              color: "white",
+              ml: "auto",
+            }}
+          >
+            {row.status}
+          </Typography>
+        </TableCell>
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -95,21 +140,31 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
+                    <TableCell>Handler</TableCell>
+                    <TableCell align="right">Status</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
+                  {row.history.map((historyRow, i) => (
+                    <TableRow key={i}>
                       <TableCell component="th" scope="row">
-                        {historyRow.date}
+                        {new Date(historyRow.date).toDateString()}
                       </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
+                      <TableCell>{historyRow.handler}</TableCell>
                       <TableCell align="right">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
+                        <Typography
+                          align="center"
+                          noWrap
+                          sx={{
+                            bgcolor: statusColorGenerator(historyRow.status),
+                            width: "120px",
+                            borderRadius: "5px",
+                            color: "white",
+                            ml: "auto",
+                          }}
+                        >
+                          {historyRow.status}
+                        </Typography>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -123,15 +178,33 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   );
 }
 
-const rows = [
-  createData("213", "Frozen yoghurt", 159, 6.0, 24, "condemned", 3.99),
-  createData("123", "Ice cream sandwich", 237, 9.0, 37, "condemned", 4.99),
-  createData("213", "Eclair", 262, 16.0, 24, "condemned", 3.79),
-  createData("123", "Cupcake", 305, 3.7, 67, "condemned", 2.5),
-  createData("123", "Gingerbread", 356, 16.0, 49, "condemned", 1.5),
-];
+// const rows = [
+//   createData("213", "Frozen yoghurt", "6.0", 24, new Date(), "condemned", [
+//     { date: new Date(), handler: "adadsa", status: "sadasdasd" },
+//   ]),
+// ];
 
 export default function CollapsibleTable() {
+  const { data } = trpc.equiptment.all.useQuery();
+  const [formattedData, setFormattedData] = React.useState<TableFormat[]>();
+
+  React.useEffect(() => {
+    if (data) {
+      const format = data.map((e) => {
+        return createData(
+          e.id,
+          e.name,
+          e.handler as string,
+          e.numOfTransactions.equipmentHistory,
+          e.lastChecked as Date,
+          e.status as string,
+          e.history as History
+        );
+      });
+      setFormattedData(format);
+    }
+  }, [data]);
+
   return (
     <TableContainer>
       <Table aria-label="collapsible table">
@@ -140,16 +213,17 @@ export default function CollapsibleTable() {
             <TableCell>Item ID</TableCell>
             <TableCell>Equiptment</TableCell>
             <TableCell>Handler</TableCell>
-            <TableCell>Order Count</TableCell>
+            <TableCell>Transaction Count</TableCell>
             <TableCell>Last checked</TableCell>
-            <TableCell>Status</TableCell>
+            <TableCell align="right">Status</TableCell>
             <TableCell align="right" />
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
+          {formattedData &&
+            formattedData.map((row: ReturnType<typeof createData>) => (
+              <Row key={row.id} row={row} />
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

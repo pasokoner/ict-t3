@@ -61,7 +61,6 @@ CREATE TABLE "VerificationToken" (
 CREATE TABLE "Equipment" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
 
     CONSTRAINT "Equipment_pkey" PRIMARY KEY ("id")
 );
@@ -70,9 +69,10 @@ CREATE TABLE "Equipment" (
 CREATE TABLE "EquipmentHistory" (
     "id" TEXT NOT NULL,
     "status" TEXT NOT NULL,
-    "reminder" TEXT NOT NULL,
+    "reminder" TEXT,
     "date" TIMESTAMP(3) NOT NULL,
     "equiptmentId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "EquipmentHistory_pkey" PRIMARY KEY ("id")
 );
@@ -99,7 +99,7 @@ ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Equipment" ADD CONSTRAINT "Equipment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "EquipmentHistory" ADD CONSTRAINT "EquipmentHistory_equiptmentId_fkey" FOREIGN KEY ("equiptmentId") REFERENCES "Equipment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "EquipmentHistory" ADD CONSTRAINT "EquipmentHistory_equiptmentId_fkey" FOREIGN KEY ("equiptmentId") REFERENCES "Equipment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "EquipmentHistory" ADD CONSTRAINT "EquipmentHistory_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

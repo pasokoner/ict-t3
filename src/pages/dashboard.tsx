@@ -5,10 +5,36 @@ import AddIcon from "@mui/icons-material/Add";
 import { Button, Divider, Paper, Stack, Typography, Backdrop } from "@mui/material";
 import CollapsibleTable from "../components/Table";
 import StatusSectionCard from "../components/StatusSectionCard";
-import { statusSectionItems } from "../utils/constant";
 import NewDeviceForm from "../components/NewDeviceForm";
 
+import InventoryIcon from "@mui/icons-material/Inventory";
+import BuildIcon from "@mui/icons-material/Build";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import RemoveIcon from "@mui/icons-material/Remove";
+
+import { getSession } from "next-auth/react";
+import { GetServerSideProps } from "next";
+import { trpc } from "../utils/trpc";
+
+// type TableFormat = {
+//   id: string;
+//   name: string;
+//   handler: string;
+//   numOfTransactions: number;
+//   lastChecked: Date;
+//   status: string;
+//   history: {
+//     date: Date;
+//     handler: string;
+//     status: string;
+//   }[];
+// }[];
+
 const Dasboard = () => {
+  const { data } = trpc.equiptment.countByStatus.useQuery();
+
+  console.log(data);
+
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
@@ -60,15 +86,34 @@ const Dasboard = () => {
               justifyContent: "space-between",
             }}
           >
-            {statusSectionItems.map((item) => (
-              <StatusSectionCard
-                key={item.title}
-                count={item.count}
-                title={item.title}
-                icon={item.icon}
-                color={item.color}
-              />
-            ))}
+            {data && (
+              <>
+                <StatusSectionCard
+                  count={data.inInventory}
+                  title="In inventory"
+                  icon={<InventoryIcon />}
+                  color="success.main"
+                />
+                <StatusSectionCard
+                  count={data.forRepair}
+                  title="For repair"
+                  icon={<BuildIcon />}
+                  color="#e3d100"
+                />
+                <StatusSectionCard
+                  count={data.toCondemn}
+                  title="To condemn"
+                  icon={<PendingActionsIcon />}
+                  color="warning.main"
+                />
+                <StatusSectionCard
+                  count={data.condemned}
+                  title="Condemned"
+                  icon={<RemoveIcon />}
+                  color="error.main"
+                />
+              </>
+            )}
           </Stack>
 
           <Divider />
@@ -84,9 +129,6 @@ const Dasboard = () => {
 };
 
 export default Dasboard;
-
-import { getSession } from "next-auth/react";
-import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);

@@ -35,6 +35,65 @@ export const equiptmentRouter = router({
 
       return data;
     }),
+  all: protectedProcedure.query(async ({ ctx }) => {
+    const data = await ctx.prisma.equipment.findMany({
+      select: {
+        id: true,
+        name: true,
+        _count: {
+          select: { equipmentHistory: true },
+        },
+        equipmentHistory: {
+          select: {
+            reminder: true,
+            status: true,
+            date: true,
+            user: true,
+          },
+          orderBy: {
+            date: "desc",
+          },
+        },
+      },
+    });
+
+    const format = data.map((all) => {
+      return {
+        id: all.id,
+        name: all.name,
+        handler: all.equipmentHistory[0]?.user?.name,
+        numOfTransactions: all._count,
+        lastChecked: all.equipmentHistory[0]?.date,
+        status: all.equipmentHistory[0]?.status,
+        history: all.equipmentHistory.map((h) => {
+          return { date: h.date, handler: h.user.name, status: h.status };
+        }),
+      };
+    });
+
+    return format;
+  }),
+  countByStatus: protectedProcedure.query(async ({ ctx }) => {
+    const data = await ctx.prisma.equipmentHistory.findMany({
+      distinct: ["equiptmentId"],
+      orderBy: {
+        date: "desc",
+      },
+    });
+
+    const inInventory = data.filter((e) => e.status === "In inventory").length;
+    const forRepair = data.filter((e) => e.status === "For repair").length;
+    const toCondemn = data.filter((e) => e.status === "To condemn").length;
+    const condemned = data.filter((e) => e.status === "Condemned").length;
+
+    return {
+      inInventory,
+      forRepair,
+      toCondemn,
+      condemned,
+    };
+  }),
+
   detect: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
     const data = await ctx.prisma.equipment.findFirst({
       where: {
