@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { trpc } from "../utils/trpc";
+import { useMediaQuery } from "@mui/material";
 
 type TableFormat = {
   id: string;
@@ -76,52 +77,83 @@ const statusColorGenerator = (status: string) => {
   }
 };
 
-function Row(props: { row: ReturnType<typeof createData> }) {
-  const { row } = props;
+function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
+  const { row, matches } = props;
   const [open, setOpen] = React.useState(false);
 
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset", py: 3 } }}>
-        <TableCell>
-          <Typography
-            fontWeight="bold"
-            sx={{
-              color: "#00b3ff",
+        {!matches && (
+          <>
+            <TableCell>
+              <Typography
+                fontWeight="bold"
+                sx={{
+                  color: "#00b3ff",
 
-              "&:hover": {
-                cursor: "pointer",
-                color: "#55ccff",
-              },
-            }}
-          >
-            #{row.id.slice(0, 10) + "..."}
-          </Typography>
-        </TableCell>
-        <TableCell>{row.name}</TableCell>
-        <TableCell>{row.handler}</TableCell>
-        <TableCell>{row.numOfTransactions}</TableCell>
-        <TableCell>{new Date(row.lastChecked).toDateString()}</TableCell>
-        <TableCell>
-          <Typography
-            align="center"
-            noWrap
-            sx={{
-              bgcolor: statusColorGenerator(row.status),
-              width: "120px",
-              borderRadius: "5px",
-              color: "white",
-              ml: "auto",
-            }}
-          >
-            {row.status}
-          </Typography>
-        </TableCell>
-        <TableCell>
-          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
+                  "&:hover": {
+                    cursor: "pointer",
+                    color: "#55ccff",
+                  },
+                }}
+              >
+                #{row.id.slice(0, 10) + "..."}
+              </Typography>
+            </TableCell>
+            <TableCell>{row.name}</TableCell>
+            <TableCell>{row.handler}</TableCell>
+            <TableCell>{row.numOfTransactions}</TableCell>
+            <TableCell>{new Date(row.lastChecked).toDateString()}</TableCell>
+            <TableCell>
+              <Typography
+                align="center"
+                noWrap
+                sx={{
+                  bgcolor: statusColorGenerator(row.status),
+                  width: "100px",
+                  borderRadius: "5px",
+                  color: "white",
+                  ml: "auto",
+                }}
+              >
+                {row.status}
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            </TableCell>
+          </>
+        )}
+
+        {matches && (
+          <>
+            <TableCell>{row.name}</TableCell>
+
+            <TableCell>
+              <Typography
+                align="center"
+                noWrap
+                sx={{
+                  bgcolor: statusColorGenerator(row.status),
+                  width: "100px",
+                  borderRadius: "5px",
+                  color: "white",
+                  ml: "auto",
+                }}
+              >
+                {row.status}
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            </TableCell>
+          </>
+        )}
       </TableRow>
       <TableRow>
         <TableCell
@@ -156,8 +188,8 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                           align="center"
                           noWrap
                           sx={{
-                            bgcolor: statusColorGenerator(historyRow.status),
-                            width: "120px",
+                            bgcolor: statusColorGenerator(row.status),
+                            width: "100px",
                             borderRadius: "5px",
                             color: "white",
                             ml: "auto",
@@ -178,15 +210,11 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   );
 }
 
-// const rows = [
-//   createData("213", "Frozen yoghurt", "6.0", 24, new Date(), "condemned", [
-//     { date: new Date(), handler: "adadsa", status: "sadasdasd" },
-//   ]),
-// ];
-
 export default function CollapsibleTable() {
   const { data } = trpc.equiptment.all.useQuery();
   const [formattedData, setFormattedData] = React.useState<TableFormat[]>();
+
+  const matches = useMediaQuery("(max-width:900px)");
 
   React.useEffect(() => {
     if (data) {
@@ -210,19 +238,30 @@ export default function CollapsibleTable() {
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            <TableCell>Item ID</TableCell>
-            <TableCell>Equiptment</TableCell>
-            <TableCell>Handler</TableCell>
-            <TableCell>Transaction Count</TableCell>
-            <TableCell>Last checked</TableCell>
-            <TableCell align="right">Status</TableCell>
-            <TableCell align="right" />
+            {!matches && (
+              <>
+                <TableCell>Item ID</TableCell>
+                <TableCell>Equiptment</TableCell>
+                <TableCell>Handler</TableCell>
+                <TableCell>Transaction Count</TableCell>
+                <TableCell>Last checked</TableCell>
+                <TableCell align="right">Status</TableCell>
+                <TableCell align="right" />
+              </>
+            )}
+            {matches && (
+              <>
+                <TableCell>Equiptment</TableCell>
+                <TableCell align="right">Status</TableCell>
+                <TableCell align="right" />
+              </>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
           {formattedData &&
             formattedData.map((row: ReturnType<typeof createData>) => (
-              <Row key={row.id} row={row} />
+              <Row key={row.id} row={row} matches={matches} />
             ))}
         </TableBody>
       </Table>

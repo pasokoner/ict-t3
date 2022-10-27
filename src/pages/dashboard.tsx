@@ -15,25 +15,12 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { trpc } from "../utils/trpc";
-
-// type TableFormat = {
-//   id: string;
-//   name: string;
-//   handler: string;
-//   numOfTransactions: number;
-//   lastChecked: Date;
-//   status: string;
-//   history: {
-//     date: Date;
-//     handler: string;
-//     status: string;
-//   }[];
-// }[];
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Dasboard = () => {
   const { data } = trpc.equiptment.countByStatus.useQuery();
 
-  console.log(data);
+  const matches = useMediaQuery("(max-width:900px)");
 
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
@@ -45,13 +32,25 @@ const Dasboard = () => {
 
   return (
     <>
-      <Paper sx={{ width: "100%", height: "100%", p: 4 }}>
+      <Paper
+        sx={{
+          // ...(!matches && {
+          //   p: 3,
+          // }),
+          p: 3,
+        }}
+      >
         <Stack>
           <Stack
-            direction="row"
-            mb={3}
             sx={{
               justifyContent: "space-between",
+              flexDirection: "row",
+              mb: 3,
+
+              ...(matches && {
+                flexDirection: "column",
+                rowGap: 2,
+              }),
             }}
           >
             <Typography variant="h4" fontWeight="bold" color="primary">
@@ -62,10 +61,6 @@ const Dasboard = () => {
               <Button variant="outlined" size="small">
                 Export to Excel
               </Button>
-
-              {/* <Button variant="outlined" size="small">
-              Import Devices
-            </Button> */}
 
               <Button
                 variant="contained"
@@ -84,6 +79,7 @@ const Dasboard = () => {
             gap={3}
             sx={{
               justifyContent: "space-between",
+              flexWrap: { m: "nowrap", xs: "wrap" },
             }}
           >
             {data && (

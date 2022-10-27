@@ -13,6 +13,7 @@ import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 
 import { useTheme } from "@mui/material";
 import Link from "next/link";
+import useMediaQuery from "@mui/material/useMediaQuery/useMediaQuery";
 
 type Props = {
   children: React.ReactNode;
@@ -21,16 +22,28 @@ type Props = {
 const Layout = ({ children }: Props) => {
   const theme = useTheme();
 
+  const matches = useMediaQuery("(max-width:900px)");
+
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       <Box display="flex">
         <MiniDrawer />
-        <Box component="main" sx={{ flexGrow: 1, p: 3, bgcolor: "#fefcfb", minHeight: "100vh" }}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            bgcolor: "#fefcfb",
+            minHeight: "100vh",
+            ...(!matches && {
+              p: 3,
+            }),
+          }}
+        >
           <Box
             maxWidth="xl"
             sx={{
-              height: "100%",
+              height: "100vh",
               margin: "0 auto",
             }}
           >

@@ -7,6 +7,9 @@ import MuiDrawer from "@mui/material/Drawer";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import LoginIcon from "@mui/icons-material/Login";
+
 import {
   Button,
   Stack,
@@ -81,7 +84,7 @@ export default function MiniDrawer() {
     setOpen((prevState) => !prevState);
   };
 
-  const matches = useMediaQuery("(max-width:900px)");
+  const matches = useMediaQuery("(max-width:1062px)");
 
   React.useEffect(() => {
     if (matches) {
@@ -163,24 +166,44 @@ export default function MiniDrawer() {
               <DrawerItem key={name} open={open} name={name} link={link} icon={icon} />
             ))}
 
-          <Button
-            onClick={sessionData ? () => signOut() : () => signIn()}
-            variant="outlined"
-            fullWidth
-            sx={{
-              m: "0 auto",
-              py: 2,
-              px: 2,
-              color: "white",
-              bgcolor: "primary.light",
+          {!matches && (
+            <Button
+              onClick={sessionData ? () => signOut() : () => signIn()}
+              variant="outlined"
+              fullWidth
+              sx={{
+                m: "0 auto",
+                py: 2,
+                px: 2,
+                color: "white",
+                bgcolor: "primary.light",
 
-              "&:hover": {
-                bgcolor: "primary.dark",
-              },
-            }}
-          >
-            {sessionData ? "Sign out" : "Sign in"}
-          </Button>
+                "&:hover": {
+                  bgcolor: "primary.dark",
+                },
+              }}
+            >
+              {sessionData ? "Sign out" : "Sign in"}
+            </Button>
+          )}
+
+          {matches && (
+            <IconButton
+              onClick={sessionData ? () => signOut() : () => signIn()}
+              sx={{
+                m: "0 auto",
+                py: 2,
+                px: 2,
+                bgcolor: "primary.light",
+
+                "&:hover": {
+                  bgcolor: "primary.dark",
+                },
+              }}
+            >
+              {sessionData ? <PowerSettingsNewIcon /> : <LoginIcon />}
+            </IconButton>
+          )}
         </Box>
       </List>
     </Drawer>
