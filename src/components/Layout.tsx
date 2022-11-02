@@ -52,8 +52,24 @@ const Layout = ({ children }: Props) => {
         </Box>
       </Box>
       <Link href="/">
-        <Fab sx={{ position: "fixed", bottom: theme.spacing(4), right: theme.spacing(4) }}>
-          <QrCodeScannerIcon />
+        <Fab
+          sx={{
+            position: "fixed",
+            bottom: theme.spacing(2),
+            right: theme.spacing(2),
+            ...(matches && {
+              width: "40px",
+              height: "40px",
+            }),
+          }}
+        >
+          <QrCodeScannerIcon
+            sx={{
+              ...(matches && {
+                fontSize: 20,
+              }),
+            }}
+          />
         </Fab>
       </Link>
     </ThemeProvider>

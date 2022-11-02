@@ -37,7 +37,7 @@ const Dasboard = () => {
           // ...(!matches && {
           //   p: 3,
           // }),
-          p: 3,
+          p: matches ? 1 : 3,
         }}
       >
         <Stack>
@@ -58,7 +58,13 @@ const Dasboard = () => {
             </Typography>
 
             <Stack direction="row" gap={1}>
-              <Button variant="outlined" size="small">
+              <Button
+                variant="outlined"
+                size="small"
+                sx={{
+                  whiteSpace: "nowrap",
+                }}
+              >
                 Export to Excel
               </Button>
 
@@ -67,6 +73,9 @@ const Dasboard = () => {
                 size="small"
                 startIcon={<AddIcon />}
                 onClick={handleToggle}
+                sx={{
+                  whiteSpace: "nowrap",
+                }}
               >
                 New Device
               </Button>
@@ -76,10 +85,10 @@ const Dasboard = () => {
           <Stack
             direction="row"
             mb={3}
-            gap={3}
+            gap={1}
             sx={{
-              justifyContent: "space-between",
-              flexWrap: { m: "nowrap", xs: "wrap" },
+              justifyContent: { md: "space-between", sm: "space-between", xs: "space-evenly" },
+              flexWrap: { md: "nowrap", xs: "wrap" },
             }}
           >
             {data && (

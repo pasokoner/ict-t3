@@ -77,13 +77,21 @@ const statusColorGenerator = (status: string) => {
   }
 };
 
+const getFormattedDate = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = (1 + date.getMonth()).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  return month + "/" + day + "/" + year;
+};
+
 function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
   const { row, matches } = props;
   const [open, setOpen] = React.useState(false);
 
   return (
     <React.Fragment>
-      <TableRow sx={{ "& > *": { borderBottom: "unset", py: 3 } }}>
+      <TableRow sx={{ "& > *": { borderBottom: "unset", py: 1 } }}>
         {!matches && (
           <>
             <TableCell>
@@ -98,12 +106,11 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                   },
                 }}
               >
-                #{row.id.slice(0, 10) + "..."}
+                #{row.id.slice(0, 5) + "..."}
               </Typography>
             </TableCell>
             <TableCell>{row.name}</TableCell>
             <TableCell>{row.handler}</TableCell>
-            <TableCell>{row.numOfTransactions}</TableCell>
             <TableCell>{new Date(row.lastChecked).toDateString()}</TableCell>
             <TableCell>
               <Typography
@@ -114,7 +121,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                   width: "100px",
                   borderRadius: "5px",
                   color: "white",
-                  ml: "auto",
+                  mr: "auto",
                 }}
               >
                 {row.status}
@@ -130,26 +137,56 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
 
         {matches && (
           <>
-            <TableCell>{row.name}</TableCell>
+            <TableCell
+              sx={{
+                maxWidth: "150px",
+              }}
+            >
+              <Typography noWrap> {row.name.slice(0, 30)}</Typography>
+            </TableCell>
 
             <TableCell>
-              <Typography
-                align="center"
-                noWrap
-                sx={{
-                  bgcolor: statusColorGenerator(row.status),
-                  width: "100px",
-                  borderRadius: "5px",
-                  color: "white",
-                  ml: "auto",
-                }}
-              >
-                {row.status}
-              </Typography>
+              {matches ? (
+                <Box
+                  sx={{
+                    bgcolor: statusColorGenerator(row.status),
+                    width: "45px",
+                    height: "10px",
+                    borderRadius: "5px",
+                    color: "white",
+                    mr: "auto",
+                  }}
+                ></Box>
+              ) : (
+                <Typography
+                  align="center"
+                  noWrap
+                  sx={{
+                    bgcolor: statusColorGenerator(row.status),
+                    width: "100px",
+                    borderRadius: "5px",
+                    color: "white",
+                    ml: "auto",
+                  }}
+                >
+                  {row.status}
+                </Typography>
+              )}
             </TableCell>
-            <TableCell>
-              <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            <TableCell align="center">
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                sx={{
+                  fontSize: 18,
+                }}
+                onClick={() => setOpen(!open)}
+              >
+                {open ? (
+                  <KeyboardArrowUpIcon fontSize="inherit" />
+                ) : (
+                  <KeyboardArrowDownIcon fontSize="inherit" />
+                )}
               </IconButton>
             </TableCell>
           </>
@@ -164,7 +201,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
           }}
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
+            <Box sx={{ margin: matches ? 0 : 1 }}>
               <Typography variant="h6" gutterBottom component="div">
                 History
               </Typography>
@@ -180,23 +217,42 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                   {row.history.map((historyRow, i) => (
                     <TableRow key={i}>
                       <TableCell component="th" scope="row">
-                        {new Date(historyRow.date).toDateString()}
+                        {getFormattedDate(new Date(historyRow.date))}
                       </TableCell>
-                      <TableCell>{historyRow.handler}</TableCell>
+                      <TableCell
+                        sx={{
+                          maxWidth: "150px",
+                        }}
+                      >
+                        <Typography noWrap>{historyRow.handler}</Typography>
+                      </TableCell>
                       <TableCell align="right">
-                        <Typography
-                          align="center"
-                          noWrap
-                          sx={{
-                            bgcolor: statusColorGenerator(row.status),
-                            width: "100px",
-                            borderRadius: "5px",
-                            color: "white",
-                            ml: "auto",
-                          }}
-                        >
-                          {historyRow.status}
-                        </Typography>
+                        {matches ? (
+                          <Box
+                            sx={{
+                              bgcolor: statusColorGenerator(historyRow.status),
+                              width: "45px",
+                              height: "10px",
+                              borderRadius: "5px",
+                              color: "white",
+                              mr: "auto",
+                            }}
+                          ></Box>
+                        ) : (
+                          <Typography
+                            align="center"
+                            noWrap
+                            sx={{
+                              bgcolor: statusColorGenerator(historyRow.status),
+                              width: "100px",
+                              borderRadius: "5px",
+                              color: "white",
+                              mr: "auto",
+                            }}
+                          >
+                            {historyRow.status}
+                          </Typography>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -243,17 +299,17 @@ export default function CollapsibleTable() {
                 <TableCell>Item ID</TableCell>
                 <TableCell>Equiptment</TableCell>
                 <TableCell>Handler</TableCell>
-                <TableCell>Transaction Count</TableCell>
+
                 <TableCell>Last checked</TableCell>
-                <TableCell align="right">Status</TableCell>
-                <TableCell align="right" />
+                <TableCell>Status</TableCell>
+                <TableCell>Actions</TableCell>
               </>
             )}
             {matches && (
               <>
                 <TableCell>Equiptment</TableCell>
-                <TableCell align="right">Status</TableCell>
-                <TableCell align="right" />
+                <TableCell>Status</TableCell>
+                <TableCell align="center">Actions</TableCell>
               </>
             )}
           </TableRow>

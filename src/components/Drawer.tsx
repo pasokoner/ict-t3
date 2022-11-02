@@ -10,6 +10,8 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import LoginIcon from "@mui/icons-material/Login";
 
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+
 import {
   Button,
   Stack,
@@ -25,6 +27,7 @@ import DrawerItem from "./DrawerItem";
 import { drawerItem, drawerSettings } from "../utils/constant";
 
 import { useSession, signIn, signOut } from "next-auth/react";
+import { trpc } from "../utils/trpc";
 
 const drawerWidth = 240;
 
@@ -79,6 +82,8 @@ export default function MiniDrawer() {
   const [open, setOpen] = React.useState(true);
 
   const { data: sessionData } = useSession();
+
+  const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
 
   const toggleDrawer = () => {
     setOpen((prevState) => !prevState);
@@ -157,6 +162,15 @@ export default function MiniDrawer() {
             {drawerItem.map(({ name, link, icon }) => (
               <DrawerItem key={name} open={open} name={name} link={link} icon={icon} />
             ))}
+
+            {userInfo?.role === "SUPERADMIN" && (
+              <DrawerItem
+                open={open}
+                name="Manage settings"
+                link="/super-admin"
+                icon={<AdminPanelSettingsIcon />}
+              />
+            )}
           </Box>
         )}
 

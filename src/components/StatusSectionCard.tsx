@@ -16,15 +16,15 @@ const StatusSectionCard = ({ icon, title, count, color }: Props) => {
   return (
     <Paper
       sx={{
-        maxWidth: "300px",
-        width: { m: "100%", xs: "40%" },
+        // maxWidth: "250px",
+        width: { m: "100%", xs: "45%" },
         height: "90px",
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         gap: 2,
-        p: 2,
+        p: { md: 2, sm: 2, xs: 1 },
         "&:hover": { bgcolor: "grey.200", cursor: "pointer" },
         "& .MuiSvgIcon-root": {
           fontSize: 50,
@@ -35,7 +35,7 @@ const StatusSectionCard = ({ icon, title, count, color }: Props) => {
         },
 
         ...(matches && {
-          height: "70px",
+          height: "80px",
           "& .MuiSvgIcon-root": {
             fontSize: 35,
             bgcolor: color,

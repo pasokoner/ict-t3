@@ -25,6 +25,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { trpc } from "../utils/trpc";
 import QrMaker from "./QrMaker";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 type FormValues = {
   equiptmentName: string;
@@ -86,7 +87,8 @@ const NewDeviceForm = ({ handleClose }: Props) => {
       onSubmit={handleSubmit(onSubmit)}
       sx={{
         minHeight: "80vh",
-        minWidth: { md: "50%", xs: "80%" },
+        width: { md: "50%", xs: "80%" },
+
         bgcolor: "white",
         color: "primary.main",
         p: 3,
