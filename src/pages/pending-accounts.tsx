@@ -14,12 +14,15 @@ import {
   TableCell,
   TableRow,
   TableBody,
+  useMediaQuery,
 } from "@mui/material";
 import PendingRows from "../components/PendingRows";
 
 const PendingAccounts = () => {
   const { data: userInfo, isLoading } = trpc.auth.getUserInfo.useQuery();
   const { data: pendingAccounts, refetch } = trpc.auth.getPendingAccounts.useQuery();
+
+  const matches = useMediaQuery("(max-width:600px)");
 
   const fetchPendingAccounts = async () => {
     await refetch();
@@ -74,7 +77,7 @@ const PendingAccounts = () => {
         PENDING ACCOUNTS
       </Typography>
 
-      <Stack px={10} gap={2}>
+      <Stack gap={2}>
         <Typography variant="h5" fontWeight="bold" color="primary">
           Number of pending account - {pendingAccounts?.length}
         </Typography>
@@ -90,7 +93,8 @@ const PendingAccounts = () => {
                 }}
               >
                 <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
+                {!matches && <TableCell>Email</TableCell>}
+
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>

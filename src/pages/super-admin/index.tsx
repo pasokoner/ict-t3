@@ -66,7 +66,7 @@ const SuperAdmin = () => {
         SUPERADMIN PANEL
       </Typography>
 
-      <Stack px={10} gap={2}>
+      <Stack gap={2}>
         <Stack
           direction="row"
           gap={3}

@@ -13,6 +13,7 @@ import {
   Select,
   SelectChangeEvent,
   MenuItem,
+  useMediaQuery,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
@@ -37,6 +38,8 @@ const PendingRows = ({ name, email, id, userRole, userGroup, fetchPendingAccount
   const [open, setOpen] = React.useState(false);
   const [role, setRole] = React.useState("");
   const [group, setGroup] = React.useState("");
+
+  const matches = useMediaQuery("(max-width:600px)");
 
   const { handleSubmit, register, reset } = useForm<FormValues>();
 
@@ -69,7 +72,8 @@ const PendingRows = ({ name, email, id, userRole, userGroup, fetchPendingAccount
       <TableCell component="th" scope="row">
         {name}
       </TableCell>
-      <TableCell>{email}</TableCell>
+      {!matches && <TableCell>{email}</TableCell>}
+
       <TableCell>
         <ButtonGroup variant="text">
           <IconButton>
