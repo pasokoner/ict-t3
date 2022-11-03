@@ -4,6 +4,8 @@ import Image from "next/image";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 
+import WarehouseIcon from "@mui/icons-material/Warehouse";
+
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
@@ -11,6 +13,7 @@ import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import LoginIcon from "@mui/icons-material/Login";
 
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import NoAccountsIcon from "@mui/icons-material/NoAccounts";
 
 import {
   Button,
@@ -29,7 +32,7 @@ import { drawerItem, drawerSettings } from "../utils/constant";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
-const drawerWidth = 240;
+const drawerWidth = 230;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -46,9 +49,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
+  width: `calc(${theme.spacing(6)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
+    width: `calc(${theme.spacing(6)} + 1px)`,
   },
 });
 
@@ -120,27 +123,43 @@ export default function MiniDrawer() {
         },
       }}
     >
-      <DrawerHeader>
-        {open && <Typography>ICT Inventory System</Typography>}
-        <IconButton onClick={toggleDrawer}>
-          {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-        </IconButton>
-      </DrawerHeader>
+      {!matches && (
+        <DrawerHeader>
+          {open && <Typography>ICT Inventory System</Typography>}
+          <IconButton onClick={toggleDrawer}>
+            {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+        </DrawerHeader>
+      )}
+
+      {matches && (
+        <DrawerHeader>
+          <Box
+            sx={{
+              m: "auto",
+            }}
+          >
+            <WarehouseIcon />
+          </Box>
+        </DrawerHeader>
+      )}
+
       {sessionData && (
         <Stack
           direction="row"
           gap={2}
           my={3}
           sx={{
+            justifyContent: "center",
             alignItems: "center",
-            pl: { sm: 2, xs: 1 },
+            pl: matches || !open ? 0 : 2,
           }}
         >
           <Image
             src={sessionData.user?.image as string}
             alt=""
-            width={40}
-            height={40}
+            width={33}
+            height={33}
             style={{
               borderRadius: "50%",
             }}
@@ -166,11 +185,21 @@ export default function MiniDrawer() {
             {userInfo?.role === "SUPERADMIN" && (
               <DrawerItem
                 open={open}
-                name="Manage settings"
+                name="Admin"
                 link="/super-admin"
                 icon={<AdminPanelSettingsIcon />}
               />
             )}
+
+            {userInfo?.role === "ADMIN" ||
+              (userInfo?.role === "SUPERADMIN" && (
+                <DrawerItem
+                  open={open}
+                  name="Pending Accounts"
+                  link="/pending-accounts"
+                  icon={<NoAccountsIcon />}
+                />
+              ))}
           </Box>
         )}
 
@@ -202,21 +231,25 @@ export default function MiniDrawer() {
           )}
 
           {matches && (
-            <IconButton
-              onClick={sessionData ? () => signOut() : () => signIn()}
+            <Stack
               sx={{
-                m: "0 auto",
-                py: 2,
-                px: 2,
-                bgcolor: "primary.light",
-
-                "&:hover": {
-                  bgcolor: "primary.dark",
-                },
+                width: "100%",
               }}
             >
-              {sessionData ? <PowerSettingsNewIcon /> : <LoginIcon />}
-            </IconButton>
+              <IconButton
+                onClick={sessionData ? () => signOut() : () => signIn()}
+                sx={{
+                  bgcolor: "primary.light",
+                  m: "0 auto",
+
+                  "&:hover": {
+                    bgcolor: "primary.dark",
+                  },
+                }}
+              >
+                {sessionData ? <PowerSettingsNewIcon /> : <LoginIcon />}
+              </IconButton>
+            </Stack>
           )}
         </Box>
       </List>

@@ -14,6 +14,8 @@ const Home: NextPage = () => {
 
   const { data } = trpc.equiptment.detect.useQuery({ id: cameraResult });
 
+  console.log(data);
+
   const { data: sessionData } = useSession();
 
   return (
