@@ -14,7 +14,7 @@ import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 import { useTheme } from "@mui/material";
 import Link from "next/link";
 import useMediaQuery from "@mui/material/useMediaQuery/useMediaQuery";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
 type Props = {
@@ -63,7 +63,7 @@ const Layout = ({ children }: Props) => {
           component="main"
           sx={{
             flexGrow: 1,
-            bgcolor: "#fefcfb",
+            // bgcolor: "#fefcfb",
             minHeight: "100vh",
             maxWidth: "xl",
             margin: "0 auto",

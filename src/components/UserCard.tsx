@@ -8,7 +8,14 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { trpc } from "../utils/trpc";
 
-export default function UserCard() {
+type Props = {
+  name: string;
+  group: string;
+  role: string;
+  image: string;
+};
+
+export default function UserCard({ name, role, group, image }: Props) {
   const { data } = trpc.auth.getUserInfo.useQuery();
 
   return (
@@ -27,13 +34,13 @@ export default function UserCard() {
       >
         <CardContent sx={{ flex: "1 0 auto" }}>
           <Typography component="div" fontSize={18} fontWeight="bold" noWrap>
-            {data?.name}
+            {name}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" fontSize={13}>
-            {data?.group}
+            {group}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" fontWeight="medium" fontSize={15}>
-            {data?.role}
+            {role}
           </Typography>
         </CardContent>
       </Box>

@@ -191,15 +191,23 @@ export default function MiniDrawer() {
               />
             )}
 
-            {userInfo?.role === "ADMIN" ||
-              (userInfo?.role === "SUPERADMIN" && (
-                <DrawerItem
-                  open={open}
-                  name="Pending Accounts"
-                  link="/pending-accounts"
-                  icon={<NoAccountsIcon />}
-                />
-              ))}
+            {userInfo?.role === "ADMIN" && (
+              <DrawerItem
+                open={open}
+                name="Admin"
+                link="/admin"
+                icon={<AdminPanelSettingsIcon />}
+              />
+            )}
+
+            {(userInfo?.role === "ADMIN" || userInfo?.role === "SUPERADMIN") && (
+              <DrawerItem
+                open={open}
+                name="Pending Accounts"
+                link="/pending-accounts"
+                icon={<NoAccountsIcon />}
+              />
+            )}
           </Box>
         )}
 

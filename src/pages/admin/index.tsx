@@ -2,7 +2,7 @@ import React from "react";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { trpc } from "../../utils/trpc";
-import { Button, ButtonGroup, Divider, IconButton, Stack, Typography } from "@mui/material";
+import { Divider, IconButton, Stack, Typography } from "@mui/material";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
@@ -11,11 +11,9 @@ import UserCard from "../../components/UserCard";
 
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
-const SuperAdmin = () => {
-  const [group, setGroup] = React.useState<"PITO" | "GSO">("PITO");
-
+const Admin = () => {
   const { data: userInfo, isLoading } = trpc.auth.getUserInfo.useQuery();
-  const { data: groupMember, refetch } = trpc.auth.getByGroup.useQuery({ group: group });
+  const { data: groupMember } = trpc.auth.getAdminGroupMember.useQuery();
 
   if (isLoading) {
     return (
@@ -27,7 +25,7 @@ const SuperAdmin = () => {
     );
   }
 
-  if (userInfo?.role !== "SUPERADMIN") {
+  if (userInfo?.role !== "ADMIN") {
     return (
       <Box
         sx={{
@@ -63,7 +61,7 @@ const SuperAdmin = () => {
       }}
     >
       <Typography variant="h4" fontWeight="bold" color="primary" mb={4}>
-        SUPERADMIN PANEL
+        {userInfo.group} ADMIN PANEL
       </Typography>
 
       <Stack px={10} gap={2}>
@@ -77,23 +75,6 @@ const SuperAdmin = () => {
           <Typography variant="h5" fontWeight="bold" color="primary">
             User Management
           </Typography>
-
-          <ButtonGroup variant="text" aria-label="outlined primary button group" size="large">
-            <Button
-              onClick={() => {
-                setGroup("PITO");
-              }}
-            >
-              PITO
-            </Button>
-            <Button
-              onClick={() => {
-                setGroup("GSO");
-              }}
-            >
-              GSO
-            </Button>
-          </ButtonGroup>
         </Stack>
 
         <Stack gap={3}>
@@ -178,7 +159,7 @@ const SuperAdmin = () => {
               gap={2}
               sx={{
                 flexWrap: "wrap",
-                justifyContent: "space-between",
+                justifyContent: "flex-start",
               }}
             >
               {groupMember &&
@@ -201,7 +182,7 @@ const SuperAdmin = () => {
   );
 };
 
-export default SuperAdmin;
+export default Admin;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);

@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('SUPERADMIN', 'ADMIN', 'USER');
 
+-- CreateEnum
+CREATE TYPE "Groups" AS ENUM ('GSO', 'PITO');
+
 -- CreateTable
 CREATE TABLE "Example" (
     "id" TEXT NOT NULL,
@@ -46,6 +49,7 @@ CREATE TABLE "User" (
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
     "role" "Role",
+    "group" "Role",
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
