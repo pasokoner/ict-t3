@@ -15,7 +15,7 @@ const SuperAdmin = () => {
   const [group, setGroup] = React.useState<"PITO" | "GSO">("PITO");
 
   const { data: userInfo, isLoading } = trpc.auth.getUserInfo.useQuery();
-  const { data: groupMember, refetch } = trpc.auth.getByGroup.useQuery({ group: group });
+  const { data: groupMember } = trpc.auth.getByGroup.useQuery({ group: group });
 
   if (isLoading) {
     return (
