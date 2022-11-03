@@ -2,7 +2,7 @@ import React from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 
-import { Button, Divider, Paper, Stack, Typography, Backdrop, Box } from "@mui/material";
+import { Button, Divider, Stack, Typography, Backdrop, Box } from "@mui/material";
 import CollapsibleTable from "../components/Table";
 import StatusSectionCard from "../components/StatusSectionCard";
 import NewDeviceForm from "../components/NewDeviceForm";

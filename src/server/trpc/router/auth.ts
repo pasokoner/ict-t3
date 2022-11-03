@@ -1,7 +1,6 @@
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import { Groups, Role } from "@prisma/client";
-import { group } from "console";
 
 export const authRouter = router({
   getSession: publicProcedure.query(({ ctx }) => {

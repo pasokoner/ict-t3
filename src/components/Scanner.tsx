@@ -43,7 +43,6 @@ const Scanner = ({ setCameraResult }: Props) => {
         style={{
           width: "100%",
           height: "100%",
-          // outline: "none",
         }}
       ></video>
     </Box>
