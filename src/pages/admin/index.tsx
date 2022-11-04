@@ -118,8 +118,6 @@ const Admin = () => {
                       key={member.id}
                       image={member.image as string}
                       name={member.name as string}
-                      role={member.role as string}
-                      group={member.group as string}
                     />
                   ))}
             </Stack>
@@ -170,8 +168,6 @@ const Admin = () => {
                       key={member.id}
                       image={member.image as string}
                       name={member.name as string}
-                      role={member.role as string}
-                      group={member.group as string}
                     />
                   ))}
             </Stack>

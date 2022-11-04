@@ -1,20 +1,25 @@
 import React from "react";
 
-import { Stack, Typography, Paper } from "@mui/material";
+import { Stack, Typography, Paper, Button } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery/useMediaQuery";
 
 type Props = {
   icon: JSX.Element;
   color: string;
   title: string;
-  count: number;
+  count: number | undefined;
+  setStatusFilter: React.Dispatch<React.SetStateAction<string>>;
+  statusFilter: string;
 };
 
-const StatusSectionCard = ({ icon, title, count, color }: Props) => {
+const StatusSectionCard = ({ icon, title, count, color, setStatusFilter, statusFilter }: Props) => {
   const matches = useMediaQuery("(max-width:600px)");
 
   return (
     <Paper
+      component={Button}
+      onClick={() => setStatusFilter(title)}
+      disableRipple
       sx={{
         // maxWidth: "250px",
         width: { m: "100%", xs: "45%" },
@@ -25,6 +30,7 @@ const StatusSectionCard = ({ icon, title, count, color }: Props) => {
         alignItems: "center",
         gap: 2,
         p: { md: 2, sm: 2, xs: 1 },
+        bgcolor: statusFilter === title ? "grey.200" : "white",
         "&:hover": { bgcolor: "grey.200", cursor: "pointer" },
         "& .MuiSvgIcon-root": {
           fontSize: 50,

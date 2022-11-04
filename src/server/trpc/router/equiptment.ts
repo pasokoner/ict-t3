@@ -73,6 +73,7 @@ export const equiptmentRouter = router({
 
     return format;
   }),
+
   countByStatus: protectedProcedure.query(async ({ ctx }) => {
     const data = await ctx.prisma.equipmentHistory.findMany({
       distinct: ["equiptmentId"],

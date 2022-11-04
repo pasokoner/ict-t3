@@ -210,7 +210,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                   <TableRow>
                     <TableCell>Date</TableCell>
                     <TableCell>Handler</TableCell>
-                    <TableCell align="right">Status</TableCell>
+                    <TableCell>Status</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -226,7 +226,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                       >
                         <Typography noWrap>{historyRow.handler}</Typography>
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell align="center">
                         {matches ? (
                           <Box
                             sx={{
@@ -240,7 +240,6 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                           ></Box>
                         ) : (
                           <Typography
-                            align="center"
                             noWrap
                             sx={{
                               bgcolor: statusColorGenerator(historyRow.status),
@@ -266,28 +265,36 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
   );
 }
 
-export default function CollapsibleTable() {
-  const { data } = trpc.equiptment.all.useQuery();
+type TableProps = {
+  tableFilter: string;
+};
+
+export default function CollapsibleTable({ tableFilter }: TableProps) {
+  const { data: tableData } = trpc.equiptment.all.useQuery();
+
   const [formattedData, setFormattedData] = React.useState<TableFormat[]>();
 
   const matches = useMediaQuery("(max-width:900px)");
 
   React.useEffect(() => {
-    if (data) {
-      const format = data.map((e) => {
-        return createData(
-          e.id,
-          e.name,
-          e.handler as string,
-          e.numOfTransactions.equipmentHistory,
-          e.lastChecked as Date,
-          e.status as string,
-          e.history as History
-        );
-      });
+    if (tableData) {
+      console.log(tableData);
+      const format = tableData
+        .filter((data) => data.status === tableFilter)
+        .map((e) => {
+          return createData(
+            e.id,
+            e.name,
+            e.handler as string,
+            e.numOfTransactions.equipmentHistory,
+            e.lastChecked as Date,
+            e.status as string,
+            e.history as History
+          );
+        });
       setFormattedData(format);
     }
-  }, [data]);
+  }, [tableData, tableFilter]);
 
   return (
     <TableContainer>

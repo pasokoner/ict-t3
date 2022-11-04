@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 
@@ -17,11 +17,13 @@ import { GetServerSideProps } from "next";
 import { trpc } from "../utils/trpc";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-const Dasboard = () => {
-  const { data } = trpc.equiptment.countByStatus.useQuery();
+const Dashboard = () => {
+  const { data: itemsData } = trpc.equiptment.countByStatus.useQuery();
+  const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
+
+  const [statusFilter, setStatusFilter] = useState("");
 
   const matches = useMediaQuery("(max-width:900px)");
-
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
@@ -29,6 +31,10 @@ const Dasboard = () => {
   const handleToggle = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    setStatusFilter(userInfo?.group === "PITO" ? "For repair" : "Condemned");
+  }, [userInfo]);
 
   return (
     <Box>
@@ -59,17 +65,19 @@ const Dasboard = () => {
               Export to Excel
             </Button>
 
-            <Button
-              variant="contained"
-              size="small"
-              startIcon={<AddIcon />}
-              onClick={handleToggle}
-              sx={{
-                whiteSpace: "nowrap",
-              }}
-            >
-              New Device
-            </Button>
+            {userInfo?.group === "GSO" && (
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<AddIcon />}
+                onClick={handleToggle}
+                sx={{
+                  whiteSpace: "nowrap",
+                }}
+              >
+                New Device
+              </Button>
+            )}
           </Stack>
         </Stack>
 
@@ -82,39 +90,46 @@ const Dasboard = () => {
             flexWrap: { md: "nowrap", xs: "wrap" },
           }}
         >
-          {data && (
-            <>
-              <StatusSectionCard
-                count={data.inInventory}
-                title="In inventory"
-                icon={<InventoryIcon />}
-                color="success.main"
-              />
-              <StatusSectionCard
-                count={data.forRepair}
-                title="For repair"
-                icon={<BuildIcon />}
-                color="#e3d100"
-              />
-              <StatusSectionCard
-                count={data.toCondemn}
-                title="To condemn"
-                icon={<PendingActionsIcon />}
-                color="warning.main"
-              />
-              <StatusSectionCard
-                count={data.condemned}
-                title="Condemned"
-                icon={<RemoveIcon />}
-                color="error.main"
-              />
-            </>
-          )}
+          <>
+            <StatusSectionCard
+              count={itemsData?.inInventory}
+              title="In inventory"
+              icon={<InventoryIcon />}
+              color="success.main"
+              setStatusFilter={setStatusFilter}
+              statusFilter={statusFilter}
+            />
+
+            <StatusSectionCard
+              count={itemsData?.forRepair}
+              title="For repair"
+              icon={<BuildIcon />}
+              color="#e3d100"
+              setStatusFilter={setStatusFilter}
+              statusFilter={statusFilter}
+            />
+            <StatusSectionCard
+              count={itemsData?.toCondemn}
+              title="To condemn"
+              icon={<PendingActionsIcon />}
+              color="warning.main"
+              setStatusFilter={setStatusFilter}
+              statusFilter={statusFilter}
+            />
+            <StatusSectionCard
+              count={itemsData?.condemned}
+              title="Condemned"
+              icon={<RemoveIcon />}
+              color="error.main"
+              setStatusFilter={setStatusFilter}
+              statusFilter={statusFilter}
+            />
+          </>
         </Stack>
 
         <Divider />
 
-        <CollapsibleTable />
+        <CollapsibleTable tableFilter={statusFilter} />
       </Stack>
       <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
         <NewDeviceForm handleClose={handleClose} />
@@ -123,7 +138,7 @@ const Dasboard = () => {
   );
 };
 
-export default Dasboard;
+export default Dashboard;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);

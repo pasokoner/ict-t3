@@ -7,17 +7,17 @@ import Typography from "@mui/material/Typography";
 
 type Props = {
   name: string;
-  group: string;
-  role: string;
   image: string;
 };
 
-export default function UserCard({ name, role, group, image }: Props) {
+
+
+export default function UserCard({ name, image }: Props) {
   return (
-    <Card sx={{ display: "flex", width: "270px", height: "100px" }}>
+    <Card sx={{ display: "flex", width: "250px", height: 70 }}>
       <CardMedia
         component="img"
-        sx={{ width: 100, borderRadius: "50%", p: 2 }}
+        sx={{ width: 70, borderRadius: "50%", p: 1.5 }}
         image={`${image}`}
         alt="Live from space album cover"
       />
@@ -25,17 +25,12 @@ export default function UserCard({ name, role, group, image }: Props) {
         sx={{
           display: "flex",
           flexDirection: "column",
+          mt: "auto",
         }}
       >
         <CardContent sx={{ flex: "1 0 auto" }}>
-          <Typography component="div" fontSize={18} fontWeight="bold" noWrap>
+          <Typography fontSize={14} fontWeight="bold">
             {name}
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary" fontSize={13}>
-            {group}
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary" fontWeight="medium" fontSize={15}>
-            {role}
           </Typography>
         </CardContent>
       </Box>
