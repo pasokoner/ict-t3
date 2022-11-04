@@ -3,9 +3,7 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-
 import Typography from "@mui/material/Typography";
-import { trpc } from "../utils/trpc";
 
 type Props = {
   name: string;
@@ -15,14 +13,12 @@ type Props = {
 };
 
 export default function UserCard({ name, role, group, image }: Props) {
-  const { data } = trpc.auth.getUserInfo.useQuery();
-
   return (
     <Card sx={{ display: "flex", width: "270px", height: "100px" }}>
       <CardMedia
         component="img"
         sx={{ width: 100, borderRadius: "50%", p: 2 }}
-        image={`${data?.image}`}
+        image={`${image}`}
         alt="Live from space album cover"
       />
       <Box
