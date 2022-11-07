@@ -10,7 +10,7 @@ import QrScanner from "qr-scanner";
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
-import { statusColorGenerator } from "../utils/constant";
+import { statusColorGenerator, getFormattedDate } from "../utils/constant";
 
 const Scanner = () => {
   const [cameraResult, setCameraResult] = useState("");
@@ -27,6 +27,7 @@ const Scanner = () => {
       },
       {
         /* your options or returnDetailedScanResult: true if you're not specifying any other options */
+        highlightScanRegion: true,
       }
     );
   }, [setCameraResult]);
@@ -130,16 +131,13 @@ const Scanner = () => {
             sx={{
               justifyContent: "space-between",
               alighItems: "center",
-              minWidth: "70vw",
+              minWidth: "80vw",
               maxWidth: "95vw",
               height: "100px",
               borderRadius: "10px",
               border: 1,
               borderColor: "grey.500",
               p: 1,
-              "&:hover": {
-                cursor: "pointer",
-              },
 
               "& .MuiTypography-root": {
                 fontSize: 14,
@@ -153,7 +151,7 @@ const Scanner = () => {
                   {data.name.length < 100 ? data.name : data.name.slice(0, 100) + " ..."}
                 </Typography>
                 <Typography>
-                  Last Checked: {new Date(data.equipmentHistory[0]?.date as Date).toDateString()}
+                  Last Checked: {getFormattedDate(new Date(data.equipmentHistory[0]?.date as Date))}
                 </Typography>
                 <Typography>
                   Status:{" "}
@@ -183,7 +181,14 @@ const Scanner = () => {
             {!sessionData && (
               <Link href="https://intranet.bataan.gov.ph">
                 <IconButton>
-                  <KeyboardArrowRightIcon />
+                  <KeyboardArrowRightIcon
+                    sx={{
+                      color: "white",
+                      "&:hover": {
+                        cursor: "pointer",
+                      },
+                    }}
+                  />
                 </IconButton>
               </Link>
             )}

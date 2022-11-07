@@ -12,7 +12,7 @@ import BuildIcon from "@mui/icons-material/Build";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { trpc } from "../utils/trpc";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -20,8 +20,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 const Dashboard = () => {
   const { data: itemsData } = trpc.equiptment.countByStatus.useQuery();
   const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
-  const data = useSession();
-  // console.log(data.data?.user?.role);
 
   const [statusFilter, setStatusFilter] = useState("");
 

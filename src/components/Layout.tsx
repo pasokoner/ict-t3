@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { ThemeProvider } from "@mui/material/styles";
-import { Backdrop, Button, CssBaseline, Fab, IconButton, Stack, Typography } from "@mui/material";
+import { Backdrop, Button, CssBaseline, Fab, Stack, Typography } from "@mui/material";
 
 import { muiTheme } from "../styles/themes";
 
@@ -12,9 +12,9 @@ import MiniDrawer from "../components/Drawer";
 import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 
 import { useTheme } from "@mui/material";
-import Link from "next/link";
+
 import useMediaQuery from "@mui/material/useMediaQuery/useMediaQuery";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import Scanner from "./Scanner";
 
@@ -27,6 +27,7 @@ const Layout = ({ children }: Props) => {
 
   const [open, setOpen] = useState(false);
   const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
+  const { data: sessionData } = useSession();
 
   const matches = useMediaQuery("(max-width:900px)");
 
@@ -61,12 +62,11 @@ const Layout = ({ children }: Props) => {
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       <Box display="flex">
-        <MiniDrawer />
+        {sessionData && <MiniDrawer />}
         <Box
           component="main"
           sx={{
             flexGrow: 1,
-            // bgcolor: "#fefcfb",
             minHeight: "100vh",
             maxWidth: "xl",
             margin: "0 auto",

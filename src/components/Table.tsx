@@ -13,13 +13,14 @@ import Typography from "@mui/material/Typography";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { trpc } from "../utils/trpc";
-import { useMediaQuery } from "@mui/material";
+import { Backdrop, Button, useMediaQuery } from "@mui/material";
 
 import InventoryIcon from "@mui/icons-material/Inventory";
 import BuildIcon from "@mui/icons-material/Build";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { statusColorGenerator } from "../utils/constant";
+import { statusColorGenerator, getFormattedDate } from "../utils/constant";
+import QrMaker from "./QrMaker";
 
 type TableFormat = {
   id: string;
@@ -65,17 +66,10 @@ type History = {
   status: string;
 }[];
 
-const getFormattedDate = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = (1 + date.getMonth()).toString().padStart(2, "0");
-  const day = date.getDate().toString().padStart(2, "0");
-
-  return month + "/" + day + "/" + year;
-};
-
 function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
   const { row, matches } = props;
   const [open, setOpen] = React.useState(false);
+  const [showQr, setShowQr] = React.useState(false);
 
   return (
     <React.Fragment>
@@ -83,19 +77,14 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
         {!matches && (
           <>
             <TableCell>
-              <Typography
-                fontWeight="bold"
-                sx={{
-                  color: "#00b3ff",
-
-                  "&:hover": {
-                    cursor: "pointer",
-                    color: "#55ccff",
-                  },
+              <Button
+                variant="text"
+                onClick={() => {
+                  setShowQr(true);
                 }}
               >
                 #{row.id.slice(0, 5) + "..."}
-              </Typography>
+              </Button>
             </TableCell>
             <TableCell>{row.name}</TableCell>
             <TableCell>{row.handler}</TableCell>
@@ -249,6 +238,22 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
           </Collapse>
         </TableCell>
       </TableRow>
+
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={showQr}
+        onClick={() => {
+          setShowQr(false);
+        }}
+      >
+        <Box
+          sx={{
+            maxWidth: { md: 400, xs: 185 },
+          }}
+        >
+          {showQr && <QrMaker value={row.id} />}
+        </Box>
+      </Backdrop>
     </React.Fragment>
   );
 }

@@ -11,6 +11,7 @@ import {
   FormControl,
   SelectChangeEvent,
   Select,
+  Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -28,7 +29,7 @@ import { useSession } from "next-auth/react";
 
 type FormValues = {
   equiptmentName: string;
-  equiptmentStatus: "In inventory" | "For repair" | "To Condemn" | "Condemned";
+  equiptmentStatus: "In inventory";
   date: string;
 
   reminder: string;
@@ -54,10 +55,6 @@ const NewDeviceForm = ({ handleClose }: Props) => {
   };
 
   const [showCode, setShowCode] = React.useState(false);
-  const [age, setAge] = React.useState("");
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
-  };
 
   const {
     register,
@@ -120,27 +117,6 @@ const NewDeviceForm = ({ handleClose }: Props) => {
           </Typography>
         )}
 
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Equiptment Status</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={age}
-            label="Equiptment Status"
-            {...register("equiptmentStatus", { onChange: handleChange, required: true })}
-          >
-            <MenuItem value={"In inventory"}>In Inventory</MenuItem>
-            <MenuItem value={"For repair"}>For Repair</MenuItem>
-            <MenuItem value={"To condemn"}>To Condemn</MenuItem>
-            <MenuItem value={"Condemned"}>Condemned</MenuItem>
-          </Select>
-        </FormControl>
-        {errors.equiptmentStatus && errors.equiptmentStatus.type === "required" && (
-          <Typography color="error" variant="subtitle2">
-            This is required
-          </Typography>
-        )}
-
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DesktopDatePicker
             label="Date ( leave empty if same date )"
@@ -152,6 +128,25 @@ const NewDeviceForm = ({ handleClose }: Props) => {
             )}
           />
         </LocalizationProvider>
+
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Equiptment Status</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            defaultValue={"In inventory"}
+            label="Equiptment Status"
+            disabled
+            {...register("equiptmentStatus", { required: true })}
+          >
+            <MenuItem value={"In inventory"}>In Inventory</MenuItem>
+          </Select>
+        </FormControl>
+        {errors.equiptmentStatus && errors.equiptmentStatus.type === "required" && (
+          <Typography color="error" variant="subtitle2">
+            This is required
+          </Typography>
+        )}
 
         <TextField
           id="outlined-basic"
@@ -196,7 +191,16 @@ const NewDeviceForm = ({ handleClose }: Props) => {
             </Button>
           </Stack>
         )}
-        {isSuccess && showCode && data && <QrMaker value={data.id} />}
+        {isSuccess && showCode && data && (
+          <Box
+            sx={{
+              m: "0 auto",
+              maxWidth: 180,
+            }}
+          >
+            <QrMaker value={data.id} />
+          </Box>
+        )}
 
         {isLoading && (
           <Button variant="outlined" disabled>

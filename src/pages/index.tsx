@@ -1,24 +1,22 @@
 import type { NextPage } from "next";
 
-import React, { useState } from "react";
-import Scanner from "../components/Scanner";
-import { trpc } from "../utils/trpc";
+import React from "react";
 
-import { Box, IconButton, Stack, Typography } from "@mui/material";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
+import { Stack, Button } from "@mui/material";
+import { signIn } from "next-auth/react";
 
 const Home: NextPage = () => {
-  const [cameraResult, setCameraResult] = useState("");
-
-  const { data } = trpc.equiptment.detect.useQuery({ id: cameraResult });
-
-  console.log(data);
-
-  const { data: sessionData } = useSession();
-
-  return <Box></Box>;
+  return (
+    <Stack>
+      <Button
+        onClick={() => {
+          signIn();
+        }}
+      >
+        Sign in
+      </Button>
+    </Stack>
+  );
 };
 
 export default Home;
