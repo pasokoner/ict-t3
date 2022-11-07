@@ -42,17 +42,12 @@ const Scanner = () => {
   }, [qrScanner]);
 
   return (
-    <Stack
-      sx={{
-        width: "100vw",
-        height: "100vh",
-      }}
-    >
+    <>
       <Box
         sx={{
           // height: "50%",
-          width: "100%",
-          heigh: "100%",
+          width: "100vw",
+          heigh: "100vh",
         }}
       >
         <video
@@ -110,7 +105,7 @@ const Scanner = () => {
           </Stack>
         )}
       </Stack>
-    </Stack>
+    </>
   );
 };
 
