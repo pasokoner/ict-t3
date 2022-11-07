@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Icon, IconButton, Stack } from "@mui/material";
+import { IconButton, Stack } from "@mui/material";
 
 import InventoryIcon from "@mui/icons-material/Inventory";
 import BuildIcon from "@mui/icons-material/Build";
@@ -11,6 +11,7 @@ type Props = {
   group: string;
   status: string;
   direction: "column" | "row";
+  id: string;
   size?: "small";
 };
 

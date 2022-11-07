@@ -55,8 +55,8 @@ const Scanner = () => {
         <video
           id="video-feed"
           style={{
-            width: "0%",
-            height: "0%",
+            width: "100%",
+            height: "100%",
           }}
         ></video>
       </Box>
@@ -71,7 +71,7 @@ const Scanner = () => {
           zIndex: (theme) => theme.zIndex.drawer + 3,
         }}
       >
-        <Stack
+        {/* <Stack
           direction="row"
           sx={{
             justifyContent: "space-between",
@@ -124,9 +124,9 @@ const Scanner = () => {
               heigth: "100%",
             }}
           >
-            <ActionMaker status="In inventory" group="PITO" direction="column" />
+            <ActionMaker status="In inventory" group="PITO" direction="column" id="sdasdsa" />
           </Stack>
-        </Stack>
+        </Stack> */}
         {data && (
           <Stack
             direction="row"
@@ -146,39 +146,52 @@ const Scanner = () => {
             }}
           >
             {cameraResult && data && (
-              <Stack
-                sx={{
-                  flexGrow: 1,
-                  "& .MuiTypography-root": {
-                    fontSize: { md: 17, xs: 14 },
-                  },
-                }}
-              >
-                <Typography>
-                  Equiptment:{" "}
-                  {data.name.length < 100 ? data.name : data.name.slice(0, 100) + " ..."}
-                </Typography>
-                <Typography>
-                  Last Checked: {getFormattedDate(new Date(data.equipmentHistory[0]?.date as Date))}
-                </Typography>
-                <Typography>
-                  Status:{" "}
-                  <Typography
-                    component="span"
-                    sx={{
-                      bgcolor: statusColorGenerator(data.equipmentHistory[0]?.status as string),
-                      borderRadius: "5px",
-                      color: "white",
-                      width: "100px",
-                      height: "15px",
-                      py: 0.3,
-                      px: 0.5,
-                    }}
-                  >
-                    {data.equipmentHistory[0]?.status}
+              <>
+                <Stack
+                  sx={{
+                    flexGrow: 1,
+                    "& .MuiTypography-root": {
+                      fontSize: { md: 17, xs: 14 },
+                    },
+                  }}
+                >
+                  <Typography>
+                    Equiptment:{" "}
+                    {data.name.length < 100 ? data.name : data.name.slice(0, 100) + " ..."}
                   </Typography>
-                </Typography>
-              </Stack>
+                  <Typography>
+                    Last Checked:{" "}
+                    {getFormattedDate(new Date(data.equipmentHistory[0]?.date as Date))}
+                  </Typography>
+                  <Typography>
+                    Status:{" "}
+                    <Typography
+                      component="span"
+                      sx={{
+                        bgcolor: statusColorGenerator(data.equipmentHistory[0]?.status as string),
+                        borderRadius: "5px",
+                        color: "white",
+                        width: "100px",
+                        height: "15px",
+                        py: 0.3,
+                        px: 0.5,
+                      }}
+                    >
+                      {data.equipmentHistory[0]?.status}
+                    </Typography>
+                  </Typography>
+                </Stack>
+                <Stack
+                  justifyContent="center"
+                  sx={{
+                    p: 1,
+                    bgcolor: "grey.500",
+                    heigth: "100%",
+                  }}
+                >
+                  <ActionMaker status="In inventory" group="PITO" direction="column" id="sdasdsa" />
+                </Stack>
+              </>
             )}
 
             {cameraResult && data === null && (

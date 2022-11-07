@@ -69,6 +69,8 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
   const [open, setOpen] = React.useState(false);
   const [showQr, setShowQr] = React.useState(false);
 
+  const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
+
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset", py: 0.2 } }}>
@@ -125,7 +127,15 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
                   {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
-                <ActionMaker direction="row" status="In inventory" group="PITO" size="small" />
+                {userInfo && (
+                  <ActionMaker
+                    direction="row"
+                    status={row.status}
+                    group={userInfo.group as string}
+                    size="small"
+                    id={row.id}
+                  />
+                )}
               </Stack>
             </TableCell>
           </>
@@ -206,7 +216,15 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     <KeyboardArrowDownIcon fontSize="inherit" />
                   )}
                 </IconButton>
-                <ActionMaker direction="row" status="In inventory" group="PITO" size="small" />
+                {userInfo && (
+                  <ActionMaker
+                    direction="row"
+                    status={row.status}
+                    group={userInfo.group as string}
+                    size="small"
+                    id={row.id}
+                  />
+                )}
               </Stack>
             </TableCell>
           </>
