@@ -15,12 +15,10 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { trpc } from "../utils/trpc";
 import { Backdrop, Button, useMediaQuery } from "@mui/material";
 
-import InventoryIcon from "@mui/icons-material/Inventory";
-import BuildIcon from "@mui/icons-material/Build";
-import PendingActionsIcon from "@mui/icons-material/PendingActions";
-import RemoveIcon from "@mui/icons-material/Remove";
 import { statusColorGenerator, getFormattedDate } from "../utils/constant";
 import QrMaker from "./QrMaker";
+import ActionMaker from "./ActionMaker";
+import { Stack } from "@mui/system";
 
 type TableFormat = {
   id: string;
@@ -73,10 +71,14 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
 
   return (
     <React.Fragment>
-      <TableRow sx={{ "& > *": { borderBottom: "unset", py: 1 } }}>
+      <TableRow sx={{ "& > *": { borderBottom: "unset", py: 0.2 } }}>
         {!matches && (
           <>
-            <TableCell>
+            <TableCell
+              sx={{
+                width: "50px",
+              }}
+            >
               <Button
                 variant="text"
                 onClick={() => {
@@ -86,10 +88,20 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 #{row.id.slice(0, 5) + "..."}
               </Button>
             </TableCell>
-            <TableCell>{row.name}</TableCell>
-            <TableCell>{row.handler}</TableCell>
-            <TableCell>{new Date(row.lastChecked).toDateString()}</TableCell>
-            <TableCell>
+            <TableCell sx={{ minWidth: "120px" }}>{row.name}</TableCell>
+            <TableCell sx={{ minWidth: "120px" }}>{row.handler}</TableCell>
+            <TableCell
+              sx={{
+                width: "125px",
+              }}
+            >
+              {getFormattedDate(new Date(row.lastChecked))}
+            </TableCell>
+            <TableCell
+              sx={{
+                width: "125px",
+              }}
+            >
               <Typography
                 align="center"
                 noWrap
@@ -104,10 +116,17 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 {row.status}
               </Typography>
             </TableCell>
-            <TableCell>
-              <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-              </IconButton>
+            <TableCell
+              sx={{
+                width: "125px",
+              }}
+            >
+              <Stack direction="row">
+                <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                  {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                </IconButton>
+                <ActionMaker direction="row" status="In inventory" group="PITO" size="small" />
+              </Stack>
             </TableCell>
           </>
         )}
@@ -116,13 +135,29 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
           <>
             <TableCell
               sx={{
-                maxWidth: "150px",
+                width: "50px",
               }}
             >
-              <Typography noWrap> {row.name.slice(0, 30)}</Typography>
+              <Button
+                variant="text"
+                onClick={() => {
+                  setShowQr(true);
+                }}
+              >
+                #{row.id.slice(0, 1) + "..."}
+              </Button>
             </TableCell>
 
             <TableCell>
+              <Typography noWrap> {row.name.slice(0, 30)}</Typography>
+            </TableCell>
+
+            <TableCell
+              align="center"
+              sx={{
+                width: "50px",
+              }}
+            >
               {matches ? (
                 <Box
                   sx={{
@@ -131,7 +166,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     height: "10px",
                     borderRadius: "5px",
                     color: "white",
-                    mr: "auto",
+                    // mr: "auto",
                   }}
                 ></Box>
               ) : (
@@ -150,21 +185,29 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 </Typography>
               )}
             </TableCell>
-            <TableCell align="center">
-              <IconButton
-                aria-label="expand row"
-                size="small"
-                sx={{
-                  fontSize: 18,
-                }}
-                onClick={() => setOpen(!open)}
-              >
-                {open ? (
-                  <KeyboardArrowUpIcon fontSize="inherit" />
-                ) : (
-                  <KeyboardArrowDownIcon fontSize="inherit" />
-                )}
-              </IconButton>
+            <TableCell
+              align="center"
+              sx={{
+                width: "50px",
+              }}
+            >
+              <Stack direction="row" justifyContent="center">
+                <IconButton
+                  aria-label="expand row"
+                  size="small"
+                  // sx={{
+                  //   fontSize: 18,
+                  // }}
+                  onClick={() => setOpen(!open)}
+                >
+                  {open ? (
+                    <KeyboardArrowUpIcon fontSize="inherit" />
+                  ) : (
+                    <KeyboardArrowDownIcon fontSize="inherit" />
+                  )}
+                </IconButton>
+                <ActionMaker direction="row" status="In inventory" group="PITO" size="small" />
+              </Stack>
             </TableCell>
           </>
         )}
@@ -193,7 +236,13 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 <TableBody>
                   {row.history.map((historyRow, i) => (
                     <TableRow key={i}>
-                      <TableCell component="th" scope="row">
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        sx={{
+                          width: "100px",
+                        }}
+                      >
                         {getFormattedDate(new Date(historyRow.date))}
                       </TableCell>
                       <TableCell
@@ -203,8 +252,14 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                       >
                         <Typography noWrap>{historyRow.handler}</Typography>
                       </TableCell>
-                      <TableCell align="center">
-                        {matches ? (
+
+                      {matches ? (
+                        <TableCell
+                          align="center"
+                          sx={{
+                            width: "50px",
+                          }}
+                        >
                           <Box
                             sx={{
                               bgcolor: statusColorGenerator(historyRow.status),
@@ -215,7 +270,14 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                               mr: "auto",
                             }}
                           ></Box>
-                        ) : (
+                        </TableCell>
+                      ) : (
+                        <TableCell
+                          align="center"
+                          sx={{
+                            width: "125px",
+                          }}
+                        >
                           <Typography
                             noWrap
                             sx={{
@@ -228,8 +290,8 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                           >
                             {historyRow.status}
                           </Typography>
-                        )}
-                      </TableCell>
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -306,8 +368,9 @@ export default function CollapsibleTable({ tableFilter }: TableProps) {
             )}
             {matches && (
               <>
+                <TableCell align="center">Item ID</TableCell>
                 <TableCell>Equiptment</TableCell>
-                <TableCell>Status</TableCell>
+                <TableCell align="center">Status</TableCell>
                 <TableCell align="center">Actions</TableCell>
               </>
             )}

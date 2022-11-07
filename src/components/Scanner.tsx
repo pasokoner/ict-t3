@@ -55,8 +55,8 @@ const Scanner = () => {
         <video
           id="video-feed"
           style={{
-            width: "100%",
-            height: "100%",
+            width: "0%",
+            height: "0%",
           }}
         ></video>
       </Box>
@@ -71,7 +71,7 @@ const Scanner = () => {
           zIndex: (theme) => theme.zIndex.drawer + 3,
         }}
       >
-        {/* <Stack
+        <Stack
           direction="row"
           sx={{
             justifyContent: "space-between",
@@ -92,7 +92,7 @@ const Scanner = () => {
             sx={{
               flexGrow: 1,
               "& .MuiTypography-root": {
-                fontSize: 14,
+                fontSize: { md: 17, xs: 14 },
               },
             }}
           >
@@ -115,21 +115,18 @@ const Scanner = () => {
                 In inventory
               </Typography>
             </Typography>
-            <Stack direction="row">
-              <Typography>Actions:</Typography>
-              <ActionMaker status="In invetory" group="PITO" />
-            </Stack>
           </Stack>
-          <Link href="https://intranet.bataan.gov.ph">
-            <IconButton>
-              <KeyboardArrowRightIcon
-                sx={{
-                  color: "white",
-                }}
-              />
-            </IconButton>
-          </Link>
-        </Stack> */}
+          <Stack
+            justifyContent="center"
+            sx={{
+              p: 1,
+              bgcolor: "grey.500",
+              heigth: "100%",
+            }}
+          >
+            <ActionMaker status="In inventory" group="PITO" direction="column" />
+          </Stack>
+        </Stack>
         {data && (
           <Stack
             direction="row"
@@ -153,7 +150,7 @@ const Scanner = () => {
                 sx={{
                   flexGrow: 1,
                   "& .MuiTypography-root": {
-                    fontSize: 14,
+                    fontSize: { md: 17, xs: 14 },
                   },
                 }}
               >
@@ -169,7 +166,7 @@ const Scanner = () => {
                   <Typography
                     component="span"
                     sx={{
-                      bgcolor: statusColorGenerator("In inventory"),
+                      bgcolor: statusColorGenerator(data.equipmentHistory[0]?.status as string),
                       borderRadius: "5px",
                       color: "white",
                       width: "100px",

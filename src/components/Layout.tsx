@@ -71,7 +71,7 @@ const Layout = ({ children }: Props) => {
 
             ...(sessionData && {
               maxWidth: "xl",
-              p: 1,
+              p: 2,
               margin: "0 auto",
               flexGrow: 1,
             }),
