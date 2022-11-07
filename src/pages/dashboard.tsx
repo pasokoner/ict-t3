@@ -82,11 +82,11 @@ const Dashboard = () => {
         </Stack>
 
         <Stack
-          direction="row"
           mb={3}
           gap={1}
+          direction="row"
           sx={{
-            justifyContent: { md: "space-between", sm: "space-between", xs: "space-evenly" },
+            justifyContent: { md: "space-between", xs: "space-evenly" },
             flexWrap: { md: "nowrap", xs: "wrap" },
           }}
         >

@@ -11,6 +11,7 @@ import { Box, IconButton, Stack, Typography } from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 import { statusColorGenerator, getFormattedDate } from "../utils/constant";
+import ActionMaker from "./ActionMaker";
 
 const Scanner = () => {
   const [cameraResult, setCameraResult] = useState("");
@@ -54,8 +55,8 @@ const Scanner = () => {
         <video
           id="video-feed"
           style={{
-            width: "0%",
-            height: "0%",
+            width: "100%",
+            height: "100%",
           }}
         ></video>
       </Box>
@@ -77,11 +78,10 @@ const Scanner = () => {
             alighItems: "center",
             minWidth: "70vw",
             maxWidth: "95vw",
-            height: "100px",
             borderRadius: "10px",
             border: 1,
             borderColor: "grey.500",
-            p: 1,
+            p: 1.5,
 
             "&:hover": {
               cursor: "pointer",
@@ -90,6 +90,7 @@ const Scanner = () => {
         >
           <Stack
             sx={{
+              flexGrow: 1,
               "& .MuiTypography-root": {
                 fontSize: 14,
               },
@@ -114,6 +115,10 @@ const Scanner = () => {
                 In inventory
               </Typography>
             </Typography>
+            <Stack direction="row">
+              <Typography>Actions:</Typography>
+              <ActionMaker status="In invetory" group="PITO" />
+            </Stack>
           </Stack>
           <Link href="https://intranet.bataan.gov.ph">
             <IconButton>
@@ -133,11 +138,10 @@ const Scanner = () => {
               alighItems: "center",
               minWidth: "80vw",
               maxWidth: "95vw",
-              height: "100px",
               borderRadius: "10px",
               border: 1,
               borderColor: "grey.500",
-              p: 1,
+              p: 2,
 
               "& .MuiTypography-root": {
                 fontSize: 14,
@@ -145,7 +149,14 @@ const Scanner = () => {
             }}
           >
             {cameraResult && data && (
-              <Stack>
+              <Stack
+                sx={{
+                  flexGrow: 1,
+                  "& .MuiTypography-root": {
+                    fontSize: 14,
+                  },
+                }}
+              >
                 <Typography>
                   Equiptment:{" "}
                   {data.name.length < 100 ? data.name : data.name.slice(0, 100) + " ..."}

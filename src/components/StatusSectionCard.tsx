@@ -22,8 +22,8 @@ const StatusSectionCard = ({ icon, title, count, color, setStatusFilter, statusF
       disableRipple
       sx={{
         // maxWidth: "250px",
-        width: { m: "100%", xs: "45%" },
-        height: "90px",
+        width: { md: "100%", xs: "45%" },
+        height: { md: "90px", sm: "70px" },
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
@@ -41,14 +41,7 @@ const StatusSectionCard = ({ icon, title, count, color, setStatusFilter, statusF
         },
 
         ...(matches && {
-          height: "80px",
-          "& .MuiSvgIcon-root": {
-            fontSize: 35,
-            bgcolor: color,
-            color: "white",
-            borderRadius: "10px",
-            p: 1,
-          },
+          height: "50px",
         }),
       }}
     >
@@ -82,41 +75,36 @@ const StatusSectionCard = ({ icon, title, count, color, setStatusFilter, statusF
 
       {matches && (
         <Stack
-          direction="column"
-          gap={0.5}
+          direction="row"
+          gap={1}
           sx={{
             width: "100%",
+            justifyContent: "space-around",
+            alignItems: "center",
           }}
         >
-          <Stack
-            direction="row"
-            sx={{
-              justifyContent: "space-around",
-            }}
-          >
-            {icon}
-
-            <Stack>
-              <Typography
-                fontWeight="bold"
-                fontSize={24}
-                sx={{
-                  color: "primary.main",
-                }}
-              >
-                {count}
-              </Typography>
-            </Stack>
-          </Stack>
           <Typography
-            fontSize={12}
-            noWrap
-            align="center"
+            component="span"
+            fontSize={11}
             sx={{
-              color: "primary.light",
+              bgcolor: `${color}`,
+              borderRadius: "5px",
+              color: "white",
+              width: "85px",
+              p: 0.5,
             }}
           >
             {title}
+          </Typography>
+
+          <Typography
+            fontWeight="bold"
+            fontSize={20}
+            sx={{
+              color: "primary.main",
+            }}
+          >
+            {count}
           </Typography>
         </Stack>
       )}
