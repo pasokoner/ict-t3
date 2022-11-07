@@ -15,6 +15,11 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { trpc } from "../utils/trpc";
 import { useMediaQuery } from "@mui/material";
 
+import InventoryIcon from "@mui/icons-material/Inventory";
+import BuildIcon from "@mui/icons-material/Build";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import RemoveIcon from "@mui/icons-material/Remove";
+
 type TableFormat = {
   id: string;
   name: string;
@@ -278,7 +283,6 @@ export default function CollapsibleTable({ tableFilter }: TableProps) {
 
   React.useEffect(() => {
     if (tableData) {
-      console.log(tableData);
       const format = tableData
         .filter((data) => data.status === tableFilter)
         .map((e) => {

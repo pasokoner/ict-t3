@@ -1,12 +1,22 @@
-import { Box } from "@mui/material";
+import Link from "next/link";
+
+import React, { useEffect, useCallback, useState } from "react";
+
+import { trpc } from "../utils/trpc";
+import { useSession } from "next-auth/react";
+
 import QrScanner from "qr-scanner";
-import React, { useEffect, useCallback } from "react";
 
-type Props = {
-  setCameraResult: React.Dispatch<React.SetStateAction<string>>;
-};
+import { Box, IconButton, Stack, Typography } from "@mui/material";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
-const Scanner = ({ setCameraResult }: Props) => {
+const Scanner = () => {
+  const [cameraResult, setCameraResult] = useState("");
+
+  const { data } = trpc.equiptment.detect.useQuery({ id: cameraResult });
+
+  const { data: sessionData } = useSession();
+
   const qrScanner = useCallback(() => {
     return new QrScanner(
       document.getElementById("video-feed") as HTMLVideoElement,
@@ -30,22 +40,67 @@ const Scanner = ({ setCameraResult }: Props) => {
   }, [qrScanner]);
 
   return (
-    <Box
+    <Stack
       sx={{
-        margin: "0 auto",
-        height: { sm: "50vh" },
-        width: "100%",
-        mb: 3,
+        width: "100vw",
+        height: "100vh",
       }}
     >
-      <video
-        id="video-feed"
-        style={{
+      <Box
+        sx={{
+          // height: "50%",
           width: "100%",
-          height: "100%",
+          mb: "auto",
         }}
-      ></video>
-    </Box>
+      >
+        <video
+          id="video-feed"
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        ></video>
+      </Box>
+
+      <Stack gap={2}>
+        {/* <Typography variant="h4">Camera result here:</Typography> */}
+        {data && (
+          <Stack
+            direction="row"
+            sx={{
+              justifyContent: "space-between",
+              alighItems: "center",
+              border: 2,
+              p: 2,
+
+              "&:hover": {
+                cursor: "pointer",
+              },
+            }}
+          >
+            {cameraResult && data && (
+              <Stack>
+                <Typography>name: {data.name}</Typography>
+                <Typography>id: {data.id}</Typography>
+              </Stack>
+            )}
+
+            {cameraResult && data === null && (
+              <Stack>
+                <Typography>Qr Code does not exist on our end</Typography>
+              </Stack>
+            )}
+            {!sessionData && (
+              <Link href="https://intranet.bataan.gov.ph">
+                <IconButton>
+                  <KeyboardArrowRightIcon />
+                </IconButton>
+              </Link>
+            )}
+          </Stack>
+        )}
+      </Stack>
+    </Stack>
   );
 };
 

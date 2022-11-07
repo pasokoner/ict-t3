@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { ThemeProvider } from "@mui/material/styles";
-import { Button, CssBaseline, Fab, Stack, Typography } from "@mui/material";
+import { Backdrop, Button, CssBaseline, Fab, IconButton, Stack, Typography } from "@mui/material";
 
 import { muiTheme } from "../styles/themes";
 
@@ -16,6 +16,7 @@ import Link from "next/link";
 import useMediaQuery from "@mui/material/useMediaQuery/useMediaQuery";
 import { signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
+import Scanner from "./Scanner";
 
 type Props = {
   children: React.ReactNode;
@@ -23,6 +24,8 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
   const theme = useTheme();
+
+  const [open, setOpen] = useState(false);
   const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
 
   const matches = useMediaQuery("(max-width:900px)");
@@ -73,27 +76,30 @@ const Layout = ({ children }: Props) => {
           {children}
         </Box>
       </Box>
-      <Link href="/">
-        <Fab
+      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
+        <Scanner />
+      </Backdrop>
+
+      <Fab
+        onClick={() => setOpen((prevState) => !prevState)}
+        sx={{
+          position: "fixed",
+          bottom: theme.spacing(2),
+          right: theme.spacing(2),
+          ...(matches && {
+            width: "40px",
+            height: "40px",
+          }),
+        }}
+      >
+        <QrCodeScannerIcon
           sx={{
-            position: "fixed",
-            bottom: theme.spacing(2),
-            right: theme.spacing(2),
             ...(matches && {
-              width: "40px",
-              height: "40px",
+              fontSize: 20,
             }),
           }}
-        >
-          <QrCodeScannerIcon
-            sx={{
-              ...(matches && {
-                fontSize: 20,
-              }),
-            }}
-          />
-        </Fab>
-      </Link>
+        />
+      </Fab>
     </ThemeProvider>
   );
 };

@@ -148,7 +148,7 @@ export default function MiniDrawer() {
         <Stack
           direction="row"
           gap={2}
-          my={3}
+          my={2}
           sx={{
             justifyContent: "center",
             alignItems: "center",
@@ -164,7 +164,7 @@ export default function MiniDrawer() {
               borderRadius: "50%",
             }}
           />
-          {open && <Typography>{sessionData.user?.name}</Typography>}
+          {open && <Typography fontSize={15}>{sessionData.user?.name}</Typography>}
         </Stack>
       )}
 
