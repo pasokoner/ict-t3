@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 
 import QrScanner from "qr-scanner";
 
-import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const Scanner = () => {
@@ -16,6 +16,8 @@ const Scanner = () => {
   const { data } = trpc.equiptment.detect.useQuery({ id: cameraResult });
 
   const { data: sessionData } = useSession();
+
+  const theme = useTheme();
 
   const qrScanner = useCallback(() => {
     return new QrScanner(
@@ -50,7 +52,7 @@ const Scanner = () => {
         sx={{
           // height: "50%",
           width: "100%",
-          mb: "auto",
+          heigh: "100%",
         }}
       >
         <video
@@ -62,8 +64,16 @@ const Scanner = () => {
         ></video>
       </Box>
 
-      <Stack gap={2}>
-        {/* <Typography variant="h4">Camera result here:</Typography> */}
+      <Stack
+        sx={{
+          position: "fixed",
+          top: "80%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: (theme) => theme.zIndex.drawer + 3,
+        }}
+      >
+        <Typography>Camera result here:</Typography>
         {data && (
           <Stack
             direction="row"
