@@ -9,7 +9,6 @@ import {
   InputLabel,
   MenuItem,
   FormControl,
-  SelectChangeEvent,
   Select,
   Box,
 } from "@mui/material";
@@ -26,23 +25,33 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { trpc } from "../utils/trpc";
 import QrMaker from "./QrMaker";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 type FormValues = {
   equiptmentName: string;
-  equiptmentStatus: "In inventory";
+  equiptmentStatus: string;
   date: string;
-
   reminder: string;
 };
 
 type Props = {
   handleClose: () => void;
+  status: string;
+  equiptment?: string;
+  update?: boolean;
+  equiptmentId?: string;
 };
 
-const NewDeviceForm = ({ handleClose }: Props) => {
+const NewDeviceForm = ({ handleClose, status, equiptment, update, equiptmentId }: Props) => {
   const { mutate, isLoading, isSuccess, data } = trpc.equiptment.add.useMutation({
     onSuccess: () => {
       reset();
+    },
+  });
+
+  const { mutate: updateEquiptment } = trpc.equiptment.update.useMutation({
+    onSuccess: () => {
+      handleClose();
     },
   });
 
@@ -55,6 +64,7 @@ const NewDeviceForm = ({ handleClose }: Props) => {
   };
 
   const [showCode, setShowCode] = React.useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -62,18 +72,23 @@ const NewDeviceForm = ({ handleClose }: Props) => {
     reset,
     formState: { errors },
   } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    // mutate({ name: data.equiptmentName.trim(), status: data.equiptmentStatus.trim() });
-
-    if (value) {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (value && !update) {
       mutate({
         name: data.equiptmentName,
-        status: data.equiptmentStatus,
+        status: status,
         reminder: data.reminder,
         date: value.toDate(),
       });
+    } else if (!value && update && equiptmentId) {
+      updateEquiptment({
+        status: status,
+        reminder: data.reminder,
+        id: equiptmentId,
+      });
+      router.reload();
     } else {
-      mutate({ name: data.equiptmentName, status: data.equiptmentStatus, reminder: data.reminder });
+      mutate({ name: data.equiptmentName, status: status, reminder: data.reminder });
     }
   };
 
@@ -105,12 +120,23 @@ const NewDeviceForm = ({ handleClose }: Props) => {
       </Stack>
 
       <Stack direction="column" gap={2}>
-        <TextField
-          id="outlined-basic"
-          label="Equipment"
-          variant="outlined"
-          {...register("equiptmentName", { required: true })}
-        />
+        {!update && (
+          <TextField
+            id="outlined-basic"
+            label="Equipment"
+            variant="outlined"
+            {...register("equiptmentName", { required: true })}
+          />
+        )}
+        {update && (
+          <TextField
+            id="outlined-basic"
+            label="Equipment"
+            variant="outlined"
+            value={equiptment}
+            disabled
+          />
+        )}
         {errors.equiptmentName && errors.equiptmentName.type === "required" && (
           <Typography color="error" variant="subtitle2">
             This is required
@@ -134,12 +160,14 @@ const NewDeviceForm = ({ handleClose }: Props) => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            defaultValue={"In inventory"}
+            value={status}
             label="Equiptment Status"
             disabled
-            {...register("equiptmentStatus", { required: true })}
           >
             <MenuItem value={"In inventory"}>In Inventory</MenuItem>
+            <MenuItem value={"For repair"}>For repair</MenuItem>
+            <MenuItem value={"To condemn"}>To condemn</MenuItem>
+            <MenuItem value={"Condemned"}>Condemned</MenuItem>
           </Select>
         </FormControl>
         {errors.equiptmentStatus && errors.equiptmentStatus.type === "required" && (

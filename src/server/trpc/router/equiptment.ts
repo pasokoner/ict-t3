@@ -35,6 +35,28 @@ export const equiptmentRouter = router({
 
       return data;
     }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        status: z.string(),
+        date: z.date().nullish(),
+        reminder: z.string().trim().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const data = await ctx.prisma.equipmentHistory.create({
+        data: {
+          equiptmentId: input.id,
+          userId: ctx.session.user.id,
+          date: input.date ? input.date : new Date(),
+          status: input.status,
+          reminder: input.reminder ? input.reminder : null,
+        },
+      });
+      return data;
+    }),
   all: protectedProcedure.query(async ({ ctx }) => {
     const data = await ctx.prisma.equipment.findMany({
       select: {

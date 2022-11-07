@@ -189,7 +189,13 @@ const Scanner = () => {
                     heigth: "100%",
                   }}
                 >
-                  <ActionMaker status="In inventory" group="PITO" direction="column" id="sdasdsa" />
+                  <ActionMaker
+                    status="In inventory"
+                    group="PITO"
+                    direction="column"
+                    id={data.id}
+                    name={data.name}
+                  />
                 </Stack>
               </>
             )}

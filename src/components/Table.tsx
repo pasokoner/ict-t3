@@ -134,6 +134,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     group={userInfo.group as string}
                     size="small"
                     id={row.id}
+                    name={row.name}
                   />
                 )}
               </Stack>
@@ -223,6 +224,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     group={userInfo.group as string}
                     size="small"
                     id={row.id}
+                    name={row.name}
                   />
                 )}
               </Stack>

@@ -132,7 +132,7 @@ const Dashboard = () => {
         <CollapsibleTable tableFilter={statusFilter} />
       </Stack>
       <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
-        <NewDeviceForm handleClose={handleClose} />
+        <NewDeviceForm handleClose={handleClose} status="In inventory" />
       </Backdrop>
     </Box>
   );
