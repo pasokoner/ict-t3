@@ -66,11 +66,15 @@ const Layout = ({ children }: Props) => {
         <Box
           component="main"
           sx={{
-            flexGrow: 1,
             minHeight: "100vh",
-            maxWidth: "xl",
-            margin: "0 auto",
-            p: 3,
+            width: "100%",
+
+            ...(sessionData && {
+              maxWidth: "xl",
+              p: 3,
+              margin: "0 auto",
+              flexGrow: 1,
+            }),
           }}
         >
           {children}
