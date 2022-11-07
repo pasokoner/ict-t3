@@ -77,7 +77,7 @@ const Layout = ({ children }: Props) => {
         </Box>
       </Box>
       <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
-        <Scanner />
+        {open && <Scanner />}
       </Backdrop>
 
       <Fab
@@ -86,6 +86,7 @@ const Layout = ({ children }: Props) => {
           position: "fixed",
           bottom: theme.spacing(2),
           right: theme.spacing(2),
+          zIndex: (theme) => theme.zIndex.drawer + 2,
           ...(matches && {
             width: "40px",
             height: "40px",
