@@ -100,6 +100,24 @@ export const equiptmentRouter = router({
       where: {
         id: input.id,
       },
+      select: {
+        id: true,
+        name: true,
+        _count: {
+          select: { equipmentHistory: true },
+        },
+        equipmentHistory: {
+          select: {
+            reminder: true,
+            status: true,
+            date: true,
+            user: true,
+          },
+          orderBy: {
+            date: "desc",
+          },
+        },
+      },
     });
 
     return data;

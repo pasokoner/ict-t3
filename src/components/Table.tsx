@@ -19,6 +19,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import BuildIcon from "@mui/icons-material/Build";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { statusColorGenerator } from "../utils/constant";
 
 type TableFormat = {
   id: string;
@@ -63,24 +64,6 @@ type History = {
   handler: string;
   status: string;
 }[];
-
-const statusColorGenerator = (status: string) => {
-  if (status === "In inventory") {
-    return "success.main";
-  }
-
-  if (status === "For repair") {
-    return "#e3d100";
-  }
-
-  if (status === "To condemn") {
-    return "warning.main";
-  }
-
-  if (status === "Condemned") {
-    return "error.main";
-  }
-};
 
 const getFormattedDate = (date: Date): string => {
   const year = date.getFullYear();
@@ -168,9 +151,9 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                   noWrap
                   sx={{
                     bgcolor: statusColorGenerator(row.status),
-                    width: "100px",
                     borderRadius: "5px",
                     color: "white",
+                    width: "100px",
                     ml: "auto",
                   }}
                 >
