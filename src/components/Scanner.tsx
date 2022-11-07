@@ -54,8 +54,8 @@ const Scanner = () => {
         <video
           id="video-feed"
           style={{
-            width: "100%",
-            height: "100%",
+            width: "0%",
+            height: "0%",
           }}
         ></video>
       </Box>
