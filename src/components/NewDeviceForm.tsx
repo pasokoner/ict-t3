@@ -109,7 +109,7 @@ const NewDeviceForm = ({
       onSubmit={handleSubmit(onSubmit)}
       sx={{
         minHeight: "80vh",
-        width: { md: "50%", xs: "80%" },
+        width: { md: "50vw", xs: "80vw" },
         bgcolor: "white",
         color: "primary.main",
         p: 3,

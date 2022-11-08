@@ -1,6 +1,6 @@
 import React from "react";
 
-import { IconButton, Stack, Backdrop } from "@mui/material";
+import { IconButton, Stack, Backdrop, Box } from "@mui/material";
 
 import InventoryIcon from "@mui/icons-material/Inventory";
 import BuildIcon from "@mui/icons-material/Build";
@@ -95,13 +95,19 @@ const ActionMaker = ({ group, status, direction, size, name, id }: Props) => {
 
       {updatedStatus && (
         <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
-          <NewDeviceForm
-            handleClose={handleClose}
-            status={updatedStatus}
-            equiptment={name}
-            update={true}
-            equiptmentId={id}
-          />
+          <Box
+            sx={{
+              width: "100vw",
+            }}
+          >
+            <NewDeviceForm
+              handleClose={handleClose}
+              status={updatedStatus}
+              equiptment={name}
+              update={true}
+              equiptmentId={id}
+            />
+          </Box>
         </Backdrop>
       )}
     </>
