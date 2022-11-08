@@ -71,62 +71,6 @@ const Scanner = () => {
           zIndex: (theme) => theme.zIndex.drawer + 3,
         }}
       >
-        {/* <Stack
-          direction="row"
-          sx={{
-            justifyContent: "space-between",
-            alighItems: "center",
-            minWidth: "70vw",
-            maxWidth: "95vw",
-            borderRadius: "10px",
-            border: 1,
-            borderColor: "grey.500",
-            p: 1.5,
-
-            "&:hover": {
-              cursor: "pointer",
-            },
-          }}
-        >
-          <Stack
-            sx={{
-              flexGrow: 1,
-              "& .MuiTypography-root": {
-                fontSize: { md: 17, xs: 14 },
-              },
-            }}
-          >
-            <Typography>Equiptment: Lenovo</Typography>
-            <Typography>Last Checked: 01/01/2000</Typography>
-            <Typography>
-              Status:{" "}
-              <Typography
-                component="span"
-                sx={{
-                  bgcolor: statusColorGenerator("In inventory"),
-                  borderRadius: "5px",
-                  color: "white",
-                  width: "100px",
-                  height: "15px",
-                  py: 0.3,
-                  px: 0.5,
-                }}
-              >
-                In inventory
-              </Typography>
-            </Typography>
-          </Stack>
-          <Stack
-            justifyContent="center"
-            sx={{
-              p: 1,
-              bgcolor: "grey.500",
-              heigth: "100%",
-            }}
-          >
-            <ActionMaker status="In inventory" group="PITO" direction="column" id="sdasdsa" />
-          </Stack>
-        </Stack> */}
         {data && (
           <Stack
             direction="row"

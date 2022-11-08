@@ -114,6 +114,11 @@ const NewDeviceForm = ({
         color: "primary.main",
         p: 3,
         borderRadius: 2,
+
+        position: "fixed",
+        top: "80%",
+        left: "50%",
+        transform: "translate(-50%, -90%)",
       }}
     >
       <Stack

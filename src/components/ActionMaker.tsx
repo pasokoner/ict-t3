@@ -7,7 +7,6 @@ import BuildIcon from "@mui/icons-material/Build";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import RemoveIcon from "@mui/icons-material/Remove";
 import NewDeviceForm from "./NewDeviceForm";
-import { stat } from "fs";
 
 type Props = {
   group: string;
@@ -93,12 +92,6 @@ const ActionMaker = ({ group, status, direction, size, name, id }: Props) => {
           </>
         )}
       </Stack>
-
-      {/* {updatedStatus && !name && (
-        <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
-          <NewDeviceForm handleClose={handleClose} status={updatedStatus} />
-        </Backdrop>
-      )} */}
 
       {updatedStatus && (
         <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
