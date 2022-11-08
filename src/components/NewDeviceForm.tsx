@@ -40,12 +40,23 @@ type Props = {
   equiptment?: string;
   update?: boolean;
   equiptmentId?: string;
+  handleRefetch?: () => void;
 };
 
-const NewDeviceForm = ({ handleClose, status, equiptment, update, equiptmentId }: Props) => {
+const NewDeviceForm = ({
+  handleClose,
+  status,
+  equiptment,
+  update,
+  equiptmentId,
+  handleRefetch,
+}: Props) => {
   const { mutate, isLoading, isSuccess, data } = trpc.equiptment.add.useMutation({
     onSuccess: () => {
       reset();
+      if (handleRefetch) {
+        handleRefetch();
+      }
     },
   });
 
@@ -99,7 +110,6 @@ const NewDeviceForm = ({ handleClose, status, equiptment, update, equiptmentId }
       sx={{
         minHeight: "80vh",
         width: { md: "50%", xs: "80%" },
-
         bgcolor: "white",
         color: "primary.main",
         p: 3,

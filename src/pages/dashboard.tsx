@@ -17,8 +17,10 @@ import { GetServerSideProps } from "next";
 import { trpc } from "../utils/trpc";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
+import exportFromJSON from "export-from-json";
+
 const Dashboard = () => {
-  const { data: itemsData } = trpc.equiptment.countByStatus.useQuery();
+  const { data: itemsData, refetch } = trpc.equiptment.countByStatus.useQuery();
   const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
 
   const [statusFilter, setStatusFilter] = useState("");
@@ -30,6 +32,9 @@ const Dashboard = () => {
   };
   const handleToggle = () => {
     setOpen(!open);
+  };
+  const handleRefetch = () => {
+    refetch();
   };
 
   useEffect(() => {
@@ -60,6 +65,13 @@ const Dashboard = () => {
               size="small"
               sx={{
                 whiteSpace: "nowrap",
+              }}
+              onClick={() => {
+                const data = [{ foo: "foo" }, { bar: "bar" }, { car: "bar" }, { gar: "bar" }];
+                const fileName = "download";
+                const exportType = exportFromJSON.types.csv;
+
+                exportFromJSON({ data, fileName, exportType });
               }}
             >
               Export to Excel
@@ -129,10 +141,16 @@ const Dashboard = () => {
 
         <Divider />
 
-        <CollapsibleTable tableFilter={statusFilter} />
+        {itemsData && (
+          <CollapsibleTable tableFilter={statusFilter} countStatus={itemsData?.inInventory} />
+        )}
       </Stack>
       <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
-        <NewDeviceForm handleClose={handleClose} status="In inventory" />
+        <NewDeviceForm
+          handleClose={handleClose}
+          status="In inventory"
+          handleRefetch={handleRefetch}
+        />
       </Backdrop>
     </Box>
   );

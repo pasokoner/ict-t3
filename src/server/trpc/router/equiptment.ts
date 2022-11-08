@@ -93,6 +93,17 @@ export const equiptmentRouter = router({
       };
     });
 
+    if (format.length >= 2) {
+      const sortByDate = format.sort((a, b) => {
+        if (a.lastChecked && b.lastChecked) {
+          return b.lastChecked?.getTime() - a.lastChecked?.getTime();
+        }
+
+        return 1;
+      });
+      return sortByDate;
+    }
+
     return format;
   }),
 

@@ -133,7 +133,7 @@ const Scanner = () => {
             sx={{
               justifyContent: "space-between",
               alighItems: "center",
-              minWidth: "80vw",
+              minWidth: { md: "50vw", xs: "80vw" },
               maxWidth: "95vw",
               borderRadius: "10px",
               border: 1,
@@ -150,8 +150,9 @@ const Scanner = () => {
                 <Stack
                   sx={{
                     flexGrow: 1,
+                    justifyContent: "center",
                     "& .MuiTypography-root": {
-                      fontSize: { md: 17, xs: 14 },
+                      fontSize: { md: 17 },
                     },
                   }}
                 >
@@ -181,23 +182,25 @@ const Scanner = () => {
                     </Typography>
                   </Typography>
                 </Stack>
-                <Stack
-                  justifyContent="center"
-                  sx={{
-                    p: 1,
-                    bgcolor: "grey.500",
-                    heigth: "100%",
-                  }}
-                >
-                  <ActionMaker
-                    status="In inventory"
-                    group="PITO"
-                    direction="column"
-                    id={data.id}
-                    name={data.name}
-                  />
-                </Stack>
               </>
+            )}
+            {sessionData && (
+              <Stack
+                justifyContent="center"
+                sx={{
+                  p: 1,
+                  bgcolor: "grey.500",
+                  heigth: "100%",
+                }}
+              >
+                <ActionMaker
+                  status="In inventory"
+                  group="PITO"
+                  direction="column"
+                  id={data.id}
+                  name={data.name}
+                />
+              </Stack>
             )}
 
             {cameraResult && data === null && (

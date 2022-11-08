@@ -7,7 +7,7 @@ import PersonIcon from "@mui/icons-material/Person";
 export const drawerItem = [{ link: "/dashboard", name: "Dashboard", icon: <DashboardIcon /> }];
 
 export const drawerSettings = [
-  { link: "/", name: "Home", icon: <HomeIcon /> },
+  // { link: "/", name: "Home", icon: <HomeIcon /> },
   { link: "/settings", name: "Settings", icon: <SettingsIcon /> },
   { link: "/profile", name: "Profile", icon: <PersonIcon /> },
 ];
@@ -27,6 +27,24 @@ export const statusColorGenerator = (status: string) => {
 
   if (status === "Condemned") {
     return "error.main";
+  }
+};
+
+export const statusColorGeneratorLight = (status: string) => {
+  if (status === "In inventory") {
+    return "success.light";
+  }
+
+  if (status === "For repair") {
+    return "#fff47d";
+  }
+
+  if (status === "To condemn") {
+    return "warning.light";
+  }
+
+  if (status === "Condemned") {
+    return "error.light";
   }
 };
 

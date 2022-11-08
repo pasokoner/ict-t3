@@ -73,7 +73,14 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
 
   return (
     <React.Fragment>
-      <TableRow sx={{ "& > *": { borderBottom: "unset", py: 0.2 } }}>
+      <TableRow
+        sx={{
+          "& > *": { borderBottom: "unset", py: 0.14 },
+          "& .MuiTableCell-root": {
+            fontSize: { md: 16, xs: 14 },
+          },
+        }}
+      >
         {!matches && (
           <>
             <TableCell
@@ -255,7 +262,14 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 </TableHead>
                 <TableBody>
                   {row.history.map((historyRow, i) => (
-                    <TableRow key={i}>
+                    <TableRow
+                      key={i}
+                      sx={{
+                        "& .MuiTypography-root": {
+                          fontSize: { md: 16, xs: 14 },
+                        },
+                      }}
+                    >
                       <TableCell
                         component="th"
                         scope="row"
@@ -342,14 +356,19 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
 
 type TableProps = {
   tableFilter: string;
+  countStatus?: number;
 };
 
-export default function CollapsibleTable({ tableFilter }: TableProps) {
-  const { data: tableData } = trpc.equiptment.all.useQuery();
+export default function CollapsibleTable({ tableFilter, countStatus }: TableProps) {
+  const { data: tableData, refetch } = trpc.equiptment.all.useQuery();
 
   const [formattedData, setFormattedData] = React.useState<TableFormat[]>();
 
   const matches = useMediaQuery("(max-width:900px)");
+
+  React.useEffect(() => {
+    refetch();
+  }, [countStatus, refetch]);
 
   React.useEffect(() => {
     if (tableData) {
