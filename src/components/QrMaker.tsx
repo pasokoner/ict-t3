@@ -7,14 +7,6 @@ type Props = {
 
 const QrMaker = ({ value }: Props) => {
   return (
-    // <div
-    //   style={{
-    //     height: "auto",
-    //     margin: "0 auto",
-    //     maxWidth: 100,
-    //     width: "100%",
-    //   }}
-    // >
     <>
       <QRCode
         size={256}
@@ -29,7 +21,6 @@ const QrMaker = ({ value }: Props) => {
         viewBox={`0 0 256 256`}
       />
     </>
-    // </div>
   );
 };
 

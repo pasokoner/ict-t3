@@ -1,7 +1,6 @@
 import React from "react";
 
-import { Stack, Typography, Paper, Button } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery/useMediaQuery";
+import { Stack, Typography, Paper, Button, useMediaQuery } from "@mui/material";
 
 type Props = {
   icon: JSX.Element;

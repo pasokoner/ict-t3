@@ -6,6 +6,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import BuildIcon from "@mui/icons-material/Build";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import RemoveIcon from "@mui/icons-material/Remove";
+
 import NewDeviceForm from "./NewDeviceForm";
 
 type Props = {

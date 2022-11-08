@@ -2,10 +2,17 @@ import React from "react";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { trpc } from "../../utils/trpc";
-import { Button, ButtonGroup, Divider, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  ButtonGroup,
+  Divider,
+  IconButton,
+  Stack,
+  Typography,
+  CircularProgress,
+  Box,
+} from "@mui/material";
 
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import Link from "next/link";
 import UserCard from "../../components/UserCard";
 
