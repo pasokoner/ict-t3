@@ -13,10 +13,10 @@ import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 
 import { useTheme } from "@mui/material";
 
-import useMediaQuery from "@mui/material/useMediaQuery/useMediaQuery";
 import { signOut, useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import Scanner from "./Scanner";
+import Head from "next/head";
 
 type Props = {
   children: React.ReactNode;
@@ -28,8 +28,6 @@ const Layout = ({ children }: Props) => {
   const [open, setOpen] = useState(false);
   const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
   const { data: sessionData } = useSession();
-
-  const matches = useMediaQuery("(max-width:900px)");
 
   if (userInfo) {
     if (!userInfo.role && !userInfo.group) {
@@ -61,6 +59,10 @@ const Layout = ({ children }: Props) => {
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
+      <Head>
+        <title>ICT Inventory System</title>
+        <meta property="og:title" content="ICT Inventory System" key="title" />
+      </Head>
       <Box display="flex">
         {sessionData && <MiniDrawer />}
         <Box

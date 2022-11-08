@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Head from "next/head";
 
 import AddIcon from "@mui/icons-material/Add";
 
@@ -43,6 +44,19 @@ const Dashboard = () => {
 
   return (
     <Box>
+      <Head>
+        {userInfo?.group === "PITO" && itemsData && (
+          <title>
+            ICT Inventory System ({itemsData?.forRepair > 0 ? itemsData?.forRepair : ""})
+          </title>
+        )}
+        {userInfo?.group === "GSO" && itemsData && (
+          <title>
+            ICT Inventory System ({itemsData?.toCondemn > 0 ? itemsData?.toCondemn : ""})
+          </title>
+        )}
+        <meta property="og:title" content="ICT Inventory System" key="title" />
+      </Head>
       <Stack>
         <Stack
           sx={{
