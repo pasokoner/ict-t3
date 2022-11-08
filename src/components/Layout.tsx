@@ -91,19 +91,13 @@ const Layout = ({ children }: Props) => {
           bottom: theme.spacing(2),
           right: theme.spacing(2),
           zIndex: (theme) => theme.zIndex.drawer + 2,
-          ...(matches && {
-            width: "40px",
-            height: "40px",
-          }),
+          // ...(matches && {
+          //   width: "40px",
+          //   height: "40px",
+          // }),
         }}
       >
-        <QrCodeScannerIcon
-          sx={{
-            ...(matches && {
-              fontSize: 20,
-            }),
-          }}
-        />
+        <QrCodeScannerIcon />
       </Fab>
     </ThemeProvider>
   );
