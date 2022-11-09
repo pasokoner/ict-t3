@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 
 import { IconButton, Stack, Backdrop, Box } from "@mui/material";
 
@@ -19,8 +19,8 @@ type Props = {
 };
 
 const ActionMaker = ({ group, status, direction, size, name, id }: Props) => {
-  const [open, setOpen] = React.useState(false);
-  const [updatedStatus, setUpdatedStatus] = React.useState<string | undefined>();
+  const [open, setOpen] = useState(false);
+  const [updatedStatus, setUpdatedStatus] = useState<string | undefined>();
 
   const handleClose = () => {
     setUpdatedStatus(undefined);

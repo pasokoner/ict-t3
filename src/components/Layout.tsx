@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
 
 import { ThemeProvider } from "@mui/material/styles";

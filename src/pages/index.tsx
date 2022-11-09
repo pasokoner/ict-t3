@@ -1,7 +1,5 @@
 import type { GetServerSideProps, NextPage } from "next";
 
-import React from "react";
-
 import { Stack, Button } from "@mui/material";
 import { getSession, signIn } from "next-auth/react";
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -27,7 +27,7 @@ const Dashboard = () => {
   const [statusFilter, setStatusFilter] = useState("");
 
   const matches = useMediaQuery("(max-width:900px)");
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
   };

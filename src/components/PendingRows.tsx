@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   Button,
   Backdrop,
@@ -35,9 +35,9 @@ type FormValues = {
 };
 
 const PendingRows = ({ name, email, id, userRole, userGroup, fetchPendingAccounts }: Props) => {
-  const [open, setOpen] = React.useState(false);
-  const [role, setRole] = React.useState("");
-  const [group, setGroup] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [role, setRole] = useState("");
+  const [group, setGroup] = useState("");
 
   const matches = useMediaQuery("(max-width:600px)");
 

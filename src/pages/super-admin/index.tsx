@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { trpc } from "../../utils/trpc";
@@ -19,7 +19,7 @@ import UserCard from "../../components/UserCard";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
 const SuperAdmin = () => {
-  const [group, setGroup] = React.useState<"PITO" | "GSO">("PITO");
+  const [group, setGroup] = useState<"PITO" | "GSO">("PITO");
 
   const { data: userInfo, isLoading } = trpc.auth.getUserInfo.useQuery();
   const { data: groupMember } = trpc.auth.getByGroup.useQuery({ group: group });

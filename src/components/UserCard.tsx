@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
 
 type Props = {

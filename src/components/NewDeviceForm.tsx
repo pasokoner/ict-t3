@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 
 import {
   Typography,
@@ -68,13 +68,13 @@ const NewDeviceForm = ({
 
   const { data: sessionData } = useSession();
 
-  const [value, setValue] = React.useState<Dayjs | null>(null);
+  const [value, setValue] = useState<Dayjs | null>(null);
 
   const handleDateChange = (newValue: Dayjs | null) => {
     setValue(newValue);
   };
 
-  const [showCode, setShowCode] = React.useState(false);
+  const [showCode, setShowCode] = useState(false);
   const router = useRouter();
 
   const {

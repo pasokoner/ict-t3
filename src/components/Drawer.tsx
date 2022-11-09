@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 import { styled, Theme, CSSObject } from "@mui/material/styles";
@@ -82,7 +82,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" 
 );
 
 export default function MiniDrawer() {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
 
   const { data: sessionData } = useSession();
 
@@ -94,7 +94,7 @@ export default function MiniDrawer() {
 
   const matches = useMediaQuery("(max-width:1062px)");
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (matches) {
       setOpen(false);
     } else {

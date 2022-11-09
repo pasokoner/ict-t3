@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -70,16 +70,16 @@ type History = {
 
 function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
   const { row, matches } = props;
-  const [open, setOpen] = React.useState(false);
-  const [showQr, setShowQr] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [showQr, setShowQr] = useState(false);
 
   const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
 
   return (
-    <React.Fragment>
+    <>
       <TableRow
         sx={{
-          "& > *": { borderBottom: "unset", py: 0.14 },
+          "& > *": { borderBottom: "unset", py: 0.1 },
           "& .MuiTableCell-root": {
             fontSize: { md: 16, xs: 14 },
           },
@@ -354,7 +354,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
           {showQr && <QrMaker value={row.id} />}
         </Box>
       </Backdrop>
-    </React.Fragment>
+    </>
   );
 }
 
@@ -366,15 +366,15 @@ type TableProps = {
 export default function CollapsibleTable({ tableFilter, countStatus }: TableProps) {
   const { data: tableData, refetch } = trpc.equiptment.all.useQuery();
 
-  const [formattedData, setFormattedData] = React.useState<TableFormat[]>();
+  const [formattedData, setFormattedData] = useState<TableFormat[]>();
 
   const matches = useMediaQuery("(max-width:900px)");
 
-  React.useEffect(() => {
+  useEffect(() => {
     refetch();
   }, [countStatus, refetch]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (tableData) {
       const format = tableData
         .filter((data) => data.status === tableFilter)
