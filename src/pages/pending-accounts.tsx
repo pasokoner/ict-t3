@@ -73,20 +73,20 @@ const PendingAccounts: NextPage = () => {
   return (
     <Box
       sx={{
-        minHeight: "100%",
+        width: "100%",
       }}
     >
       <Typography variant="h4" fontWeight="bold" color="primary" mb={4}>
         PENDING ACCOUNTS
       </Typography>
 
-      <Stack gap={2}>
+      <Stack gap={3}>
         <Typography variant="h5" fontWeight="bold" color="primary">
-          Number of pending account - {pendingAccounts?.length}
+          Pending account(s) - {pendingAccounts?.length}
         </Typography>
 
         <TableContainer>
-          <Table sx={{ minWidth: 350 }} aria-label="simple table">
+          <Table aria-label="simple table">
             <TableHead>
               <TableRow
                 sx={{

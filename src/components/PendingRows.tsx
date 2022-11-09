@@ -71,13 +71,40 @@ const PendingRows = ({ name, email, id, userRole, userGroup, fetchPendingAccount
   };
 
   return (
-    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-      <TableCell component="th" scope="row">
+    <TableRow
+      sx={{
+        "&:last-child td, &:last-child th": { border: 0 },
+        "& > *": {
+          py: 1,
+        },
+      }}
+    >
+      <TableCell
+        component="th"
+        scope="row"
+        sx={{
+          ...(!matches && {
+            width: "45%",
+          }),
+        }}
+      >
         {name}
       </TableCell>
-      {!matches && <TableCell>{email}</TableCell>}
+      {!matches && (
+        <TableCell
+          sx={{
+            width: "45%",
+          }}
+        >
+          {email}
+        </TableCell>
+      )}
 
-      <TableCell>
+      <TableCell
+        sx={{
+          width: "5%",
+        }}
+      >
         <ButtonGroup variant="text">
           <IconButton>
             <CloseIcon color="error" />

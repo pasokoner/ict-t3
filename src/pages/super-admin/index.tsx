@@ -68,11 +68,7 @@ const SuperAdmin = () => {
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: "100%",
-      }}
-    >
+    <Box>
       <Typography variant="h4" fontWeight="bold" color="primary" mb={4}>
         SUPERADMIN PANEL
       </Typography>

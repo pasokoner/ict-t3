@@ -20,11 +20,10 @@ import { ThemeProvider } from "@mui/material/styles";
 
 import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 
-import MiniDrawer from "../components/Drawer";
 import Scanner from "./Scanner";
+import ResponsiveDrawer from "./ResponsiveDrawer";
 
 import { muiTheme } from "../styles/themes";
-import ResponsiveDrawer from "./ResponsiveDrawer";
 
 type Props = {
   children: React.ReactNode;
@@ -73,8 +72,8 @@ const Layout = ({ children }: Props) => {
         <meta property="og:title" content="ICT Inventory System" key="title" />
       </Head>
       <Box display="flex">
-        {sessionData && <MiniDrawer />}
-        {/* <ResponsiveDrawer /> */}
+        {/* {sessionData && <MiniDrawer />} */}
+        {sessionData && <ResponsiveDrawer />}
         <Box
           component="main"
           sx={{
@@ -83,7 +82,7 @@ const Layout = ({ children }: Props) => {
 
             ...(sessionData && {
               maxWidth: "xl",
-              py: 2,
+              py: 12,
               px: { md: 4, xs: 2 },
               margin: "0 auto",
               flexGrow: 1,
