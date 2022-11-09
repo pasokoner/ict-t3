@@ -1,7 +1,8 @@
 import type { GetServerSideProps, NextPage } from "next";
 
-import { Stack, Button } from "@mui/material";
 import { getSession, signIn } from "next-auth/react";
+
+import { Stack, Button } from "@mui/material";
 
 const Home: NextPage = () => {
   return (

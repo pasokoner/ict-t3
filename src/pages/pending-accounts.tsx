@@ -1,4 +1,7 @@
+import type { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
+
+import { getSession } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
 
@@ -17,7 +20,7 @@ import {
 } from "@mui/material";
 import PendingRows from "../components/PendingRows";
 
-const PendingAccounts = () => {
+const PendingAccounts: NextPage = () => {
   const { data: userInfo, isLoading } = trpc.auth.getUserInfo.useQuery();
   const { data: pendingAccounts, refetch } = trpc.auth.getPendingAccounts.useQuery();
 
@@ -119,3 +122,20 @@ const PendingAccounts = () => {
 };
 
 export default PendingAccounts;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+};

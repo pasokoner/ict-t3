@@ -1,4 +1,7 @@
+import { trpc } from "../utils/trpc";
+
 import { useState } from "react";
+
 import {
   Button,
   Backdrop,
@@ -17,8 +20,8 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+
 import { useForm, SubmitHandler } from "react-hook-form";
-import { trpc } from "../utils/trpc";
 
 type Props = {
   name: string;

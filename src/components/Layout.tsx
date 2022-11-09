@@ -1,7 +1,10 @@
-import { useState } from "react";
 import Head from "next/head";
+import { signOut, useSession } from "next-auth/react";
 
-import { ThemeProvider } from "@mui/material/styles";
+import { trpc } from "../utils/trpc";
+
+import { useState } from "react";
+
 import {
   Backdrop,
   Button,
@@ -13,15 +16,14 @@ import {
   Box,
 } from "@mui/material";
 
-import { muiTheme } from "../styles/themes";
-
-import MiniDrawer from "../components/Drawer";
+import { ThemeProvider } from "@mui/material/styles";
 
 import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 
-import { signOut, useSession } from "next-auth/react";
-import { trpc } from "../utils/trpc";
+import MiniDrawer from "../components/Drawer";
 import Scanner from "./Scanner";
+
+import { muiTheme } from "../styles/themes";
 
 type Props = {
   children: React.ReactNode;

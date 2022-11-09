@@ -1,5 +1,11 @@
-import { useState, useEffect } from "react";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
+
+import { getSession } from "next-auth/react";
+
+import { trpc } from "../utils/trpc";
+
+import { useState, useEffect } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 
@@ -13,14 +19,11 @@ import BuildIcon from "@mui/icons-material/Build";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-import { getSession } from "next-auth/react";
-import { GetServerSideProps } from "next";
-import { trpc } from "../utils/trpc";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import exportFromJSON from "export-from-json";
 
-const Dashboard = () => {
+const Dashboard: NextPage = () => {
   const { data: itemsData, refetch } = trpc.equiptment.countByStatus.useQuery();
   const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
 

@@ -1,5 +1,6 @@
-import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import Link from "next/link";
+
+import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 
 type Props = {
   icon: JSX.Element;

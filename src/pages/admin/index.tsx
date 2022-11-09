@@ -1,12 +1,15 @@
 import { GetServerSideProps } from "next";
+import Link from "next/link";
+
 import { getSession } from "next-auth/react";
+
 import { trpc } from "../../utils/trpc";
+
 import { Divider, IconButton, Stack, Typography, Box, CircularProgress } from "@mui/material";
 
-import Link from "next/link";
-import UserCard from "../../components/UserCard";
-
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+
+import UserCard from "../../components/UserCard";
 
 const Admin = () => {
   const { data: userInfo, isLoading } = trpc.auth.getUserInfo.useQuery();

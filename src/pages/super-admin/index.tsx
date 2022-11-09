@@ -1,7 +1,12 @@
-import { useState } from "react";
 import { GetServerSideProps } from "next";
+import Link from "next/link";
+
 import { getSession } from "next-auth/react";
+
 import { trpc } from "../../utils/trpc";
+
+import { useState } from "react";
+
 import {
   Button,
   ButtonGroup,
@@ -13,7 +18,6 @@ import {
   Box,
 } from "@mui/material";
 
-import Link from "next/link";
 import UserCard from "../../components/UserCard";
 
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";

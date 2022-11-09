@@ -1,17 +1,18 @@
 import Link from "next/link";
 
-import { useEffect, useCallback, useState } from "react";
-
-import { trpc } from "../utils/trpc";
 import { useSession } from "next-auth/react";
 
-import QrScanner from "qr-scanner";
+import { trpc } from "../utils/trpc";
+
+import { useEffect, useCallback, useState } from "react";
 
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
-import { statusColorGenerator, getFormattedDate } from "../utils/constant";
+import QrScanner from "qr-scanner";
 import ActionMaker from "./ActionMaker";
+
+import { statusColorGenerator, getFormattedDate } from "../utils/constant";
 
 const Scanner = () => {
   const [cameraResult, setCameraResult] = useState("");
