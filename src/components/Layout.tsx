@@ -24,6 +24,7 @@ import MiniDrawer from "../components/Drawer";
 import Scanner from "./Scanner";
 
 import { muiTheme } from "../styles/themes";
+import ResponsiveDrawer from "./ResponsiveDrawer";
 
 type Props = {
   children: React.ReactNode;
@@ -32,9 +33,10 @@ type Props = {
 const Layout = ({ children }: Props) => {
   const theme = useTheme();
 
-  const [open, setOpen] = useState(false);
   const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
   const { data: sessionData } = useSession();
+
+  const [open, setOpen] = useState(false);
 
   if (userInfo) {
     if (!userInfo.role && !userInfo.group) {
@@ -72,6 +74,7 @@ const Layout = ({ children }: Props) => {
       </Head>
       <Box display="flex">
         {sessionData && <MiniDrawer />}
+        {/* <ResponsiveDrawer /> */}
         <Box
           component="main"
           sx={{
@@ -80,7 +83,8 @@ const Layout = ({ children }: Props) => {
 
             ...(sessionData && {
               maxWidth: "xl",
-              p: 2,
+              py: 2,
+              px: { md: 4, xs: 2 },
               margin: "0 auto",
               flexGrow: 1,
             }),
@@ -100,10 +104,6 @@ const Layout = ({ children }: Props) => {
           bottom: theme.spacing(2),
           right: theme.spacing(2),
           zIndex: (theme) => theme.zIndex.drawer + 2,
-          // ...(matches && {
-          //   width: "40px",
-          //   height: "40px",
-          // }),
         }}
       >
         <QrCodeScannerIcon />

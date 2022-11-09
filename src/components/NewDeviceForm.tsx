@@ -73,11 +73,8 @@ const NewDeviceForm = ({
 
   const [value, setValue] = useState<Dayjs | null>(null);
 
-  const handleDateChange = (newValue: Dayjs | null) => {
-    setValue(newValue);
-  };
-
   const [showCode, setShowCode] = useState(false);
+
   const router = useRouter();
 
   const {
@@ -86,6 +83,7 @@ const NewDeviceForm = ({
     reset,
     formState: { errors },
   } = useForm<FormValues>();
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (value && !update) {
       mutate({
@@ -104,6 +102,10 @@ const NewDeviceForm = ({
     } else {
       mutate({ name: data.equiptmentName, status: status, reminder: data.reminder });
     }
+  };
+
+  const handleDateChange = (newValue: Dayjs | null) => {
+    setValue(newValue);
   };
 
   return (
@@ -167,6 +169,7 @@ const NewDeviceForm = ({
             inputFormat="MM/DD/YYYY"
             value={value}
             onChange={handleDateChange}
+            
             renderInput={(params) => (
               <TextField {...params} sx={{ minWidth: 200, alignSelf: "flex-end" }} fullWidth />
             )}

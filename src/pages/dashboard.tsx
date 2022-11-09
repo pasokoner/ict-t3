@@ -28,15 +28,18 @@ const Dashboard: NextPage = () => {
   const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
 
   const [statusFilter, setStatusFilter] = useState("");
+  const [open, setOpen] = useState(false);
 
   const matches = useMediaQuery("(max-width:900px)");
-  const [open, setOpen] = useState(false);
+
   const handleClose = () => {
     setOpen(false);
   };
+
   const handleToggle = () => {
     setOpen(!open);
   };
+
   const handleRefetch = () => {
     refetch();
   };

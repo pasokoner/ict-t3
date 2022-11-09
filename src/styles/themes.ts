@@ -6,6 +6,10 @@ export const muiTheme = createTheme({
       main: "#131B4F",
     },
 
+    info: {
+      main: "#e3d100",
+    },
+
     regular: {
       white: "#FFFDFA",
     },

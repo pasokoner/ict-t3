@@ -18,6 +18,7 @@ import {
   TableBody,
   useMediaQuery,
 } from "@mui/material";
+
 import PendingRows from "../components/PendingRows";
 
 const PendingAccounts: NextPage = () => {
@@ -126,10 +127,10 @@ export default PendingAccounts;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
 
-  if (session) {
+  if (!session) {
     return {
       redirect: {
-        destination: "/dashboard",
+        destination: "/",
         permanent: false,
       },
     };

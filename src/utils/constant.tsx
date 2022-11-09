@@ -18,7 +18,7 @@ export const statusColorGenerator = (status: string) => {
   }
 
   if (status === "For repair") {
-    return "#e3d100";
+    return "info.main";
   }
 
   if (status === "To condemn") {
@@ -36,7 +36,7 @@ export const statusColorGeneratorLight = (status: string) => {
   }
 
   if (status === "For repair") {
-    return "#fff47d";
+    return "info.light";
   }
 
   if (status === "To condemn") {

@@ -33,7 +33,7 @@ import { drawerItem, drawerSettings } from "../utils/constant";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
-const drawerWidth = 230;
+const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -50,9 +50,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
-  width: `calc(${theme.spacing(6)} + 1px)`,
+  width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(6)} + 1px)`,
+    width: `calc(${theme.spacing(8)} + 1px)`,
   },
 });
 
