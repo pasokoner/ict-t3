@@ -12,6 +12,8 @@ export const authOptions: NextAuthOptions = {
     session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
+        session.user.role = user.role;
+        session.user.group = user.group;
       }
       return session;
     },

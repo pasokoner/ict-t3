@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 import { trpc } from "../../utils/trpc";
 
@@ -25,10 +25,11 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 const SuperAdmin = () => {
   const [group, setGroup] = useState<"PITO" | "GSO">("PITO");
 
-  const { data: userInfo, isLoading } = trpc.auth.getUserInfo.useQuery();
+  const { data: sessionData } = useSession();
+
   const { data: groupMember } = trpc.auth.getByGroup.useQuery({ group: group });
 
-  if (isLoading) {
+  if (!sessionData) {
     return (
       <Box
         sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}
@@ -38,7 +39,7 @@ const SuperAdmin = () => {
     );
   }
 
-  if (userInfo?.role !== "SUPERADMIN") {
+  if (sessionData?.user?.role !== "SUPERADMIN") {
     return (
       <Box
         sx={{
@@ -213,6 +214,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       redirect: {
         destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  if (!session?.user?.role && !session?.user?.group) {
+    return {
+      redirect: {
+        destination: "/unauthorized",
         permanent: false,
       },
     };

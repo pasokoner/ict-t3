@@ -32,38 +32,10 @@ type Props = {
 const Layout = ({ children }: Props) => {
   const theme = useTheme();
 
-  const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
   const { data: sessionData } = useSession();
 
   const [open, setOpen] = useState(false);
 
-  if (userInfo) {
-    if (!userInfo.role && !userInfo.group) {
-      return (
-        <Stack
-          direction="column"
-          sx={{
-            justifyContent: "center",
-            alighItems: "center",
-            height: "100vh",
-          }}
-        >
-          <Typography align="center">SORRY BUT YOU DO NOT BELONG TO ANY GROUP</Typography>
-          <Button
-            onClick={() => signOut()}
-            variant="text"
-            sx={{
-              m: "0 auto",
-              py: 2,
-              px: 2,
-            }}
-          >
-            Sign out
-          </Button>
-        </Stack>
-      );
-    }
-  }
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />

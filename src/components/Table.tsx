@@ -1,5 +1,7 @@
 import { trpc } from "../utils/trpc";
 
+import { useSession } from "next-auth/react";
+
 import { useState, useEffect } from "react";
 
 import {
@@ -75,7 +77,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
   const [open, setOpen] = useState(false);
   const [showQr, setShowQr] = useState(false);
 
-  const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
+  const { data: sessionData } = useSession();
 
   return (
     <>
@@ -140,11 +142,11 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
                   {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
-                {userInfo && (
+                {sessionData && (
                   <ActionMaker
                     direction="row"
                     status={row.status}
-                    group={userInfo.group as string}
+                    group={sessionData?.user?.group as string}
                     size="small"
                     id={row.id}
                     name={row.name}
@@ -230,11 +232,11 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     <KeyboardArrowDownIcon fontSize="inherit" />
                   )}
                 </IconButton>
-                {userInfo && (
+                {sessionData && (
                   <ActionMaker
                     direction="row"
                     status={row.status}
-                    group={userInfo.group as string}
+                    group={sessionData?.user?.group as string}
                     size="small"
                     id={row.id}
                     name={row.name}

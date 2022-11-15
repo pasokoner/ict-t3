@@ -190,6 +190,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
+  if (!session?.user?.role && !session?.user?.group) {
+    return {
+      redirect: {
+        destination: "/unauthorized",
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: { session },
   };

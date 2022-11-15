@@ -6,16 +6,6 @@ export const authRouter = router({
   getSession: publicProcedure.query(({ ctx }) => {
     return ctx.session;
   }),
-  getUserInfo: protectedProcedure.query(async ({ ctx }) => {
-    const { user } = ctx.session;
-    const data = await ctx.prisma.user.findFirst({
-      where: {
-        id: user.id,
-      },
-    });
-
-    return data;
-  }),
   getPendingAccounts: protectedProcedure.query(async ({ ctx }) => {
     const data = await ctx.prisma.user.findMany({
       where: {

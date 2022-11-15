@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
 
@@ -22,7 +22,8 @@ import {
 import PendingRows from "../components/PendingRows";
 
 const PendingAccounts: NextPage = () => {
-  const { data: userInfo, isLoading } = trpc.auth.getUserInfo.useQuery();
+  const { data: sessionData } = useSession();
+
   const { data: pendingAccounts, refetch } = trpc.auth.getPendingAccounts.useQuery();
 
   const matches = useMediaQuery("(max-width:600px)");
@@ -31,7 +32,7 @@ const PendingAccounts: NextPage = () => {
     await refetch();
   };
 
-  if (isLoading) {
+  if (!sessionData) {
     return (
       <Box
         sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}
@@ -41,7 +42,7 @@ const PendingAccounts: NextPage = () => {
     );
   }
 
-  if (userInfo?.role === "USER") {
+  if (sessionData?.user?.role === "USER") {
     return (
       <Box
         sx={{
@@ -109,8 +110,8 @@ const PendingAccounts: NextPage = () => {
                     name={name as string}
                     email={email as string}
                     id={id}
-                    userRole={userInfo?.role as string}
-                    userGroup={userInfo?.group as "PITO" | "GSO"}
+                    userRole={sessionData?.user?.role as string}
+                    userGroup={sessionData?.user?.group as "PITO" | "GSO"}
                     fetchPendingAccounts={fetchPendingAccounts}
                   />
                 ))}
@@ -131,6 +132,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       redirect: {
         destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  if (!session?.user?.role && !session?.user?.group) {
+    return {
+      redirect: {
+        destination: "/unauthorized",
         permanent: false,
       },
     };

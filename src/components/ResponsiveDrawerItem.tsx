@@ -28,8 +28,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const ResponsiveDrawerItem = () => {
   const { data: sessionData } = useSession();
 
-  const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
-
   return (
     <>
       <DrawerHeader>{/* <Typography>ICT Inventory System</Typography> */}</DrawerHeader>
@@ -73,7 +71,7 @@ const ResponsiveDrawerItem = () => {
               <DrawerItem key={name} open={true} name={name} link={link} icon={icon} />
             ))}
 
-            {userInfo?.role === "SUPERADMIN" && (
+            {sessionData?.user?.role === "SUPERADMIN" && (
               <DrawerItem
                 open={true}
                 name="Admin"
@@ -82,7 +80,7 @@ const ResponsiveDrawerItem = () => {
               />
             )}
 
-            {userInfo?.role === "ADMIN" && (
+            {sessionData?.user?.role === "ADMIN" && (
               <DrawerItem
                 open={true}
                 name="Admin"
@@ -91,7 +89,7 @@ const ResponsiveDrawerItem = () => {
               />
             )}
 
-            {(userInfo?.role === "ADMIN" || userInfo?.role === "SUPERADMIN") && (
+            {(sessionData?.user?.role === "ADMIN" || sessionData?.user?.role === "SUPERADMIN") && (
               <DrawerItem
                 open={true}
                 name="Pending Accounts"

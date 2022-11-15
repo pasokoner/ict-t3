@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { signOut, useSession } from "next-auth/react";
+
 import { useState } from "react";
 
 import {
@@ -17,7 +19,6 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 
 import ResponsiveDrawerItem from "./ResponsiveDrawerItem";
-import { signOut, useSession } from "next-auth/react";
 
 const drawerWidth = 230;
 
@@ -60,9 +61,8 @@ export default function ResponsiveDrawer(props: Props) {
       <AppBar
         position="fixed"
         sx={{
-          // width: { md: `calc(100% - ${drawerWidth}px)` },
-          width: "100vw",
-          ml: { md: `${drawerWidth}px` },
+          width: { md: "100vw" },
+          pl: 2,
           zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >

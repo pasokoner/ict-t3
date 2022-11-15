@@ -87,8 +87,6 @@ export default function MiniDrawer() {
 
   const { data: sessionData } = useSession();
 
-  const { data: userInfo } = trpc.auth.getUserInfo.useQuery();
-
   const toggleDrawer = () => {
     setOpen((prevState) => !prevState);
   };
@@ -183,7 +181,7 @@ export default function MiniDrawer() {
               <DrawerItem key={name} open={open} name={name} link={link} icon={icon} />
             ))}
 
-            {userInfo?.role === "SUPERADMIN" && (
+            {sessionData?.user?.role === "SUPERADMIN" && (
               <DrawerItem
                 open={open}
                 name="Admin"
@@ -192,7 +190,7 @@ export default function MiniDrawer() {
               />
             )}
 
-            {userInfo?.role === "ADMIN" && (
+            {sessionData?.user?.role === "ADMIN" && (
               <DrawerItem
                 open={open}
                 name="Admin"
@@ -201,7 +199,7 @@ export default function MiniDrawer() {
               />
             )}
 
-            {(userInfo?.role === "ADMIN" || userInfo?.role === "SUPERADMIN") && (
+            {(sessionData?.user?.role === "ADMIN" || sessionData?.user?.role === "SUPERADMIN") && (
               <DrawerItem
                 open={open}
                 name="Pending Accounts"

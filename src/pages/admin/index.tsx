@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 import { trpc } from "../../utils/trpc";
 
@@ -12,10 +12,10 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import UserCard from "../../components/UserCard";
 
 const Admin = () => {
-  const { data: userInfo, isLoading } = trpc.auth.getUserInfo.useQuery();
+  const { data: sessionData } = useSession();
   const { data: groupMember } = trpc.auth.getAdminGroupMember.useQuery();
 
-  if (isLoading) {
+  if (!sessionData) {
     return (
       <Box
         sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}
@@ -25,7 +25,7 @@ const Admin = () => {
     );
   }
 
-  if (userInfo?.role !== "ADMIN") {
+  if (sessionData?.user?.role !== "ADMIN") {
     return (
       <Box
         sx={{
@@ -57,7 +57,7 @@ const Admin = () => {
   return (
     <Box>
       <Typography variant="h4" fontWeight="bold" color="primary" mb={4}>
-        {userInfo.group} ADMIN PANEL
+        {sessionData?.user?.group} ADMIN PANEL
       </Typography>
 
       <Stack gap={2}>
@@ -183,6 +183,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       redirect: {
         destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  if (!session?.user?.role && !session?.user?.group) {
+    return {
+      redirect: {
+        destination: "/unauthorized",
         permanent: false,
       },
     };
