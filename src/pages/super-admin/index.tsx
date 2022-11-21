@@ -184,7 +184,7 @@ const SuperAdmin = () => {
               gap={2}
               sx={{
                 flexWrap: "wrap",
-                justifyContent: "space-between",
+                justifyContent: "flex-start",
               }}
             >
               {groupMember &&

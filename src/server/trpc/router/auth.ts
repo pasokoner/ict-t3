@@ -67,4 +67,16 @@ export const authRouter = router({
 
       return { message: "Successfully updated permission", data };
     }),
+
+  deleteUser: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const data = await ctx.prisma.user.delete({
+        where: {
+          id: input.id,
+        },
+      });
+
+      return { message: "User Successfully deleted" };
+    }),
 });

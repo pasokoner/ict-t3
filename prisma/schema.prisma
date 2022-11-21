@@ -75,15 +75,6 @@ model User {
   group            Groups?
 }
 
-// model Permission {
-//   id    String  @id @default(cuid())
-//   role  Role?
-//   group Groups?
-
-//   userId String
-//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-// }
-
 model VerificationToken {
   identifier String
   token      String   @unique

@@ -17,6 +17,7 @@ import {
   SelectChangeEvent,
   MenuItem,
   useMediaQuery,
+  LinearProgress,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
@@ -41,16 +42,24 @@ const PendingRows = ({ name, email, id, userRole, userGroup, fetchPendingAccount
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState("");
   const [group, setGroup] = useState("");
+  const [userDeletion, setUserDeletion] = useState(false);
 
   const matches = useMediaQuery("(max-width:600px)");
 
   const { handleSubmit, register, reset } = useForm<FormValues>();
 
-  const { mutate } = trpc.auth.updatePermission.useMutation({
+  const { mutate, isLoading } = trpc.auth.updatePermission.useMutation({
     onSuccess: () => {
       reset();
       setOpen(false);
       fetchPendingAccounts();
+    },
+  });
+
+  const { mutate: deleteUser } = trpc.auth.deleteUser.useMutation({
+    onSuccess: () => {
+      fetchPendingAccounts();
+      setUserDeletion(false);
     },
   });
 
@@ -106,9 +115,45 @@ const PendingRows = ({ name, email, id, userRole, userGroup, fetchPendingAccount
         }}
       >
         <ButtonGroup variant="text">
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              setUserDeletion(true);
+            }}
+          >
             <CloseIcon color="error" />
           </IconButton>
+
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={userDeletion}
+          >
+            <Stack>
+              <Typography gutterBottom>Are you sure you want to delete this user?</Typography>
+              {isLoading && <LinearProgress />}
+              <Stack direction="row" justifyContent="center" gap={2} mt={1}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  disabled={isLoading}
+                  onClick={() => {
+                    deleteUser({ id: id });
+                  }}
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  disabled={isLoading}
+                  onClick={() => {
+                    setUserDeletion(false);
+                  }}
+                >
+                  No
+                </Button>
+              </Stack>
+            </Stack>
+          </Backdrop>
 
           {userRole === "SUPERADMIN" && (
             <IconButton onClick={() => handleToggle()}>
