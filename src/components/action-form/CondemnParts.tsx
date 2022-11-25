@@ -1,11 +1,8 @@
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { trpc } from "../utils/trpc";
-
-import { useState } from "react";
+import { trpc } from "../../utils/trpc";
 
 import {
   Typography,
@@ -13,14 +10,9 @@ import {
   IconButton,
   Button,
   TextField,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
   Box,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
+  ToggleButtonGroup,
+  ToggleButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -30,7 +22,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import { useForm, SubmitHandler } from "react-hook-form";
-import RepairForm from "./action-form/RepairForm";
 
 type FormValues = {
   date: string;
@@ -39,55 +30,36 @@ type FormValues = {
 
 type Props = {
   handleClose: () => void;
-  status: string;
-  equiptment?: string;
+  equiptmentName: string;
   equiptmentId: string;
-  handleRefetch?: () => void;
+  serial: string;
 };
 
-const NewDeviceForm = ({ handleClose, status, equiptment, equiptmentId, handleRefetch }: Props) => {
-  const { mutate: updateEquiptment, isLoading } = trpc.equiptment.update.useMutation({
+const CondemnPartsForm = ({ handleClose, equiptmentName, equiptmentId, serial }: Props) => {
+  const { mutate: condemnParts, isLoading } = trpc.equiptment.condemnParts.useMutation({
     onSuccess: () => {
-      handleClose();
+      router.reload();
     },
-  });
-
-  const { data: partsData, isLoading: partsLoading } = trpc.equiptment.getParts.useQuery({
-    equiptmentId: equiptmentId,
   });
 
   const [value, setValue] = useState<Dayjs | null>(null);
 
-  const [partsValue, setPartsValue] = useState<{ id: string; status: string }[]>([]);
-
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormValues>();
+  const { register, handleSubmit } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    if (value) {
-      updateEquiptment({
-        status: status,
-        id: equiptmentId,
-        reminder: data.reminder,
-        date: value.toDate(),
-      });
-      router.reload();
-    } else {
-      updateEquiptment({ status: status, id: equiptmentId, reminder: data.reminder });
-    }
+    condemnParts({
+      id: equiptmentId,
+      reminder: data.reminder,
+      date: value ? value.toDate() : undefined,
+      serial: serial,
+    });
   };
 
   const handleDateChange = (newValue: Dayjs | null) => {
     setValue(newValue);
   };
-
-  let child: React.ReactNode;
 
   return (
     <Stack
@@ -115,9 +87,7 @@ const NewDeviceForm = ({ handleClose, status, equiptment, equiptmentId, handleRe
         }}
       >
         <Typography variant="h5">
-          {status === "For repair" && "Sending for repair"}
-          {status === "In inventory" && "Sending back to inventory"}
-          {status === "To condemn" && "Sending for condemnation"}{" "}
+          Sending for condemn{" "}
           <Typography
             component="span"
             variant="h5"
@@ -128,15 +98,13 @@ const NewDeviceForm = ({ handleClose, status, equiptment, equiptmentId, handleRe
               borderRadius: "5px",
             }}
           >
-            {equiptment}
+            {equiptmentName}
           </Typography>
         </Typography>
         <IconButton onClick={handleClose}>
           <CloseIcon color="primary" />
         </IconButton>
       </Stack>
-
-      {child}
 
       <Stack direction="column" gap={2}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -169,6 +137,7 @@ const NewDeviceForm = ({ handleClose, status, equiptment, equiptmentId, handleRe
         )}
 
         {/* {isError && <Typography color="error">{JSON.parse(error.message)[0].message}</Typography>} */}
+
         {!isLoading && (
           <Button variant="contained" type="submit">
             Submit
@@ -179,4 +148,4 @@ const NewDeviceForm = ({ handleClose, status, equiptment, equiptmentId, handleRe
   );
 };
 
-export default NewDeviceForm;
+export default CondemnPartsForm;

@@ -27,42 +27,46 @@ import QrMaker from "./QrMaker";
 import ActionMaker from "./ActionMaker";
 
 import { statusColorGenerator, getFormattedDate } from "../utils/constant";
+import HistoryRow from "./HistoryRow";
+import { useRouter } from "next/router";
 
 type TableFormat = {
   id: string;
   name: string;
-  handler: string;
-  numOfTransactions: number;
+  department: string;
   lastChecked: Date;
   status: string;
-  history: {
-    date: Date;
-    handler: string;
-    status: string;
-  }[];
+  parts: boolean;
+  serial: string;
+  condition: string;
+};
+
+type EquiptmentHistory = {
+  date: Date;
+  handler: string;
+  status: string;
+  equiptmentId: string;
 };
 
 function createData(
   id: string,
   name: string,
-  handler: string,
-  numOfTransactions: number,
+  department: string,
   lastChecked: Date,
   status: string,
-  history: {
-    date: Date;
-    handler: string;
-    status: string;
-  }[]
+  parts: boolean,
+  serial: string,
+  condition: string
 ) {
   return {
     id,
     name,
-    handler,
-    numOfTransactions,
+    department,
     lastChecked,
     status,
-    history,
+    parts,
+    serial,
+    condition,
   };
 }
 
@@ -75,14 +79,24 @@ type History = {
 function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
   const { row, matches } = props;
   const [open, setOpen] = useState(false);
-  const [showQr, setShowQr] = useState(false);
 
   const { data: sessionData } = useSession();
+
+  const router = useRouter();
 
   return (
     <>
       <TableRow
         sx={{
+          bgcolor: `${
+            row.parts
+              ? "info.light"
+              : row.condition === "IINO"
+              ? "info.light"
+              : row.condition === "NINO"
+              ? "error.light"
+              : ""
+          }`,
           "& > *": { borderBottom: "unset", py: 0.1 },
           "& .MuiTableCell-root": {
             fontSize: { md: 16, xs: 14 },
@@ -99,14 +113,14 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
               <Button
                 variant="text"
                 onClick={() => {
-                  setShowQr(true);
+                  router.push(`/equiptment/${row.id}`);
                 }}
               >
                 #{row.id.slice(0, 5) + "..."}
               </Button>
             </TableCell>
             <TableCell sx={{ minWidth: "120px" }}>{row.name}</TableCell>
-            <TableCell sx={{ minWidth: "120px" }}>{row.handler}</TableCell>
+            <TableCell sx={{ minWidth: "120px" }}>{row.department}</TableCell>
             <TableCell
               sx={{
                 width: "125px",
@@ -150,6 +164,8 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     size="small"
                     id={row.id}
                     name={row.name}
+                    isParts={row.parts}
+                    serial={row.serial}
                   />
                 )}
               </Stack>
@@ -167,7 +183,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
               <Button
                 variant="text"
                 onClick={() => {
-                  setShowQr(true);
+                  router.push(`/equiptment/${row.id}`);
                 }}
               >
                 #{row.id.slice(0, 1) + "..."}
@@ -240,6 +256,8 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     size="small"
                     id={row.id}
                     name={row.name}
+                    isParts={row.parts}
+                    serial={row.serial}
                   />
                 )}
               </Stack>
@@ -256,108 +274,10 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
           }}
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: matches ? 0 : 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                History
-              </Typography>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Handler</TableCell>
-                    <TableCell>Status</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.history.map((historyRow, i) => (
-                    <TableRow
-                      key={i}
-                      sx={{
-                        "& .MuiTypography-root": {
-                          fontSize: { md: 16, xs: 14 },
-                        },
-                      }}
-                    >
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        sx={{
-                          width: "100px",
-                        }}
-                      >
-                        {getFormattedDate(new Date(historyRow.date))}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          maxWidth: "150px",
-                        }}
-                      >
-                        <Typography noWrap>{historyRow.handler}</Typography>
-                      </TableCell>
-
-                      {matches ? (
-                        <TableCell
-                          align="center"
-                          sx={{
-                            width: "50px",
-                          }}
-                        >
-                          <Box
-                            sx={{
-                              bgcolor: statusColorGenerator(historyRow.status),
-                              width: "45px",
-                              height: "10px",
-                              borderRadius: "5px",
-                              color: "white",
-                              mr: "auto",
-                            }}
-                          ></Box>
-                        </TableCell>
-                      ) : (
-                        <TableCell
-                          align="center"
-                          sx={{
-                            width: "125px",
-                          }}
-                        >
-                          <Typography
-                            noWrap
-                            sx={{
-                              bgcolor: statusColorGenerator(historyRow.status),
-                              width: "100px",
-                              borderRadius: "5px",
-                              color: "white",
-                              mr: "auto",
-                            }}
-                          >
-                            {historyRow.status}
-                          </Typography>
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
+            <HistoryRow equiptmentId={row.id} />
           </Collapse>
         </TableCell>
       </TableRow>
-
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={showQr}
-        onClick={() => {
-          setShowQr(false);
-        }}
-      >
-        <Box
-          sx={{
-            maxWidth: { md: 400, xs: 185 },
-          }}
-        >
-          {showQr && <QrMaker value={row.id} />}
-        </Box>
-      </Backdrop>
     </>
   );
 }
@@ -368,7 +288,10 @@ type TableProps = {
 };
 
 export default function CollapsibleTable({ tableFilter, countStatus }: TableProps) {
-  const { data: tableData, refetch } = trpc.equiptment.all.useQuery();
+  const { data: equiptment, refetch } = trpc.equiptment.all.useQuery(
+    { filter: tableFilter },
+    { refetchOnWindowFocus: false }
+  );
 
   const [formattedData, setFormattedData] = useState<TableFormat[]>();
 
@@ -379,23 +302,26 @@ export default function CollapsibleTable({ tableFilter, countStatus }: TableProp
   }, [countStatus, refetch]);
 
   useEffect(() => {
-    if (tableData) {
-      const format = tableData
+    if (equiptment && equiptment.length > 0) {
+      const format = equiptment
         .filter((data) => data.status === tableFilter)
         .map((e) => {
           return createData(
             e.id,
             e.name,
-            e.handler as string,
-            e.numOfTransactions.equipmentHistory,
-            e.lastChecked as Date,
-            e.status as string,
-            e.history as History
+            e.department as string,
+            e.date,
+            e.status,
+            e.parts,
+            e.serial,
+            e.condition
           );
         });
       setFormattedData(format);
+    } else {
+      setFormattedData([]);
     }
-  }, [tableData, tableFilter]);
+  }, [equiptment, tableFilter]);
 
   return (
     <TableContainer>
@@ -406,7 +332,7 @@ export default function CollapsibleTable({ tableFilter, countStatus }: TableProp
               <>
                 <TableCell>Item ID</TableCell>
                 <TableCell>Equiptment</TableCell>
-                <TableCell>Handler</TableCell>
+                <TableCell>Department</TableCell>
 
                 <TableCell>Last checked</TableCell>
                 <TableCell>Status</TableCell>
@@ -426,7 +352,7 @@ export default function CollapsibleTable({ tableFilter, countStatus }: TableProp
         <TableBody>
           {formattedData &&
             formattedData.map((row: ReturnType<typeof createData>) => (
-              <Row key={row.id} row={row} matches={matches} />
+              <Row key={row.serial} row={row} matches={matches} />
             ))}
         </TableBody>
       </Table>

@@ -105,16 +105,13 @@ const Scanner = () => {
                     Equiptment:{" "}
                     {data.name.length < 100 ? data.name : data.name.slice(0, 100) + " ..."}
                   </Typography>
-                  <Typography>
-                    Last Checked:{" "}
-                    {getFormattedDate(new Date(data.equipmentHistory[0]?.date as Date))}
-                  </Typography>
+                  <Typography>Last Checked: {getFormattedDate(new Date(data.date))}</Typography>
                   <Typography>
                     Status:{" "}
                     <Typography
                       component="span"
                       sx={{
-                        bgcolor: statusColorGenerator(data.equipmentHistory[0]?.status as string),
+                        bgcolor: statusColorGenerator(data.status),
                         borderRadius: "5px",
                         color: "white",
                         width: "100px",
@@ -123,7 +120,7 @@ const Scanner = () => {
                         px: 0.5,
                       }}
                     >
-                      {data.equipmentHistory[0]?.status}
+                      {data.status}
                     </Typography>
                   </Typography>
                 </Stack>

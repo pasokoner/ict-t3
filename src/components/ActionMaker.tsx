@@ -4,10 +4,16 @@ import { IconButton, Stack, Backdrop, Box } from "@mui/material";
 
 import InventoryIcon from "@mui/icons-material/Inventory";
 import BuildIcon from "@mui/icons-material/Build";
+import ConstructionIcon from "@mui/icons-material/Construction";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import RemoveIcon from "@mui/icons-material/Remove";
 
 import NewDeviceForm from "./NewDeviceForm";
+import RepairForm from "./action-form/RepairForm";
+import CondemningForm from "./action-form/CondemningForm";
+import InventoryForm from "./action-form/InventoryForm";
+import CondemnForm from "./action-form/CondemnForm";
+import CondemnPartsForm from "./action-form/CondemnParts";
 
 type Props = {
   group: string;
@@ -16,9 +22,20 @@ type Props = {
   id: string;
   size?: "small";
   name: string;
+  isParts?: boolean;
+  serial?: string;
 };
 
-const ActionMaker = ({ group, status, direction, size, name, id }: Props) => {
+const ActionMaker = ({
+  group,
+  status,
+  direction,
+  size,
+  name,
+  id,
+  isParts = false,
+  serial,
+}: Props) => {
   const [open, setOpen] = useState(false);
   const [updatedStatus, setUpdatedStatus] = useState<string | undefined>();
 
@@ -80,6 +97,39 @@ const ActionMaker = ({ group, status, direction, size, name, id }: Props) => {
           </>
         )}
 
+        {status === "Unserviceable" && (
+          <>
+            <IconButton
+              size={size}
+              onClick={() => {
+                handleToggle("In inventory");
+              }}
+            >
+              <InventoryIcon color="success" />
+            </IconButton>
+            <IconButton
+              size={size}
+              onClick={() => {
+                handleToggle("For repair");
+              }}
+            >
+              <BuildIcon
+                sx={{
+                  color: "#e3d100",
+                }}
+              />
+            </IconButton>
+            <IconButton
+              size={size}
+              onClick={() => {
+                handleToggle("To condemn");
+              }}
+            >
+              <PendingActionsIcon color="warning" />
+            </IconButton>
+          </>
+        )}
+
         {group === "GSO" && status === "To condemn" && (
           <>
             <IconButton
@@ -93,20 +143,90 @@ const ActionMaker = ({ group, status, direction, size, name, id }: Props) => {
           </>
         )}
       </Stack>
-
-      {updatedStatus && (
+      {updatedStatus === "For repair" && (
         <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
           <Box
             sx={{
               width: "100vw",
             }}
           >
-            <NewDeviceForm
+            <RepairForm
               handleClose={handleClose}
-              status={updatedStatus}
-              equiptment={name}
-              update={true}
+              updatedStatus={updatedStatus}
+              equiptmentName={name}
               equiptmentId={id}
+              status={status}
+            />
+          </Box>
+        </Backdrop>
+      )}
+
+      {updatedStatus === "To condemn" && (
+        <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
+          <Box
+            sx={{
+              width: "100vw",
+            }}
+          >
+            <CondemningForm
+              handleClose={handleClose}
+              updatedStatus={updatedStatus}
+              equiptmentName={name}
+              equiptmentId={id}
+              status={status}
+            />
+          </Box>
+        </Backdrop>
+      )}
+
+      {updatedStatus === "In inventory" && (
+        <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
+          <Box
+            sx={{
+              width: "100vw",
+            }}
+          >
+            <InventoryForm
+              handleClose={handleClose}
+              updatedStatus={updatedStatus}
+              equiptmentName={name}
+              equiptmentId={id}
+              status={status}
+            />
+          </Box>
+        </Backdrop>
+      )}
+
+      {updatedStatus === "Condemned" && !isParts && (
+        <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
+          <Box
+            sx={{
+              width: "100vw",
+            }}
+          >
+            <CondemnForm
+              handleClose={handleClose}
+              updatedStatus={updatedStatus}
+              equiptmentName={name}
+              equiptmentId={id}
+              status={status}
+            />
+          </Box>
+        </Backdrop>
+      )}
+
+      {updatedStatus === "Condemned" && isParts && serial && (
+        <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
+          <Box
+            sx={{
+              width: "100vw",
+            }}
+          >
+            <CondemnPartsForm
+              handleClose={handleClose}
+              equiptmentName={name}
+              equiptmentId={id}
+              serial={serial}
             />
           </Box>
         </Backdrop>

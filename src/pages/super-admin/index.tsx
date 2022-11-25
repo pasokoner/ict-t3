@@ -86,8 +86,9 @@ const SuperAdmin = () => {
             User Management
           </Typography>
 
-          <ButtonGroup variant="text" aria-label="outlined primary button group" size="large">
+          <ButtonGroup variant="contained" aria-label="outlined primary button group">
             <Button
+              disabled={group === "PITO"}
               onClick={() => {
                 setGroup("PITO");
               }}
@@ -95,6 +96,7 @@ const SuperAdmin = () => {
               PITO
             </Button>
             <Button
+              disabled={group === "GSO"}
               onClick={() => {
                 setGroup("GSO");
               }}
@@ -131,7 +133,7 @@ const SuperAdmin = () => {
 
             <Stack
               direction="row"
-              gap={5}
+              gap={3}
               sx={{
                 flexWrap: "wrap",
                 justifyContent: "flex-start",
@@ -181,7 +183,7 @@ const SuperAdmin = () => {
 
             <Stack
               direction="row"
-              gap={2}
+              gap={3}
               sx={{
                 flexWrap: "wrap",
                 justifyContent: "flex-start",

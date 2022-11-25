@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["referentialIntegrity", "interactiveTransactions"]
 }
 
 datasource db {
@@ -73,6 +73,7 @@ model User {
   EquipmentHistory EquipmentHistory[]
   role             Role?
   group            Groups?
+  Equipment        Equipment[]
 }
 
 model VerificationToken {
@@ -84,19 +85,59 @@ model VerificationToken {
 }
 
 model Equipment {
-  id   String @id @default(uuid())
-  name String
+  id         String   @id @default(uuid())
+  name       String
+  serial     String
+  department String
+  issuedTo   String
+  usedBy     String
+  date       DateTime
+  reminder   String?
+  userId     String
+  status     String
+  condition  String
 
+  parts            Parts[]
   equipmentHistory EquipmentHistory[]
+  user             User               @relation(fields: [userId], references: [id])
 }
 
 model EquipmentHistory {
-  id           String    @id @default(uuid())
-  status       String
-  reminder     String?
-  date         DateTime
+  id         String   @id @default(uuid())
+  name       String
+  serial     String
+  department String
+  issuedTo   String
+  usedBy     String
+  date       DateTime
+  reminder   String?
+  status     String
+  condition  String
+
   equiptmentId String
-  equiptment   Equipment @relation(fields: [equiptmentId], references: [id])
   userId       String
-  user         User      @relation(fields: [userId], references: [id])
+
+  equiptment   Equipment      @relation(fields: [equiptmentId], references: [id], onDelete: Cascade)
+  user         User           @relation(fields: [userId], references: [id])
+  partsHistory PartsHistory[]
+}
+
+model Parts {
+  id           String @id @default(uuid())
+  name         String
+  serial       String @unique
+  status       String
+  equiptmentId String
+
+  equiptment Equipment @relation(fields: [equiptmentId], references: [id], onDelete: Cascade)
+}
+
+model PartsHistory {
+  id                  String @id @default(uuid())
+  name                String
+  serial              String
+  status              String
+  equiptmentHistoryId String
+
+  equiptmentHistory EquipmentHistory @relation(fields: [equiptmentHistoryId], references: [id], onDelete: Cascade)
 }

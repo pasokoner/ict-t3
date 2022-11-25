@@ -21,8 +21,16 @@ export const statusColorGenerator = (status: string) => {
     return "info.main";
   }
 
+  if (status === "Unserviceable") {
+    return "grey.500";
+  }
+
   if (status === "To condemn") {
     return "warning.main";
+  }
+
+  if (status === "Department" || status === "Ownership") {
+    return "#2A3990";
   }
 
   if (status === "Condemned") {
@@ -55,3 +63,14 @@ export const getFormattedDate = (date: Date): string => {
 
   return month + "/" + day + "/" + year;
 };
+
+export const departments = [
+  {
+    name: "Department of Health",
+    acronym: "DOH",
+  },
+  {
+    name: "Provincial Information Technology Office",
+    acronym: "PITO",
+  },
+];
