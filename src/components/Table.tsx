@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 
 import {
-  Backdrop,
   Button,
   useMediaQuery,
   Box,
@@ -23,7 +22,6 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-import QrMaker from "./QrMaker";
 import ActionMaker from "./ActionMaker";
 
 import { statusColorGenerator, getFormattedDate } from "../utils/constant";
@@ -39,13 +37,6 @@ type TableFormat = {
   parts: boolean;
   serial: string;
   condition: string;
-};
-
-type EquiptmentHistory = {
-  date: Date;
-  handler: string;
-  status: string;
-  equiptmentId: string;
 };
 
 function createData(
@@ -69,12 +60,6 @@ function createData(
     condition,
   };
 }
-
-type History = {
-  date: Date;
-  handler: string;
-  status: string;
-}[];
 
 function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
   const { row, matches } = props;
