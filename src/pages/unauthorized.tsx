@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import type { GetServerSideProps, NextPage } from "next";
 
@@ -6,13 +6,11 @@ import { getSession, signOut } from "next-auth/react";
 
 import { Button, Typography, Stack, LinearProgress } from "@mui/material";
 
-type Props = {};
+const Unauthorized = () => {
+  const [state, setState] = useState({ num: 7 });
+  const counter = useRef(0);
 
-const unauthorized = (props: Props) => {
-  const [state, setState] = React.useState({ num: 7 });
-  const counter = React.useRef(0);
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (counter.current <= 7) {
       counter.current += 1;
       const timer = setTimeout(() => setState({ num: state.num - 1 }), 1000);
@@ -52,7 +50,7 @@ const unauthorized = (props: Props) => {
   );
 };
 
-export default unauthorized;
+export default Unauthorized;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
