@@ -11,4 +11,16 @@ declare module "next-auth" {
       group: "PITO" | "GSO";
     } & DefaultSession["user"];
   }
+
+  interface User {
+    role: "ADMIN" | "SUPERADMIN" | "USER" | null;
+    group: "PITO" | "GSO";
+  }
+}
+
+declare module "next-auth/adapters" {
+  interface AdapterUser {
+    role: "ADMIN" | "SUPERADMIN" | "USER" | null;
+    group: "PITO" | "GSO";
+  }
 }

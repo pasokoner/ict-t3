@@ -8,7 +8,7 @@ import { trpc } from "../utils/trpc";
 
 import Layout from "../components/Layout";
 
-const MyApp: AppType<{ session: Session | null }> = ({
+const MyApp: AppType<{ session: Session  | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
