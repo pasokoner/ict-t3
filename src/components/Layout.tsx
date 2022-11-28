@@ -1,20 +1,9 @@
 import Head from "next/head";
-import { signOut, useSession } from "next-auth/react";
-
-import { trpc } from "../utils/trpc";
+import { useSession } from "next-auth/react";
 
 import { useState } from "react";
 
-import {
-  Backdrop,
-  Button,
-  CssBaseline,
-  Fab,
-  Stack,
-  Typography,
-  useTheme,
-  Box,
-} from "@mui/material";
+import { Backdrop, CssBaseline, Fab, useTheme, Box } from "@mui/material";
 
 import { ThemeProvider } from "@mui/material/styles";
 

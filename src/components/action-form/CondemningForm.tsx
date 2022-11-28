@@ -16,12 +16,13 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import { useForm, SubmitHandler } from "react-hook-form";
+import { getFormattedDate } from "../../utils/constant";
 
 type FormValues = {
   date: string;
@@ -34,6 +35,7 @@ type Props = {
   equiptmentName: string;
   equiptmentId: string;
   status: string;
+  lastChecked: Date;
 };
 
 type Parts = {
@@ -49,6 +51,7 @@ const CondemningForm = ({
   equiptmentName,
   equiptmentId,
   status,
+  lastChecked,
 }: Props) => {
   const { mutate: toCondemn, isLoading } = trpc.equiptment.update.useMutation({
     onSuccess: () => {
@@ -266,15 +269,16 @@ const CondemningForm = ({
       <Stack
         direction="row"
         sx={{
-          justifyContent: "space-between",
-          mb: 3,
+          mb: 1,
+          "& .MuiTypography-root": {
+            fontSize: { md: 25, xs: 18 },
+          },
         }}
       >
-        <Typography variant="h5">
-          Sending for repair{" "}
+        <Typography>
+          To condemn{" "}
           <Typography
             component="span"
-            variant="h5"
             sx={{
               bgcolor: "primary.main",
               color: "white",
@@ -282,10 +286,17 @@ const CondemningForm = ({
               borderRadius: "5px",
             }}
           >
-            {equiptmentName}
+            {equiptmentName.length >= 60
+              ? `${equiptmentName.slice(0, 60) + "..."}`
+              : equiptmentName}
           </Typography>
         </Typography>
-        <IconButton onClick={handleClose}>
+        <IconButton
+          onClick={handleClose}
+          sx={{
+            ml: "auto",
+          }}
+        >
           <CloseIcon color="primary" />
         </IconButton>
       </Stack>
@@ -299,8 +310,14 @@ const CondemningForm = ({
             inputFormat="MM/DD/YYYY"
             value={value}
             onChange={handleDateChange}
+            minDate={dayjs(getFormattedDate(lastChecked))}
             renderInput={(params) => (
-              <TextField {...params} sx={{ minWidth: 200, alignSelf: "flex-end" }} fullWidth />
+              <TextField
+                {...params}
+                size="small"
+                sx={{ minWidth: 200, alignSelf: "flex-end" }}
+                fullWidth
+              />
             )}
           />
         </LocalizationProvider>

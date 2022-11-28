@@ -1,5 +1,6 @@
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import { GetServerSideProps } from "next";
+
+import { useSession, getSession } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
 
@@ -377,3 +378,38 @@ const NewDevice = () => {
 };
 
 export default NewDevice;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  if (!session?.user?.role && !session?.user?.group) {
+    return {
+      redirect: {
+        destination: "/unauthorized",
+        permanent: false,
+      },
+    };
+  }
+
+  if (session.user.group !== "GSO") {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+};

@@ -16,12 +16,13 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import { useForm, SubmitHandler } from "react-hook-form";
+import { getFormattedDate } from "../../utils/constant";
 
 type FormValues = {
   date: string;
@@ -34,6 +35,7 @@ type Props = {
   equiptmentName: string;
   equiptmentId: string;
   status: string;
+  lastChecked: Date;
 };
 
 type NewParts = {
@@ -47,6 +49,7 @@ const InventoryForm = ({
   equiptmentName,
   equiptmentId,
   status,
+  lastChecked,
 }: Props) => {
   const { mutate: inInventory, isLoading } = trpc.equiptment.update.useMutation({
     onSuccess: () => {
@@ -189,8 +192,8 @@ const InventoryForm = ({
           {partsData
             .sort(
               (a, b) =>
-                Number(a.status === "To condemn" || a.status === "Condemn") -
-                Number(b.status === "To condemn" || b.status === "Condemn")
+                Number(a.status === "To condemn" || a.status === "Condemned") -
+                Number(b.status === "To condemn" || b.status === "Condemned")
             )
             .map(({ id, name, status }) => (
               <ToggleButton
@@ -219,7 +222,7 @@ const InventoryForm = ({
                       color: "white",
                       bgcolor: "warning.dark",
                     }),
-                    ...(status === "Condemn" && {
+                    ...(status === "Condemned" && {
                       color: "white",
                       bgcolor: "error.dark",
                     }),
@@ -352,15 +355,16 @@ const InventoryForm = ({
       <Stack
         direction="row"
         sx={{
-          justifyContent: "space-between",
-          mb: 3,
+          mb: 1,
+          "& .MuiTypography-root": {
+            fontSize: { md: 25, xs: 18 },
+          },
         }}
       >
-        <Typography variant="h5">
-          Sending{" "}
+        <Typography>
+          Back to inventory{" "}
           <Typography
             component="span"
-            variant="h5"
             sx={{
               bgcolor: "primary.main",
               color: "white",
@@ -368,12 +372,17 @@ const InventoryForm = ({
               borderRadius: "5px",
             }}
           >
-            {" "}
-            {equiptmentName}
-          </Typography>{" "}
-          to inventory
+            {equiptmentName.length >= 60
+              ? `${equiptmentName.slice(0, 60) + "..."}`
+              : equiptmentName}
+          </Typography>
         </Typography>
-        <IconButton onClick={handleClose}>
+        <IconButton
+          onClick={handleClose}
+          sx={{
+            ml: "auto",
+          }}
+        >
           <CloseIcon color="primary" />
         </IconButton>
       </Stack>
@@ -387,8 +396,14 @@ const InventoryForm = ({
             inputFormat="MM/DD/YYYY"
             value={value}
             onChange={handleDateChange}
+            minDate={dayjs(getFormattedDate(lastChecked))}
             renderInput={(params) => (
-              <TextField {...params} sx={{ minWidth: 200, alignSelf: "flex-end" }} fullWidth />
+              <TextField
+                {...params}
+                size="small"
+                sx={{ minWidth: 200, alignSelf: "flex-end" }}
+                fullWidth
+              />
             )}
           />
         </LocalizationProvider>

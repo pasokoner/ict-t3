@@ -24,6 +24,7 @@ type Props = {
   name: string;
   isParts?: boolean;
   serial?: string;
+  lastChecked: Date;
 };
 
 const ActionMaker = ({
@@ -35,6 +36,7 @@ const ActionMaker = ({
   id,
   isParts = false,
   serial,
+  lastChecked,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const [updatedStatus, setUpdatedStatus] = useState<string | undefined>();
@@ -97,7 +99,7 @@ const ActionMaker = ({
           </>
         )}
 
-        {status === "Unserviceable" && (
+        {group === "GSO" && status === "Unserviceable" && (
           <>
             <IconButton
               size={size}
@@ -156,6 +158,7 @@ const ActionMaker = ({
               equiptmentName={name}
               equiptmentId={id}
               status={status}
+              lastChecked={lastChecked}
             />
           </Box>
         </Backdrop>
@@ -174,6 +177,7 @@ const ActionMaker = ({
               equiptmentName={name}
               equiptmentId={id}
               status={status}
+              lastChecked={lastChecked}
             />
           </Box>
         </Backdrop>
@@ -192,6 +196,7 @@ const ActionMaker = ({
               equiptmentName={name}
               equiptmentId={id}
               status={status}
+              lastChecked={lastChecked}
             />
           </Box>
         </Backdrop>
@@ -210,6 +215,7 @@ const ActionMaker = ({
               equiptmentName={name}
               equiptmentId={id}
               status={status}
+              lastChecked={lastChecked}
             />
           </Box>
         </Backdrop>
@@ -227,6 +233,7 @@ const ActionMaker = ({
               equiptmentName={name}
               equiptmentId={id}
               serial={serial}
+              lastChecked={lastChecked}
             />
           </Box>
         </Backdrop>

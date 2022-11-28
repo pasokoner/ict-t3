@@ -34,9 +34,10 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import exportFromJSON from "export-from-json";
+import { useRouter } from "next/router";
 
 const Dashboard: NextPage = () => {
-  const { data: itemsData, refetch } = trpc.equiptment.countByStatus.useQuery(
+  const { data: itemsData, isLoading } = trpc.equiptment.countByStatus.useQuery(
     {},
     { refetchOnWindowFocus: false }
   );
@@ -46,13 +47,10 @@ const Dashboard: NextPage = () => {
   const [statusFilter, setStatusFilter] = useState(
     sessionData?.user?.group === "PITO" ? "For repair" : "Condemned"
   );
-  const [toggle, setToggle] = useState(false);
 
   const matches = useMediaQuery("(max-width:900px)");
 
-  const handleToggle = () => {
-    setToggle(!toggle);
-  };
+  const router = useRouter();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -66,6 +64,10 @@ const Dashboard: NextPage = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+
+  if (isLoading) {
+    return <></>;
+  }
 
   return (
     <Box>
@@ -94,7 +96,7 @@ const Dashboard: NextPage = () => {
             }),
           }}
         >
-          <Stack direction="row" justifyContent="center" gap={2}>
+          <Stack direction="row" gap={2}>
             <Typography variant="h4" fontWeight="bold" color="primary">
               DASHBOARD
             </Typography>
@@ -186,7 +188,9 @@ const Dashboard: NextPage = () => {
                 variant="contained"
                 size="small"
                 startIcon={<AddIcon />}
-                onClick={handleToggle}
+                onClick={() => {
+                  router.push("/new-device");
+                }}
                 sx={{
                   whiteSpace: "nowrap",
                 }}
@@ -198,59 +202,57 @@ const Dashboard: NextPage = () => {
         </Stack>
 
         <Stack
-          mb={3}
+          mb={1}
           gap={1}
           direction="row"
           sx={{
-            justifyContent: { md: "space-between", xs: "space-evenly" },
-            flexWrap: { md: "nowrap", xs: "wrap" },
+            flexWrap: "wrap",
+            justifyContent: "space-evenly",
           }}
         >
-          <>
-            <StatusSectionCard
-              count={itemsData?.inInventory}
-              title="In inventory"
-              icon={<InventoryIcon />}
-              color="success.main"
-              setStatusFilter={setStatusFilter}
-              statusFilter={statusFilter}
-            />
+          <StatusSectionCard
+            count={itemsData?.inInventory}
+            title="In inventory"
+            icon={<InventoryIcon />}
+            color="success.main"
+            setStatusFilter={setStatusFilter}
+            statusFilter={statusFilter}
+          />
 
-            <StatusSectionCard
-              count={itemsData?.forRepair}
-              title="For repair"
-              icon={<BuildIcon />}
-              color="#e3d100"
-              setStatusFilter={setStatusFilter}
-              statusFilter={statusFilter}
-            />
+          <StatusSectionCard
+            count={itemsData?.forRepair}
+            title="For repair"
+            icon={<BuildIcon />}
+            color="#e3d100"
+            setStatusFilter={setStatusFilter}
+            statusFilter={statusFilter}
+          />
 
-            <StatusSectionCard
-              count={itemsData?.unserviceable}
-              title="Unserviceable"
-              icon={<ConstructionIcon />}
-              color="grey.500"
-              setStatusFilter={setStatusFilter}
-              statusFilter={statusFilter}
-            />
+          <StatusSectionCard
+            count={itemsData?.unserviceable}
+            title="Unserviceable"
+            icon={<ConstructionIcon />}
+            color="grey.500"
+            setStatusFilter={setStatusFilter}
+            statusFilter={statusFilter}
+          />
 
-            <StatusSectionCard
-              count={itemsData?.toCondemn}
-              title="To condemn"
-              icon={<PendingActionsIcon />}
-              color="warning.main"
-              setStatusFilter={setStatusFilter}
-              statusFilter={statusFilter}
-            />
-            <StatusSectionCard
-              count={itemsData?.condemned}
-              title="Condemned"
-              icon={<RemoveIcon />}
-              color="error.main"
-              setStatusFilter={setStatusFilter}
-              statusFilter={statusFilter}
-            />
-          </>
+          <StatusSectionCard
+            count={itemsData?.toCondemn}
+            title="To condemn"
+            icon={<PendingActionsIcon />}
+            color="warning.main"
+            setStatusFilter={setStatusFilter}
+            statusFilter={statusFilter}
+          />
+          <StatusSectionCard
+            count={itemsData?.condemned}
+            title="Condemned"
+            icon={<RemoveIcon />}
+            color="error.main"
+            setStatusFilter={setStatusFilter}
+            statusFilter={statusFilter}
+          />
         </Stack>
 
         <Divider />

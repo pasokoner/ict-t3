@@ -124,8 +124,8 @@ export default function ResponsiveDrawer(props: Props) {
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={handleClose}>Settings</MenuItem>
+                  {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={handleClose}>Settings</MenuItem> */}
                   <MenuItem
                     onClick={() => {
                       signOut();

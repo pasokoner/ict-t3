@@ -301,7 +301,7 @@ export const equiptmentRouter = router({
           const formattedParts = parts
             .filter(
               (part) =>
-                !(part.equiptment.status === "To condemn" || part.equiptment.status === "Condemn")
+                !(part.equiptment.status === "To condemn" || part.equiptment.status === "Condemned")
             )
             .map(({ equiptment: equiptmentParts, name, status, serial }) => {
               return {
@@ -398,6 +398,13 @@ export const equiptmentRouter = router({
             status: "To condemn",
           },
         },
+        OR: {
+          NOT: {
+            equiptment: {
+              status: "Condemned",
+            },
+          },
+        },
         status: "To condemn",
       },
     });
@@ -411,7 +418,14 @@ export const equiptmentRouter = router({
       where: {
         NOT: {
           equiptment: {
-            status: "Condemned",
+            status: "To condemn",
+          },
+        },
+        OR: {
+          NOT: {
+            equiptment: {
+              status: "Condemned",
+            },
           },
         },
         status: "Condemned",
@@ -547,11 +561,55 @@ export const equiptmentRouter = router({
 
       return {};
     }),
-  delete: protectedProcedure.mutation(async ({ ctx }) => {
-    const data = await ctx.prisma.equipment.deleteMany({});
+  condition: protectedProcedure
+    .input(
+      z.object({
+        equiptmentId: z.string(),
+        condition: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { condition, equiptmentId } = input;
 
-    return {};
-  }),
+      await ctx.prisma.$transaction(async () => {
+        const equiptment = await ctx.prisma.equipment.update({
+          where: {
+            id: equiptmentId,
+          },
+
+          data: {
+            condition: condition,
+          },
+        });
+
+        if (equiptment) {
+          const { id, ...exceptId } = equiptment;
+          const equiptmentHistoryData = await ctx.prisma.equipmentHistory.create({
+            data: {
+              ...exceptId,
+              status: "Condition",
+              equiptmentId: id,
+              userId: ctx.session.user.id,
+              date: new Date(),
+              reminder: null,
+            },
+          });
+        }
+      });
+
+      return {};
+    }),
+  delete: protectedProcedure
+    .input(z.object({ equiptmentId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const data = await ctx.prisma.equipment.delete({
+        where: {
+          id: input.equiptmentId,
+        },
+      });
+
+      return { message: "Successfully deleted" };
+    }),
 });
 
 [{ amount: 10 }, { amount: 20 }, { amount: 50 }].reduce((accumulator, obj) => {

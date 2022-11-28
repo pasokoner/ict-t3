@@ -78,11 +78,11 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
               ? "info.light"
               : row.condition === "IINO"
               ? "info.light"
-              : row.condition === "NINO"
+              : row.condition === "NIIO"
               ? "error.light"
               : ""
           }`,
-          "& > *": { borderBottom: "unset", py: 0.1 },
+          "& > *": { borderBottom: "unset", py: 0.2 },
           "& .MuiTableCell-root": {
             fontSize: { md: 16, xs: 14 },
           },
@@ -104,7 +104,12 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 #{row.id.slice(0, 5) + "..."}
               </Button>
             </TableCell>
-            <TableCell sx={{ minWidth: "120px" }}>{row.name}</TableCell>
+            <TableCell>
+              {row.name.length >= 30 && (
+                <Typography noWrap> {row.name.slice(0, 30) + "..."}</Typography>
+              )}
+              {row.name.length < 30 && <Typography noWrap> {row.name}</Typography>}
+            </TableCell>
             <TableCell sx={{ minWidth: "120px" }}>{row.department}</TableCell>
             <TableCell
               sx={{
@@ -123,7 +128,6 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 noWrap
                 sx={{
                   bgcolor: statusColorGenerator(row.status),
-                  width: "100px",
                   borderRadius: "5px",
                   color: "white",
                   mr: "auto",
@@ -151,6 +155,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     name={row.name}
                     isParts={row.parts}
                     serial={row.serial}
+                    lastChecked={row.lastChecked}
                   />
                 )}
               </Stack>
@@ -176,7 +181,10 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
             </TableCell>
 
             <TableCell>
-              <Typography noWrap> {row.name.slice(0, 30)}</Typography>
+              {row.name.length >= 25 && (
+                <Typography noWrap> {row.name.slice(0, 25) + "..."}</Typography>
+              )}
+              {row.name.length < 25 && <Typography noWrap> {row.name}</Typography>}
             </TableCell>
 
             <TableCell
@@ -243,6 +251,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     name={row.name}
                     isParts={row.parts}
                     serial={row.serial}
+                    lastChecked={row.lastChecked}
                   />
                 )}
               </Stack>

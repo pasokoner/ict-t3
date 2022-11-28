@@ -86,13 +86,13 @@ model VerificationToken {
 
 model Equipment {
   id         String   @id @default(uuid())
-  name       String
+  name       String   @db.LongText
   serial     String
   department String
-  issuedTo   String
-  usedBy     String
+  issuedTo   String   @db.LongText
+  usedBy     String   @db.LongText
   date       DateTime
-  reminder   String?
+  reminder   String?  @db.LongText
   userId     String
   status     String
   condition  String
@@ -104,13 +104,13 @@ model Equipment {
 
 model EquipmentHistory {
   id         String   @id @default(uuid())
-  name       String
+  name       String   @db.LongText
   serial     String
   department String
-  issuedTo   String
-  usedBy     String
+  issuedTo   String   @db.LongText
+  usedBy     String   @db.LongText
   date       DateTime
-  reminder   String?
+  reminder   String?  @db.LongText
   status     String
   condition  String
 

@@ -4,24 +4,16 @@ import { useEffect, useState } from "react";
 
 import { trpc } from "../../utils/trpc";
 
-import {
-  Typography,
-  Stack,
-  IconButton,
-  Button,
-  TextField,
-  Box,
-  ToggleButtonGroup,
-  ToggleButton,
-} from "@mui/material";
+import { Typography, Stack, IconButton, Button, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import { useForm, SubmitHandler } from "react-hook-form";
+import { getFormattedDate } from "../../utils/constant";
 
 type FormValues = {
   date: string;
@@ -33,9 +25,16 @@ type Props = {
   equiptmentName: string;
   equiptmentId: string;
   serial: string;
+  lastChecked: Date;
 };
 
-const CondemnPartsForm = ({ handleClose, equiptmentName, equiptmentId, serial }: Props) => {
+const CondemnPartsForm = ({
+  handleClose,
+  equiptmentName,
+  equiptmentId,
+  serial,
+  lastChecked,
+}: Props) => {
   const { mutate: condemnParts, isLoading } = trpc.equiptment.condemnParts.useMutation({
     onSuccess: () => {
       router.reload();
@@ -82,15 +81,16 @@ const CondemnPartsForm = ({ handleClose, equiptmentName, equiptmentId, serial }:
       <Stack
         direction="row"
         sx={{
-          justifyContent: "space-between",
-          mb: 3,
+          mb: 1,
+          "& .MuiTypography-root": {
+            fontSize: { md: 25, xs: 18 },
+          },
         }}
       >
-        <Typography variant="h5">
-          Sending for condemn{" "}
+        <Typography>
+          Condemning parts{" "}
           <Typography
             component="span"
-            variant="h5"
             sx={{
               bgcolor: "primary.main",
               color: "white",
@@ -98,10 +98,17 @@ const CondemnPartsForm = ({ handleClose, equiptmentName, equiptmentId, serial }:
               borderRadius: "5px",
             }}
           >
-            {equiptmentName}
+            {equiptmentName.length >= 60
+              ? `${equiptmentName.slice(0, 60) + "..."}`
+              : equiptmentName}
           </Typography>
         </Typography>
-        <IconButton onClick={handleClose}>
+        <IconButton
+          onClick={handleClose}
+          sx={{
+            ml: "auto",
+          }}
+        >
           <CloseIcon color="primary" />
         </IconButton>
       </Stack>
@@ -113,8 +120,14 @@ const CondemnPartsForm = ({ handleClose, equiptmentName, equiptmentId, serial }:
             inputFormat="MM/DD/YYYY"
             value={value}
             onChange={handleDateChange}
+            minDate={dayjs(getFormattedDate(lastChecked))}
             renderInput={(params) => (
-              <TextField {...params} sx={{ minWidth: 200, alignSelf: "flex-end" }} fullWidth />
+              <TextField
+                {...params}
+                size="small"
+                sx={{ minWidth: 200, alignSelf: "flex-end" }}
+                fullWidth
+              />
             )}
           />
         </LocalizationProvider>

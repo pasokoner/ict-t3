@@ -1,5 +1,11 @@
+import { GetServerSideProps } from "next";
+
 import { useRouter } from "next/router";
+
+import { getSession } from "next-auth/react";
+
 import { useState } from "react";
+
 import { trpc } from "../../utils/trpc";
 
 import {
@@ -14,8 +20,11 @@ import {
   TextField,
   Typography,
   Alert,
+  Backdrop,
+  getTouchRippleUtilityClass,
+  IconButton,
 } from "@mui/material";
-import { getFormattedDate, statusColorGenerator } from "../../utils/constant";
+import { conditions, getFormattedDate, statusColorGenerator } from "../../utils/constant";
 import QrMaker from "../../components/QrMaker";
 import ActionMaker from "../../components/ActionMaker";
 import { useSession } from "next-auth/react";
@@ -28,6 +37,7 @@ type FormValues = {
   department: string;
   issuedTo: string;
   usedBy: string;
+  condition: string;
 };
 
 const EquiptmentId = () => {
@@ -37,12 +47,20 @@ const EquiptmentId = () => {
 
   const [editOwnership, setEditOwnership] = useState(false);
   const [editDepartment, setEditDepartment] = useState(false);
+  const [editCondition, setEditCondition] = useState(false);
 
   const [errorOwnership, setErrorOwnership] = useState("");
   const [errorDepartment, setErrorDepartment] = useState("");
+  const [errorCondition, setErrorCondition] = useState("");
 
   const { data, isLoading, refetch } = trpc.equiptment.getDetails.useQuery({
     id: router.query.equiptmentId as string,
+  });
+
+  const { mutate: deleteEquiptment } = trpc.equiptment.delete.useMutation({
+    onSuccess: () => {
+      router.push("/dashboard");
+    },
   });
 
   const { mutate: changeOwnership, isLoading: ownershipLoading } =
@@ -65,17 +83,29 @@ const EquiptmentId = () => {
       },
     });
 
+  const { mutate: changeCondition, isLoading: conditionLoading } =
+    trpc.equiptment.condition.useMutation({
+      onSuccess: () => {
+        handleClick();
+        setSnackbarMessage("Condition changed!");
+        setErrorCondition("");
+        refetch();
+      },
+    });
+
   const { register, handleSubmit, reset } = useForm<FormValues>();
 
-  const onSubmit: SubmitHandler<FormValues> = async ({ issuedTo, usedBy, department }) => {
+  const onSubmit: SubmitHandler<FormValues> = async ({
+    issuedTo,
+    usedBy,
+    department,
+    condition,
+  }) => {
     if (!data?.current?.id) {
       return;
     }
     if (issuedTo && usedBy) {
-      if (
-        issuedTo.trim() === data?.current?.issuedTo &&
-        usedBy.trim() === data?.current?.issuedTo
-      ) {
+      if (issuedTo.trim() === data?.current?.issuedTo && usedBy.trim() === data?.current?.usedBy) {
         setErrorOwnership("You are trying to change nothing!");
       } else if (
         issuedTo.trim() !== data?.current?.issuedTo &&
@@ -95,6 +125,17 @@ const EquiptmentId = () => {
       }
     }
 
+    if (condition) {
+      if (condition.trim() === data?.current?.condition) {
+        setErrorCondition("You are trying to change nothing");
+      } else {
+        changeCondition({
+          equiptmentId: data.current.id,
+          condition: condition,
+        });
+      }
+    }
+
     if (department) {
       if (department.trim() === data?.current?.department) {
         setErrorDepartment("You are trying to change nothing!");
@@ -110,6 +151,7 @@ const EquiptmentId = () => {
   const handleCancel = () => {
     setEditDepartment(false);
     setEditOwnership(false);
+    setEditCondition(false);
   };
 
   const [open, setOpen] = useState(false);
@@ -127,6 +169,8 @@ const EquiptmentId = () => {
     setOpen(false);
   };
 
+  const [deleting, setDeleting] = useState(false);
+
   if (isLoading) {
     return <></>;
   }
@@ -138,8 +182,13 @@ const EquiptmentId = () => {
   return (
     <Stack gap={2}>
       <Typography
-        variant="h4"
-        sx={{ p: 1, borderRadius: 1, bgcolor: "primary.main", color: "white" }}
+        sx={{
+          p: 1,
+          borderRadius: 1,
+          bgcolor: "primary.main",
+          color: "white",
+          fontSize: { md: 35, xs: 28 },
+        }}
       >
         Equiptment Details Breakdown
       </Typography>
@@ -185,6 +234,7 @@ const EquiptmentId = () => {
               status={data?.current?.status as string}
               name={data?.current?.name as string}
               group={sessionData?.user?.group as string}
+              lastChecked={data?.current?.date as Date}
             />
           </Stack>
         </Stack>
@@ -194,8 +244,9 @@ const EquiptmentId = () => {
             size="small"
             variant="contained"
             onClick={() => {
-              setEditDepartment(false);
               setEditOwnership(true);
+              setEditDepartment(false);
+              setEditCondition(false);
             }}
           >
             Ownership
@@ -206,43 +257,26 @@ const EquiptmentId = () => {
             onClick={() => {
               setEditOwnership(false);
               setEditDepartment(true);
+              setEditCondition(false);
             }}
           >
             Department
           </Button>
+          <Button
+            size="small"
+            variant="contained"
+            onClick={() => {
+              setEditOwnership(false);
+              setEditDepartment(false);
+              setEditCondition(true);
+            }}
+          >
+            Condition
+          </Button>
         </Stack>
 
-        {(editDepartment || editOwnership) && (
+        {(editDepartment || editOwnership || editCondition) && (
           <Stack component="form" m={1} gap={2} onSubmit={handleSubmit(onSubmit)}>
-            {editDepartment && (
-              <>
-                <FormControl fullWidth required>
-                  <InputLabel id="demo-simple-select-label">Department</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Department"
-                    variant="standard"
-                    {...register("department")}
-                    defaultValue={data?.current?.department}
-                    // {...register("department")}
-                  >
-                    {departments.map(({ acronym, name }, i) => (
-                      <MenuItem key={i} value={acronym}>
-                        {acronym} - {name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                {errorDepartment && (
-                  <Typography color="error" mt={-1} fontSize={14}>
-                    {errorDepartment}
-                  </Typography>
-                )}
-              </>
-            )}
-
             {editOwnership && (
               <Stack gap={2} direction="row" justifyContent="space-between">
                 <TextField
@@ -275,6 +309,57 @@ const EquiptmentId = () => {
                 {errorOwnership}
               </Typography>
             )}
+
+            {editDepartment && (
+              <FormControl fullWidth required>
+                <InputLabel id="demo-simple-select-label">Department</InputLabel>
+                <Select
+                  label="Department"
+                  variant="standard"
+                  {...register("department")}
+                  defaultValue={data?.current?.department}
+                  // {...register("department")}
+                >
+                  {departments.map(({ acronym, name }, i) => (
+                    <MenuItem key={i} value={acronym}>
+                      {acronym} - {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+
+            {errorDepartment && (
+              <Typography color="error" mt={-1} fontSize={14}>
+                {errorDepartment}
+              </Typography>
+            )}
+
+            {editCondition && (
+              <FormControl fullWidth required>
+                <InputLabel id="demo-simple-select-label">Condition</InputLabel>
+                <Select
+                  label="Conditions"
+                  variant="standard"
+                  {...register("condition")}
+                  defaultValue={data?.current?.condition}
+                  // {...register("department")}
+                >
+                  {conditions.map(({ name, value }, i) => (
+                    <MenuItem key={i} value={value}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+
+            {errorCondition && (
+              <Typography color="error" mt={-1} fontSize={14}>
+                {errorCondition}
+              </Typography>
+            )}
+
             <Stack direction="row" gap={1} justifyContent="center">
               <Button size="small" color="error" variant="contained" onClick={handleCancel}>
                 Cancel
@@ -287,11 +372,11 @@ const EquiptmentId = () => {
         )}
 
         <Stack
-          direction="row"
           gap={2}
           sx={{
+            flexDirection: { md: "row", xs: "column" },
             "& > *": {
-              width: "50%",
+              width: { md: "50%", xs: "100%" },
             },
           }}
         >
@@ -362,6 +447,7 @@ const EquiptmentId = () => {
                       name={name}
                       isParts={true}
                       serial={serial}
+                      lastChecked={data?.current?.date as Date}
                     />
                   )}
                 </Stack>
@@ -407,67 +493,149 @@ const EquiptmentId = () => {
       </Typography>
       {data &&
         data.history.length > 0 &&
-        data.history?.map(({ status, user, date, id, partsHistory }) => (
-          <Stack
-            key={id}
-            gap={0.5}
+        data.history?.map(
+          ({ status, user, date, id, partsHistory, department, issuedTo, usedBy }) => (
+            <Stack
+              key={id}
+              gap={0.5}
+              sx={{
+                "& .MuiTypography-subtitle1": {
+                  p: 0.5,
+                  borderRadius: 1,
+                  bgcolor: "error.light",
+                  color: "white",
+                },
+              }}
+            >
+              <Typography variant="subtitle1">{getFormattedDate(new Date(date))}</Typography>
+
+              <Stack
+                gap={0.3}
+                sx={{ p: 0.5, borderRadius: 1, bgcolor: "primary.light", color: "white" }}
+              >
+                <Stack direction="row">
+                  <Typography sx={{ minWidth: "80px" }}>Handler: </Typography>
+                  <Typography>{user.name}</Typography>
+                </Stack>
+
+                <Stack direction="row">
+                  <Typography sx={{ minWidth: "80px" }}>Status: </Typography>
+                  <Typography
+                    align="center"
+                    noWrap
+                    sx={{
+                      bgcolor: statusColorGenerator(status),
+                      borderRadius: "5px",
+                      color: "white",
+                      mr: "auto",
+                    }}
+                  >
+                    {status}
+                  </Typography>
+                </Stack>
+
+                {status === "Department" && (
+                  <Stack direction="row">
+                    <Typography sx={{ minWidth: "150px" }}>New department: </Typography>
+                    <Typography noWrap>{department}</Typography>
+                  </Stack>
+                )}
+
+                {status === "Ownership" && (
+                  <>
+                    <Stack direction="row">
+                      <Typography sx={{ minWidth: "80px" }}>Issued to: </Typography>
+                      <Typography>{issuedTo}</Typography>
+                    </Stack>
+
+                    <Stack direction="row">
+                      <Typography sx={{ minWidth: "80px" }}>Used by: </Typography>
+                      <Typography>{usedBy}</Typography>
+                    </Stack>
+                  </>
+                )}
+
+                {partsHistory && partsHistory.length > 0 && (
+                  <Stack direction="row" gap={2} alignItems="center">
+                    <Typography>Parts Affected:</Typography>
+
+                    {partsHistory.map(({ name, status, id }) => (
+                      <Typography
+                        key={id}
+                        sx={{
+                          bgcolor: statusColorGenerator(status),
+                          p: 0.3,
+                          color: "white",
+                        }}
+                      >
+                        {name}
+                      </Typography>
+                    ))}
+                  </Stack>
+                )}
+              </Stack>
+            </Stack>
+          )
+        )}
+      {sessionData && sessionData.user?.role === "ADMIN" && sessionData.user?.group === "GSO" && (
+        <Button
+          variant="outlined"
+          color="error"
+          sx={{
+            p: 3,
+          }}
+        >
+          DELETE EQUIPTMENT
+        </Button>
+      )}
+
+      <Button
+        variant="outlined"
+        color="error"
+        onClick={() => {
+          setDeleting(true);
+        }}
+        sx={{
+          p: 3,
+        }}
+      >
+        DELETE EQUIPTMENT
+      </Button>
+
+      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={deleting}>
+        <Stack>
+          <Typography
             sx={{
-              "& .MuiTypography-subtitle1": {
-                p: 0.5,
-                borderRadius: 1,
-                bgcolor: "error.light",
-                color: "white",
-              },
+              bgcolor: "primary.main",
+              p: 3,
             }}
           >
-            <Typography variant="subtitle1">{getFormattedDate(new Date(date))}</Typography>
+            Delete this equiptment permanently?
+          </Typography>
 
-            <Stack
-              gap={0.3}
-              sx={{ p: 0.5, borderRadius: 1, bgcolor: "primary.light", color: "white" }}
-            >
-              <Stack direction="row">
-                <Typography sx={{ minWidth: "70px" }}>Handler: </Typography>
-                <Typography>{user.name}</Typography>
-              </Stack>
-
-              <Stack direction="row">
-                <Typography sx={{ minWidth: "70px" }}>Status: </Typography>
-                <Typography
-                  align="center"
-                  noWrap
-                  sx={{
-                    bgcolor: statusColorGenerator(status),
-                    borderRadius: "5px",
-                    color: "white",
-                    mr: "auto",
-                  }}
-                >
-                  {status}
-                </Typography>
-              </Stack>
-
-              {partsHistory && partsHistory.length > 0 && (
-                <Stack direction="row" gap={2} alignItems="center">
-                  <Typography>Parts Affected:</Typography>
-
-                  {partsHistory.map(({ name, status, id }) => (
-                    <Typography
-                      key={id}
-                      sx={{
-                        bgcolor: statusColorGenerator(status),
-                        p: 0.3,
-                        color: "white",
-                      }}
-                    >
-                      {name}
-                    </Typography>
-                  ))}
-                </Stack>
-              )}
-            </Stack>
-          </Stack>
-        ))}
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              deleteEquiptment({ equiptmentId: data?.current?.id as string });
+            }}
+            sx={{
+              p: 1.5,
+            }}
+          >
+            Delete
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              setDeleting(false);
+            }}
+          >
+            Cancel
+          </Button>
+        </Stack>
+      </Backdrop>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%", color: "#2A3990" }}>
           {snackbarMessage}
@@ -478,3 +646,29 @@ const EquiptmentId = () => {
 };
 
 export default EquiptmentId;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  if (!session?.user?.role && !session?.user?.group) {
+    return {
+      redirect: {
+        destination: "/unauthorized",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+};

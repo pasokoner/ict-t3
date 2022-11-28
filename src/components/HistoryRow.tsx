@@ -9,6 +9,7 @@ import {
   TableCell,
   TableBody,
   useMediaQuery,
+  CircularProgress,
 } from "@mui/material";
 
 import { getFormattedDate, statusColorGenerator } from "../utils/constant";
@@ -28,7 +29,11 @@ const HistoryRow = (props: Props) => {
   const matches = useMediaQuery("(max-width:900px)");
 
   if (isLoading) {
-    return <></>;
+    return (
+      <Box sx={{ m: "0 auto" }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
