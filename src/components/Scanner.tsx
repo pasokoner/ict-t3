@@ -141,6 +141,7 @@ const Scanner = () => {
                   direction="column"
                   id={data.id}
                   name={data.name}
+                  lastChecked={data.date}
                 />
               </Stack>
             )}
