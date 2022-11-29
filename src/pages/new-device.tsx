@@ -32,6 +32,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 
 import QrMaker from "../components/QrMaker";
 import { departments } from "../utils/constant";
+import ImportButton from "../components/ImportButton";
 
 type FormValues = {
   name: string;
@@ -121,6 +122,8 @@ const NewDevice = () => {
       <Typography variant="h4" fontWeight="bold">
         Add new equiptment
       </Typography>
+
+      <ImportButton />
 
       <Stack direction="column" gap={2}>
         <Typography

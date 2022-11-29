@@ -31,7 +31,6 @@ const Unauthorized = () => {
       <Stack>
         <Typography align="center">SORRY BUT YOU DO NOT BELONG TO ANY GROUP</Typography>
         <Typography align="center">Logging you out in a second</Typography>
-        <Typography align="center">{state.num - 2}</Typography>
 
         <LinearProgress />
       </Stack>

@@ -15,7 +15,6 @@ export const equiptmentRouter = router({
           date: z.date().nullish(),
           reminder: z.string().trim().nullish(),
         }),
-
         parts: z
           .array(
             z.object({
@@ -33,57 +32,70 @@ export const equiptmentRouter = router({
 
       try {
         await ctx.prisma.$transaction(async () => {
-          const equiptmentData = await ctx.prisma.equipment.create({
-            data: {
-              userId: ctx.session.user.id,
-              ...equiptment,
-              date: equiptment.date ? equiptment.date : new Date(),
-              reminder: equiptment.reminder ? equiptment.reminder : null,
-              condition: "IIIO",
-            },
-          });
+          if (parts) {
+            const formattedParts = parts.map(({ partsName, partsSerial }) => {
+              return {
+                name: partsName,
+                serial: partsSerial,
+                status: "In inventory",
+              };
+            });
 
-          if (equiptmentData) {
-            const equiptmentHistoryData = await ctx.prisma.equipmentHistory.create({
+            const equiptmentWith = await ctx.prisma.equipment.create({
               data: {
-                equiptmentId: equiptmentData.id,
                 userId: ctx.session.user.id,
                 ...equiptment,
                 date: equiptment.date ? equiptment.date : new Date(),
                 reminder: equiptment.reminder ? equiptment.reminder : null,
                 condition: "IIIO",
+                parts: {
+                  createMany: {
+                    data: formattedParts,
+                  },
+                },
+                equipmentHistory: {
+                  create: [
+                    {
+                      userId: ctx.session.user.id,
+                      ...equiptment,
+                      date: equiptment.date ? equiptment.date : new Date(),
+                      reminder: equiptment.reminder ? equiptment.reminder : null,
+                      condition: "IIIO",
+                      partsHistory: {
+                        createMany: {
+                          data: formattedParts,
+                        },
+                      },
+                    },
+                  ],
+                },
               },
             });
 
-            if (parts && equiptmentHistoryData) {
-              const formattedParts = parts.map(({ partsName, partsSerial }) => {
-                return {
-                  name: partsName,
-                  serial: partsSerial,
-                  status: "In inventory",
-                  equiptmentId: equiptmentData.id,
-                };
-              });
+            id = equiptmentWith.id;
+          } else {
+            const equiptmentWithout = await ctx.prisma.equipment.create({
+              data: {
+                userId: ctx.session.user.id,
+                ...equiptment,
+                date: equiptment.date ? equiptment.date : new Date(),
+                reminder: equiptment.reminder ? equiptment.reminder : null,
+                condition: "IIIO",
+                equipmentHistory: {
+                  create: [
+                    {
+                      userId: ctx.session.user.id,
+                      ...equiptment,
+                      date: equiptment.date ? equiptment.date : new Date(),
+                      reminder: equiptment.reminder ? equiptment.reminder : null,
+                      condition: "IIIO",
+                    },
+                  ],
+                },
+              },
+            });
 
-              const formattedHistoryParts = parts.map(({ partsName, partsSerial }) => {
-                return {
-                  name: partsName,
-                  serial: partsSerial,
-                  status: "In inventory",
-                  equiptmentHistoryId: equiptmentHistoryData.id,
-                };
-              });
-
-              const partsData = await ctx.prisma.parts.createMany({
-                data: formattedParts,
-              });
-
-              const partsHistoryData = await ctx.prisma.partsHistory.createMany({
-                data: formattedHistoryParts,
-              });
-            }
-
-            id = equiptmentData.id;
+            id = equiptmentWithout.id;
           }
         });
       } catch (error) {
@@ -609,6 +621,36 @@ export const equiptmentRouter = router({
       });
 
       return { message: "Successfully deleted" };
+    }),
+  import: protectedProcedure
+    .input(
+      z.array(
+        z.object({
+          name: z.string().trim().min(1),
+          serial: z.string().trim(),
+          department: z.string().trim(),
+          issuedTo: z.string().trim(),
+          usedBy: z.string().trim(),
+          date: z.date(),
+          reminder: z.string().trim().nullish(),
+        })
+      )
+    )
+    .mutation(async ({ ctx, input }) => {
+      const formatInput = input.map(({ reminder, ...exceptReminder }) => {
+        return {
+          ...exceptReminder,
+          userId: ctx.session.user.id,
+          status: "In inventory",
+          condition: "IIIO",
+        };
+      });
+
+      const data = await ctx.prisma.equipment.createMany({
+        data: formatInput,
+      });
+
+      return { message: "Success" };
     }),
 });
 

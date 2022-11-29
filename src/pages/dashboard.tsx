@@ -11,19 +11,9 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 import AddIcon from "@mui/icons-material/Add";
 
-import {
-  Button,
-  Divider,
-  Stack,
-  Typography,
-  Backdrop,
-  Box,
-  Popover,
-  IconButton,
-} from "@mui/material";
+import { Button, Divider, Stack, Typography, Box, Popover, IconButton } from "@mui/material";
 import CollapsibleTable from "../components/Table";
 import StatusSectionCard from "../components/StatusSectionCard";
-import NewDeviceForm from "../components/NewDeviceForm";
 
 import InventoryIcon from "@mui/icons-material/Inventory";
 import BuildIcon from "@mui/icons-material/Build";

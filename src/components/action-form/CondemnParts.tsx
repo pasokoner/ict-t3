@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { trpc } from "../../utils/trpc";
 

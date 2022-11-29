@@ -38,13 +38,6 @@ type Props = {
   lastChecked: Date;
 };
 
-type Parts = {
-  serial: string;
-  id: string;
-  status: string;
-  name: string;
-};
-
 const CondemningForm = ({
   handleClose,
   updatedStatus,

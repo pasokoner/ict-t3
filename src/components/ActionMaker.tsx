@@ -4,11 +4,10 @@ import { IconButton, Stack, Backdrop, Box } from "@mui/material";
 
 import InventoryIcon from "@mui/icons-material/Inventory";
 import BuildIcon from "@mui/icons-material/Build";
-import ConstructionIcon from "@mui/icons-material/Construction";
+
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-import NewDeviceForm from "./NewDeviceForm";
 import RepairForm from "./action-form/RepairForm";
 import CondemningForm from "./action-form/CondemningForm";
 import InventoryForm from "./action-form/InventoryForm";
