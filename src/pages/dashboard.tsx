@@ -64,12 +64,12 @@ const Dashboard: NextPage = () => {
       <Head>
         {sessionData?.user?.group === "PITO" && itemsData && (
           <title>
-            ICT Inventory System ({itemsData?.forRepair > 0 ? itemsData?.forRepair : ""})
+            ICT Inventory System {itemsData?.forRepair > 0 ? `(${itemsData?.forRepair})` : ""}
           </title>
         )}
         {sessionData?.user?.group === "GSO" && itemsData && (
           <title>
-            ICT Inventory System ({itemsData?.toCondemn > 0 ? itemsData?.toCondemn : ""})
+            ICT Inventory System {itemsData?.toCondemn > 0 ? `(${itemsData?.toCondemn})` : ""}
           </title>
         )}
         <meta property="og:title" content="ICT Inventory System" key="title" />

@@ -77,6 +77,7 @@ const InventoryForm = ({
           date: value ? value.toDate() : undefined,
           newParts: newParts,
         });
+        console.log(newParts);
       } else {
         setEmptyParts("Add a new parts to reissue this unit");
         return;
@@ -333,6 +334,8 @@ const InventoryForm = ({
       setParts((prevState) => [...prevState, ...defaultParts]);
     }
   }, [partsData]);
+
+  console.log(newParts);
 
   return (
     <Stack

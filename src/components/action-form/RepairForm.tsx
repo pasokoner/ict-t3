@@ -116,6 +116,7 @@ const RepairForm = ({
   };
 
   const [parts, setParts] = useState<string[]>([]);
+  console.log(parts);
 
   const handleParts = (event: React.MouseEvent<HTMLElement>, newAddedParts: string[]) => {
     setParts(newAddedParts);

@@ -16,6 +16,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
   Stack,
 } from "@mui/material";
@@ -318,38 +319,41 @@ export default function CollapsibleTable({ tableFilter, countStatus }: TableProp
   }, [equiptment, tableFilter]);
 
   return (
-    <TableContainer>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            {!matches && (
-              <>
-                <TableCell>Item ID</TableCell>
-                <TableCell>Equiptment</TableCell>
-                <TableCell>Department</TableCell>
+    <>
+      <TextField size="small" label="Search Serial Number" />
+      <TableContainer>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              {!matches && (
+                <>
+                  <TableCell>Item ID</TableCell>
+                  <TableCell>Equiptment</TableCell>
+                  <TableCell>Department</TableCell>
 
-                <TableCell>Last checked</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Actions</TableCell>
-              </>
-            )}
-            {matches && (
-              <>
-                <TableCell align="center">Item ID</TableCell>
-                <TableCell>Equiptment</TableCell>
-                <TableCell align="center">Status</TableCell>
-                <TableCell align="center">Actions</TableCell>
-              </>
-            )}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {formattedData &&
-            formattedData.map((row: ReturnType<typeof createData>) => (
-              <Row key={row.serial} row={row} matches={matches} />
-            ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                  <TableCell>Last checked</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Actions</TableCell>
+                </>
+              )}
+              {matches && (
+                <>
+                  <TableCell align="center">Item ID</TableCell>
+                  <TableCell>Equiptment</TableCell>
+                  <TableCell align="center">Status</TableCell>
+                  <TableCell align="center">Actions</TableCell>
+                </>
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {formattedData &&
+              formattedData.map((row: ReturnType<typeof createData>) => (
+                <Row key={row.serial} row={row} matches={matches} />
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }

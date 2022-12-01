@@ -159,7 +159,7 @@ export const equiptmentRouter = router({
               };
             });
 
-            const newParts = ctx.prisma.parts.createMany({
+            const newParts = await ctx.prisma.parts.createMany({
               data: formattedNewParts,
             });
           }
@@ -183,7 +183,7 @@ export const equiptmentRouter = router({
                 };
               });
 
-              const newHistoryParts = ctx.prisma.partsHistory.createMany({
+              const newHistoryParts = await ctx.prisma.partsHistory.createMany({
                 data: formattedNewHistoryParts,
               });
             }
@@ -622,6 +622,11 @@ export const equiptmentRouter = router({
 
       return { message: "Successfully deleted" };
     }),
+  reset: protectedProcedure.mutation(async ({ ctx }) => {
+    const data = await ctx.prisma.equipment.deleteMany({});
+
+    return { message: "Reset success" };
+  }),
   import: protectedProcedure
     .input(
       z.array(

@@ -19,6 +19,8 @@ interface Equiptment {
 const ImportButton = () => {
   const { mutate } = trpc.equiptment.import.useMutation();
 
+  const { mutate: resetEquiptment } = trpc.equiptment.reset.useMutation();
+
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       if (e.target.files.length > 0) {
@@ -37,11 +39,11 @@ const ImportButton = () => {
             .filter(
               ({ name, oldSerial, newSerial, department, reminder, issuedTo, usedBy, date }) => {
                 if (
-                  name.trim() &&
-                  (oldSerial.trim() || newSerial?.trim()) &&
-                  department.trim() &&
-                  (issuedTo.trim() || usedBy?.trim()) &&
-                  new Date(date.trim()).toString() !== "Invalid Date"
+                  name &&
+                  (oldSerial || newSerial) &&
+                  department &&
+                  (issuedTo || usedBy) &&
+                  new Date(date).toString() !== "Invalid Date"
                 ) {
                   return true;
                 }
@@ -52,14 +54,16 @@ const ImportButton = () => {
             .map(({ name, oldSerial, newSerial, department, reminder, issuedTo, usedBy, date }) => {
               return {
                 name,
-                serial: newSerial ? newSerial : oldSerial,
+                serial: newSerial ? newSerial : oldSerial ? oldSerial : "N/A",
                 department,
                 reminder,
                 issuedTo,
-                usedBy: usedBy ? usedBy : issuedTo,
+                usedBy: usedBy ? usedBy : issuedTo ? issuedTo : "N/A",
                 date: new Date(date),
               };
             });
+
+          console.log(formattedData);
 
           if (formattedData.length > 0) {
             mutate(formattedData);
@@ -70,10 +74,19 @@ const ImportButton = () => {
   };
 
   return (
-    <Button variant="contained" component="label">
-      IMPORT
-      <input type="file" hidden onChange={handleFile} />
-    </Button>
+    <>
+      <Button variant="contained" component="label">
+        IMPORT
+        <input type="file" hidden onChange={handleFile} />
+      </Button>
+      <Button
+        onClick={() => {
+          resetEquiptment();
+        }}
+      >
+        Reset
+      </Button>
+    </>
   );
 };
 

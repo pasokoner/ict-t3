@@ -67,8 +67,8 @@ const EquiptmentId = () => {
     trpc.equiptment.ownership.useMutation({
       onSuccess: () => {
         handleClick();
-        setSnackbarMessage("Ownership changed!");
         setErrorOwnership("");
+        setSnackbarMessage("Ownership changed!");
         refetch();
       },
     });
@@ -77,8 +77,8 @@ const EquiptmentId = () => {
     trpc.equiptment.department.useMutation({
       onSuccess: () => {
         handleClick();
-        setSnackbarMessage("Department changed!");
         setErrorDepartment("");
+        setSnackbarMessage("Department changed!");
         refetch();
       },
     });
@@ -87,8 +87,8 @@ const EquiptmentId = () => {
     trpc.equiptment.condition.useMutation({
       onSuccess: () => {
         handleClick();
-        setSnackbarMessage("Condition changed!");
         setErrorCondition("");
+        setSnackbarMessage("Condition changed!");
         refetch();
       },
     });
@@ -278,86 +278,89 @@ const EquiptmentId = () => {
         {(editDepartment || editOwnership || editCondition) && (
           <Stack component="form" m={1} gap={2} onSubmit={handleSubmit(onSubmit)}>
             {editOwnership && (
-              <Stack gap={2} direction="row" justifyContent="space-between">
-                <TextField
-                  size="small"
-                  variant="standard"
-                  label="Issued to:"
-                  defaultValue={data?.current?.issuedTo}
-                  required
-                  {...register("issuedTo")}
-                  sx={{
-                    width: "50%",
-                  }}
-                />
-                <TextField
-                  size="small"
-                  variant="standard"
-                  label="Used by:"
-                  defaultValue={data?.current?.usedBy}
-                  required
-                  {...register("usedBy")}
-                  sx={{
-                    width: "50%",
-                  }}
-                />
-              </Stack>
-            )}
-
-            {errorOwnership && (
-              <Typography color="error" mt={-1} fontSize={14}>
-                {errorOwnership}
-              </Typography>
+              <>
+                <Stack gap={2} direction="row" justifyContent="space-between">
+                  <TextField
+                    size="small"
+                    variant="standard"
+                    label="Issued to:"
+                    defaultValue={data?.current?.issuedTo}
+                    required
+                    {...register("issuedTo")}
+                    sx={{
+                      width: "50%",
+                    }}
+                  />
+                  <TextField
+                    size="small"
+                    variant="standard"
+                    label="Used by:"
+                    defaultValue={data?.current?.usedBy}
+                    required
+                    {...register("usedBy")}
+                    sx={{
+                      width: "50%",
+                    }}
+                  />
+                </Stack>
+                {errorOwnership && (
+                  <Typography color="error" mt={-1} fontSize={14}>
+                    {errorOwnership}
+                  </Typography>
+                )}
+              </>
             )}
 
             {editDepartment && (
-              <FormControl fullWidth required>
-                <InputLabel id="demo-simple-select-label">Department</InputLabel>
-                <Select
-                  label="Department"
-                  variant="standard"
-                  {...register("department")}
-                  defaultValue={data?.current?.department}
-                  // {...register("department")}
-                >
-                  {departments.map(({ acronym, name }, i) => (
-                    <MenuItem key={i} value={acronym}>
-                      {acronym} - {name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-
-            {errorDepartment && (
-              <Typography color="error" mt={-1} fontSize={14}>
-                {errorDepartment}
-              </Typography>
+              <>
+                <FormControl fullWidth required>
+                  <InputLabel id="demo-simple-select-label">Department</InputLabel>
+                  <Select
+                    label="Department"
+                    variant="standard"
+                    {...register("department")}
+                    defaultValue={data?.current?.department}
+                    // {...register("department")}
+                  >
+                    {departments.map(({ acronym, name }, i) => (
+                      <MenuItem key={i} value={acronym}>
+                        {acronym} - {name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {errorDepartment && (
+                  <Typography color="error" mt={-1} fontSize={14}>
+                    {errorDepartment}
+                  </Typography>
+                )}
+              </>
             )}
 
             {editCondition && (
-              <FormControl fullWidth required>
-                <InputLabel id="demo-simple-select-label">Condition</InputLabel>
-                <Select
-                  label="Conditions"
-                  variant="standard"
-                  {...register("condition")}
-                  defaultValue={data?.current?.condition}
-                  // {...register("department")}
-                >
-                  {conditions.map(({ name, value }, i) => (
-                    <MenuItem key={i} value={value}>
-                      {name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-
-            {errorCondition && (
-              <Typography color="error" mt={-1} fontSize={14}>
-                {errorCondition}
-              </Typography>
+              <>
+                <FormControl fullWidth required>
+                  <InputLabel id="demo-simple-select-label">Condition</InputLabel>
+                  <Select
+                    label="Conditions"
+                    variant="standard"
+                    {...register("condition")}
+                    defaultValue={data?.current?.condition}
+                    // {...register("department")}
+                  >
+                    {conditions.map(({ name, value }, i) => (
+                      <MenuItem key={i} value={value}>
+                        {name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {errorCondition && (
+                  <Typography color="error" mt={-1} fontSize={14}>
+                    {errorCondition}
+                  </Typography>
+                )}
+              </>
             )}
 
             <Stack direction="row" gap={1} justifyContent="center">
@@ -494,7 +497,7 @@ const EquiptmentId = () => {
       {data &&
         data.history.length > 0 &&
         data.history?.map(
-          ({ status, user, date, id, partsHistory, department, issuedTo, usedBy }) => (
+          ({ status, user, date, id, partsHistory, department, issuedTo, usedBy, reminder }) => (
             <Stack
               key={id}
               gap={0.5}
@@ -573,6 +576,11 @@ const EquiptmentId = () => {
                     ))}
                   </Stack>
                 )}
+
+                <Stack direction="row">
+                  <Typography sx={{ minWidth: "80px" }}>Reminder: </Typography>
+                  <Typography>{reminder ? reminder : "N/A"}</Typography>
+                </Stack>
               </Stack>
             </Stack>
           )
@@ -581,6 +589,9 @@ const EquiptmentId = () => {
         <Button
           variant="outlined"
           color="error"
+          onClick={() => {
+            setDeleting(true);
+          }}
           sx={{
             p: 3,
           }}
@@ -588,7 +599,7 @@ const EquiptmentId = () => {
           DELETE EQUIPTMENT
         </Button>
       )}
-
+      {/* 
       <Button
         variant="outlined"
         color="error"
@@ -600,7 +611,7 @@ const EquiptmentId = () => {
         }}
       >
         DELETE EQUIPTMENT
-      </Button>
+      </Button> */}
 
       <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={deleting}>
         <Stack>
