@@ -585,20 +585,22 @@ const EquiptmentId = () => {
             </Stack>
           )
         )}
-      {sessionData && sessionData.user?.role === "ADMIN" && sessionData.user?.group === "GSO" && (
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={() => {
-            setDeleting(true);
-          }}
-          sx={{
-            p: 3,
-          }}
-        >
-          DELETE EQUIPTMENT
-        </Button>
-      )}
+      {sessionData &&
+        ((sessionData.user?.role === "ADMIN" && sessionData.user?.group === "GSO") ||
+          (sessionData.user?.role === "SUPERADMIN" && sessionData.user?.group === "GSO")) && (
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => {
+              setDeleting(true);
+            }}
+            sx={{
+              p: 3,
+            }}
+          >
+            DELETE EQUIPTMENT
+          </Button>
+        )}
       {/* 
       <Button
         variant="outlined"
