@@ -16,6 +16,8 @@ import LoginIcon from "@mui/icons-material/Login";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import NoAccountsIcon from "@mui/icons-material/NoAccounts";
 
+import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
+
 import {
   Button,
   Stack,

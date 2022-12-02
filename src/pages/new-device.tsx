@@ -123,7 +123,7 @@ const NewDevice = () => {
         Add new equiptment
       </Typography>
 
-      <ImportButton />
+      {/* <ImportButton /> */}
 
       <Stack direction="column" gap={2}>
         <Typography

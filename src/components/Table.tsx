@@ -19,6 +19,8 @@ import {
   TextField,
   Typography,
   Stack,
+  Popover,
+  ButtonGroup,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -28,6 +30,7 @@ import ActionMaker from "./ActionMaker";
 import { statusColorGenerator, getFormattedDate } from "../utils/constant";
 import HistoryRow from "./HistoryRow";
 import { useRouter } from "next/router";
+import { useQrCart } from "../context/QrCartContext";
 
 type TableFormat = {
   id: string;
@@ -68,7 +71,22 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
 
   const { data: sessionData } = useSession();
 
+  const { increaseCartQuantity } = useQrCart();
+
   const router = useRouter();
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openPop = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
 
   return (
     <>
@@ -96,14 +114,44 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 width: "50px",
               }}
             >
-              <Button
-                variant="text"
-                onClick={() => {
-                  router.push(`/equiptment/${row.id}`);
-                }}
-              >
+              <Button variant="text" onClick={handleClick}>
                 #{row.id.slice(0, 5) + "..."}
               </Button>
+              <Popover
+                id={id}
+                open={openPop}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+              >
+                <Stack
+                  gap={0.5}
+                  sx={{
+                    p: 1,
+                    borderRadius: "5px",
+                  }}
+                >
+                  <ButtonGroup variant="text" orientation="vertical" size="small">
+                    <Button
+                      onClick={() => {
+                        router.push(`/equiptment/${row.id}`);
+                      }}
+                    >
+                      View Details
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        increaseCartQuantity(row.id, row.department);
+                      }}
+                    >
+                      Add to print
+                    </Button>
+                  </ButtonGroup>
+                </Stack>
+              </Popover>
             </TableCell>
             <TableCell>
               {row.name.length >= 30 && (

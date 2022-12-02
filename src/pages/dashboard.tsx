@@ -265,7 +265,7 @@ const Dashboard: NextPage = () => {
 
           <StatusSectionCard
             count={itemsData?.unserviceable}
-            title="Unserviceab2le"
+            title="Unserviceable"
             icon={<ConstructionIcon />}
             color="grey.500"
             setStatusFilter={setStatusFilter}

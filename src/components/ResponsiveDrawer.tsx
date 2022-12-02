@@ -18,7 +18,10 @@ import {
 
 import MenuIcon from "@mui/icons-material/Menu";
 
+import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
+
 import ResponsiveDrawerItem from "./ResponsiveDrawerItem";
+import { useQrCart } from "../context/QrCartContext";
 
 const drawerWidth = 230;
 
@@ -33,6 +36,8 @@ interface Props {
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const { openCart, cartQuantity } = useQrCart();
 
   const { data: sessionData } = useSession();
 
@@ -97,6 +102,36 @@ export default function ResponsiveDrawer(props: Props) {
                 alignItems: "center",
               }}
             >
+              <IconButton
+                onClick={() => {
+                  openCart();
+                }}
+                sx={{
+                  // color: "white",
+                  bgcolor: "white",
+                  border: 4,
+
+                  "&:hover": {
+                    bgcolor: "grey.300",
+                  },
+                }}
+              >
+                <QrCodeScannerIcon />
+                <Typography
+                  sx={{
+                    position: "absolute",
+                    p: 0.2,
+                    borderRadius: "50%",
+                    bgcolor: "red",
+                    color: "white",
+                    fontSize: 12,
+                    bottom: -10,
+                    right: -3,
+                  }}
+                >
+                  {cartQuantity > 99 ? "99+" : cartQuantity}
+                </Typography>
+              </IconButton>
               <Box>
                 <Image
                   src={sessionData.user?.image as string}
