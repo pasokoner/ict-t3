@@ -12,6 +12,7 @@ export const equiptmentRouter = router({
           issuedTo: z.string().trim(),
           usedBy: z.string().trim(),
           status: z.string(),
+          // currentUser: z.string(),
           date: z.date().nullish(),
           reminder: z.string().trim().nullish(),
         }),
@@ -284,13 +285,22 @@ export const equiptmentRouter = router({
   all: protectedProcedure
     .input(
       z.object({
-        filter: z.string(),
+        status: z.string(),
+        condition: z.string().optional(),
+        department: z.string().optional(),
+        serial: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
+      const { serial, ...exceptSerial } = input;
+      const { status } = exceptSerial;
+
       const equiptment = await ctx.prisma.equipment.findMany({
         where: {
-          status: input.filter,
+          ...exceptSerial,
+          serial: {
+            contains: serial,
+          },
         },
 
         orderBy: {
@@ -298,10 +308,10 @@ export const equiptmentRouter = router({
         },
       });
 
-      if (input.filter === "Condemned" || input.filter === "To condemn") {
+      if (status === "Condemned" || status === "To condemn") {
         const parts = await ctx.prisma.parts.findMany({
           where: {
-            status: input.filter,
+            status: status,
           },
 
           include: {
@@ -497,17 +507,11 @@ export const equiptmentRouter = router({
         equiptmentId: z.string(),
         issuedTo: z.string().optional(),
         usedBy: z.string().optional(),
+        currentUser: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { issuedTo, usedBy, equiptmentId } = input;
-
-      const newOwner =
-        issuedTo && usedBy
-          ? { issuedTo: issuedTo, usedBy: usedBy }
-          : usedBy && !issuedTo
-          ? { usedBy: usedBy }
-          : { issuedTo: issuedTo };
+      const { equiptmentId, ...exceptId } = input;
 
       await ctx.prisma.$transaction(async () => {
         const equiptment = await ctx.prisma.equipment.update({
@@ -515,7 +519,7 @@ export const equiptmentRouter = router({
             id: equiptmentId,
           },
 
-          data: newOwner,
+          data: exceptId,
         });
 
         if (equiptment) {

@@ -33,17 +33,27 @@ import { departments } from "../../utils/constant";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 
+import { useReactToPrint } from "react-to-print";
+
+import { useRef } from "react";
+
 type FormValues = {
   department: string;
   issuedTo: string;
   usedBy: string;
   condition: string;
+  currentUser?: string;
 };
 
 const EquiptmentId = () => {
   const router = useRouter();
 
   const { data: sessionData } = useSession();
+
+  const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   const [editOwnership, setEditOwnership] = useState(false);
   const [editDepartment, setEditDepartment] = useState(false);
@@ -100,6 +110,7 @@ const EquiptmentId = () => {
     usedBy,
     department,
     condition,
+    currentUser,
   }) => {
     if (!data?.current?.id) {
       return;
@@ -109,19 +120,31 @@ const EquiptmentId = () => {
         setErrorOwnership("You are trying to change nothing!");
       } else if (
         issuedTo.trim() !== data?.current?.issuedTo &&
-        usedBy.trim() !== data?.current?.issuedTo
+        usedBy.trim() !== data?.current?.usedBy
       ) {
         changeOwnership({ issuedTo: issuedTo, usedBy: usedBy, equiptmentId: data.current.id });
       } else if (
         issuedTo.trim() === data?.current?.issuedTo &&
-        usedBy.trim() !== data?.current?.issuedTo
+        usedBy.trim() !== data?.current?.usedBy
       ) {
         changeOwnership({ usedBy: usedBy, equiptmentId: data?.current?.id });
       } else if (
         issuedTo.trim() !== data?.current?.issuedTo &&
-        usedBy.trim() === data?.current?.issuedTo
+        usedBy.trim() === data?.current?.usedBy
       ) {
         changeOwnership({ issuedTo: issuedTo, equiptmentId: data?.current?.id });
+      } else {
+        const newOwner: { issuedTo?: string; usedBy?: string; currentUser?: string } = {};
+        if (issuedTo.trim() !== data?.current?.issuedTo) {
+          newOwner.issuedTo = issuedTo.trim();
+        }
+        if (usedBy.trim() !== data?.current?.usedBy) {
+          newOwner.issuedTo = issuedTo.trim();
+        }
+        if (currentUser && currentUser.trim() !== data?.current?.currentUser) {
+          newOwner.currentUser = currentUser.trim();
+        }
+        changeOwnership({ ...newOwner, equiptmentId: data.current.id });
       }
     }
 
@@ -206,13 +229,35 @@ const EquiptmentId = () => {
         }}
       >
         <Stack gap={1}>
-          <Box
+          <Stack
+            justifyContent="center"
+            alignItems="center"
+            ref={componentRef}
             sx={{
-              maxWidth: 80,
+              maxWidth: 100,
+              p: 1,
             }}
           >
             <QrMaker value={data?.current?.id as string} />
-          </Box>
+
+            <Typography
+              fontSize={10}
+              fontWeight="bold"
+              sx={{
+                wordBreak: "break-word",
+              }}
+            >
+              {data?.current?.department}
+            </Typography>
+            <Typography
+              fontSize={8}
+              sx={{
+                wordBreak: "break-word",
+              }}
+            >
+              {data?.current?.serial}
+            </Typography>
+          </Stack>
           <Stack direction="row" alignItems="center" gap={2}>
             <Stack direction="row" gap={1}>
               <Typography>Status:</Typography>
@@ -228,6 +273,9 @@ const EquiptmentId = () => {
                 {data?.current?.status}
               </Typography>
             </Stack>
+            <Button variant="outlined" onClick={handlePrint}>
+              Print
+            </Button>
             <ActionMaker
               id={data?.current?.id as string}
               direction="row"
@@ -279,7 +327,7 @@ const EquiptmentId = () => {
           <Stack component="form" m={1} gap={2} onSubmit={handleSubmit(onSubmit)}>
             {editOwnership && (
               <>
-                <Stack gap={2} direction="row" justifyContent="space-between">
+                <Stack gap={2} justifyContent="space-between">
                   <TextField
                     size="small"
                     variant="standard"
@@ -287,9 +335,6 @@ const EquiptmentId = () => {
                     defaultValue={data?.current?.issuedTo}
                     required
                     {...register("issuedTo")}
-                    sx={{
-                      width: "50%",
-                    }}
                   />
                   <TextField
                     size="small"
@@ -298,11 +343,16 @@ const EquiptmentId = () => {
                     defaultValue={data?.current?.usedBy}
                     required
                     {...register("usedBy")}
-                    sx={{
-                      width: "50%",
-                    }}
+                  />
+                  <TextField
+                    size="small"
+                    variant="standard"
+                    label="Current user:"
+                    defaultValue={data?.current?.currentUser}
+                    {...register("currentUser")}
                   />
                 </Stack>
+
                 {errorOwnership && (
                   <Typography color="error" mt={-1} fontSize={14}>
                     {errorOwnership}
@@ -417,9 +467,9 @@ const EquiptmentId = () => {
         </Stack>
 
         <Stack>
-          <Typography variant="subtitle1">Reminder</Typography>
+          <Typography variant="subtitle1">Description</Typography>
           <Typography variant="subtitle2">
-            {data?.current?.reminder ? data?.current?.reminder : "No reminders"}
+            {data?.current?.reminder ? data?.current?.reminder : "N/A"}
           </Typography>
         </Stack>
 
@@ -482,9 +532,26 @@ const EquiptmentId = () => {
           </Stack>
         </Stack>
 
-        <Stack>
-          <Typography variant="subtitle1">Department</Typography>
-          <Typography variant="subtitle2">{data?.current?.department}</Typography>
+        <Stack
+          direction="row"
+          gap={2}
+          sx={{
+            "& > *": {
+              width: "50%",
+            },
+          }}
+        >
+          <Stack>
+            <Typography variant="subtitle1">Current user</Typography>
+            <Typography variant="subtitle2">
+              {data?.current?.currentUser ? data?.current?.currentUser : "N/A"}
+            </Typography>
+          </Stack>
+
+          <Stack>
+            <Typography variant="subtitle1">Department</Typography>
+            <Typography variant="subtitle2">{data?.current?.department}</Typography>
+          </Stack>
         </Stack>
       </Stack>
 
@@ -516,13 +583,13 @@ const EquiptmentId = () => {
                 gap={0.3}
                 sx={{ p: 0.5, borderRadius: 1, bgcolor: "primary.light", color: "white" }}
               >
-                <Stack direction="row">
-                  <Typography sx={{ minWidth: "80px" }}>Handler: </Typography>
+                <Stack direction="row" gap={1}>
+                  <Typography>Handler: </Typography>
                   <Typography>{user.name}</Typography>
                 </Stack>
 
-                <Stack direction="row">
-                  <Typography sx={{ minWidth: "80px" }}>Status: </Typography>
+                <Stack direction="row" gap={1}>
+                  <Typography>Status: </Typography>
                   <Typography
                     align="center"
                     noWrap
@@ -538,21 +605,21 @@ const EquiptmentId = () => {
                 </Stack>
 
                 {status === "Department" && (
-                  <Stack direction="row">
-                    <Typography sx={{ minWidth: "150px" }}>New department: </Typography>
+                  <Stack direction="row" gap={1}>
+                    <Typography>New department: </Typography>
                     <Typography noWrap>{department}</Typography>
                   </Stack>
                 )}
 
                 {status === "Ownership" && (
                   <>
-                    <Stack direction="row">
-                      <Typography sx={{ minWidth: "80px" }}>Issued to: </Typography>
+                    <Stack direction="row" gap={1}>
+                      <Typography>Issued to: </Typography>
                       <Typography>{issuedTo}</Typography>
                     </Stack>
 
-                    <Stack direction="row">
-                      <Typography sx={{ minWidth: "80px" }}>Used by: </Typography>
+                    <Stack direction="row" gap={1}>
+                      <Typography>Used by: </Typography>
                       <Typography>{usedBy}</Typography>
                     </Stack>
                   </>
@@ -577,8 +644,8 @@ const EquiptmentId = () => {
                   </Stack>
                 )}
 
-                <Stack direction="row">
-                  <Typography sx={{ minWidth: "80px" }}>Reminder: </Typography>
+                <Stack direction="row" gap={1}>
+                  <Typography>Description: </Typography>
                   <Typography>{reminder ? reminder : "N/A"}</Typography>
                 </Stack>
               </Stack>

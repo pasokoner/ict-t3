@@ -160,7 +160,7 @@ const NewDevice = () => {
         <TextField
           id="outlined-basic"
           variant="outlined"
-          label="Reminder"
+          label="Description"
           {...register("reminder")}
           multiline
           rows={6}

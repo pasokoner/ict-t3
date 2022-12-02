@@ -5,7 +5,7 @@ type Props = {
   color: string;
   title: string;
   count: number | undefined;
-  setStatusFilter: React.Dispatch<React.SetStateAction<string>>;
+  setStatusFilter: (status: string) => void;
   statusFilter: string;
 };
 

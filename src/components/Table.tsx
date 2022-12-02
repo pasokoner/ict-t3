@@ -278,13 +278,23 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
 }
 
 type TableProps = {
-  tableFilter: string;
+  filter: {
+    status: string;
+    condition?: string;
+    department?: string;
+    serial?: string;
+  };
   countStatus?: number;
 };
 
-export default function CollapsibleTable({ tableFilter, countStatus }: TableProps) {
+export default function CollapsibleTable({ filter, countStatus }: TableProps) {
   const { data: equiptment, refetch } = trpc.equiptment.all.useQuery(
-    { filter: tableFilter },
+    {
+      status: filter.status,
+      condition: filter.condition ? filter.condition : undefined,
+      department: filter.department ? filter.department : undefined,
+      serial: filter.serial ? filter.serial : undefined,
+    },
     { refetchOnWindowFocus: false }
   );
 
@@ -299,7 +309,7 @@ export default function CollapsibleTable({ tableFilter, countStatus }: TableProp
   useEffect(() => {
     if (equiptment && equiptment.length > 0) {
       const format = equiptment
-        .filter((data) => data.status === tableFilter)
+        .filter((data) => data.status === filter.status)
         .map((e) => {
           return createData(
             e.id,
@@ -316,11 +326,10 @@ export default function CollapsibleTable({ tableFilter, countStatus }: TableProp
     } else {
       setFormattedData([]);
     }
-  }, [equiptment, tableFilter]);
+  }, [equiptment, filter]);
 
   return (
     <>
-      <TextField size="small" label="Search Serial Number" />
       <TableContainer>
         <Table aria-label="collapsible table">
           <TableHead>

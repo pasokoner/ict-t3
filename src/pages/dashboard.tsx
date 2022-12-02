@@ -11,7 +11,20 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 import AddIcon from "@mui/icons-material/Add";
 
-import { Button, Divider, Stack, Typography, Box, Popover, IconButton } from "@mui/material";
+import {
+  Button,
+  Divider,
+  Stack,
+  Typography,
+  Box,
+  Popover,
+  IconButton,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import CollapsibleTable from "../components/Table";
 import StatusSectionCard from "../components/StatusSectionCard";
 
@@ -21,10 +34,21 @@ import ConstructionIcon from "@mui/icons-material/Construction";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import RemoveIcon from "@mui/icons-material/Remove";
 
+import FilterListIcon from "@mui/icons-material/FilterList";
+
 import useMediaQuery from "@mui/material/useMediaQuery";
+
+import { conditions, departments } from "../utils/constant";
 
 import exportFromJSON from "export-from-json";
 import { useRouter } from "next/router";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+type FilterValues = {
+  condition?: string;
+  department?: string;
+  serial?: string;
+};
 
 const Dashboard: NextPage = () => {
   const { data: itemsData, isLoading } = trpc.equiptment.countByStatus.useQuery(
@@ -34,13 +58,20 @@ const Dashboard: NextPage = () => {
 
   const { data: sessionData } = useSession();
 
-  const [statusFilter, setStatusFilter] = useState(
-    sessionData?.user?.group === "PITO" ? "For repair" : "Condemned"
-  );
+  const [filter, setFilter] = useState<{
+    condition?: string;
+    department?: string;
+    serial?: string;
+    status: string;
+  }>({ status: sessionData?.user?.group === "PITO" ? "For repair" : "Condemned" });
+
+  const [enableFilter, setEnableFilter] = useState(false);
 
   const matches = useMediaQuery("(max-width:900px)");
 
   const router = useRouter();
+
+  const { register, handleSubmit, reset } = useForm<FilterValues>();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -58,6 +89,20 @@ const Dashboard: NextPage = () => {
   if (isLoading) {
     return <></>;
   }
+
+  const applyFilter: SubmitHandler<FilterValues> = async (data) => {
+    setFilter((prevState) => {
+      return { ...prevState, ...data };
+    });
+  };
+
+  const setStatusFilter = (status: string) => {
+    setFilter((prevState) => {
+      return { ...prevState, status: status };
+    });
+  };
+
+  console.log(filter);
 
   return (
     <Box>
@@ -206,7 +251,7 @@ const Dashboard: NextPage = () => {
             icon={<InventoryIcon />}
             color="success.main"
             setStatusFilter={setStatusFilter}
-            statusFilter={statusFilter}
+            statusFilter={filter.status}
           />
 
           <StatusSectionCard
@@ -215,16 +260,16 @@ const Dashboard: NextPage = () => {
             icon={<BuildIcon />}
             color="#e3d100"
             setStatusFilter={setStatusFilter}
-            statusFilter={statusFilter}
+            statusFilter={filter.status}
           />
 
           <StatusSectionCard
             count={itemsData?.unserviceable}
-            title="Unserviceable"
+            title="Unserviceab2le"
             icon={<ConstructionIcon />}
             color="grey.500"
             setStatusFilter={setStatusFilter}
-            statusFilter={statusFilter}
+            statusFilter={filter.status}
           />
 
           <StatusSectionCard
@@ -233,7 +278,7 @@ const Dashboard: NextPage = () => {
             icon={<PendingActionsIcon />}
             color="warning.main"
             setStatusFilter={setStatusFilter}
-            statusFilter={statusFilter}
+            statusFilter={filter.status}
           />
           <StatusSectionCard
             count={itemsData?.condemned}
@@ -241,15 +286,76 @@ const Dashboard: NextPage = () => {
             icon={<RemoveIcon />}
             color="error.main"
             setStatusFilter={setStatusFilter}
-            statusFilter={statusFilter}
+            statusFilter={filter.status}
           />
         </Stack>
 
         <Divider />
+        <Stack direction="row" gap={1}>
+          <TextField
+            size="small"
+            label="Search Serial Number"
+            disabled={!enableFilter}
+            {...register("serial")}
+            sx={{
+              flexGrow: 1,
+            }}
+          />
+          <IconButton
+            onClick={() => {
+              setEnableFilter((prevState) => !prevState);
+            }}
+          >
+            <FilterListIcon />
+          </IconButton>
+        </Stack>
 
-        {itemsData && (
-          <CollapsibleTable tableFilter={statusFilter} countStatus={itemsData?.inInventory} />
+        {enableFilter && (
+          <Stack
+            gap={2}
+            component="form"
+            onSubmit={handleSubmit(applyFilter)}
+            sx={{
+              p: 2,
+              border: 1.5,
+            }}
+          >
+            <Typography fontWeight="bold">Filter Equiptment</Typography>
+
+            <Stack gap={0.5}>
+              <Typography>Condition</Typography>
+              <FormControl fullWidth>
+                <Select size="small" variant="standard" {...register("condition")}>
+                  <MenuItem value="">None</MenuItem>
+                  {conditions.map(({ value, name }, i) => (
+                    <MenuItem key={i} value={value}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+            <Stack gap={0.5}>
+              <Typography>Department</Typography>
+              <FormControl fullWidth>
+                <Select size="small" variant="standard" {...register("department")}>
+                  <MenuItem value="">None</MenuItem>
+                  {departments.map(({ acronym, name }, i) => (
+                    <MenuItem key={i} value={acronym}>
+                      {acronym} - {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+
+            <Button variant="outlined" type="submit">
+              Apply Filter
+            </Button>
+          </Stack>
         )}
+
+        {itemsData && <CollapsibleTable filter={filter} countStatus={itemsData?.inInventory} />}
       </Stack>
     </Box>
   );
