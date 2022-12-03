@@ -77,16 +77,17 @@ export default function ResponsiveDrawer(props: Props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: "none" } }}
+            sx={{ display: { md: "none" } }}
           >
             <MenuIcon />
           </IconButton>
           <Typography
-            variant="h6"
             noWrap
             component="div"
             sx={{
               flexGrow: 1,
+              fontWeight: "medium",
+              fontSize: { md: 24, xs: 14 },
             }}
           >
             ICT Inventory System
@@ -106,6 +107,7 @@ export default function ResponsiveDrawer(props: Props) {
                 onClick={() => {
                   openCart();
                 }}
+                size="small"
                 sx={{
                   // color: "white",
                   bgcolor: "white",

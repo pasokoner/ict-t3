@@ -101,7 +101,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
             row.parts
               ? "info.light"
               : row.condition === "IINO"
-              ? "info.light"
+              ? "info.main"
               : row.condition === "NIIO"
               ? "error.light"
               : ""
@@ -112,10 +112,12 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
             fontSize: { md: 16, xs: 14 },
             py: 0.3,
             color: `${row.condition !== "IIIO" ? "white" : "black"}`,
+            textShadow: `${row.condition !== "IIIO" ? "1px 1px 4px black" : ""}`,
           },
           "& .MuiButton-root": {
             color: `${row.condition !== "IIIO" ? "white" : "black"}`,
             border: row.condition !== "IIIO" ? 2 : 0,
+            textShadow: `${row.condition !== "IIIO" ? "1px 1px 4px black" : ""}`,
           },
 
           "& .MuiTypography-root": {
@@ -213,8 +215,8 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 direction="row"
                 sx={{
                   border: row.condition !== "IIIO" ? 2 : 0,
-                  borderColor: "black",
-                  bgcolor: "white",
+                  borderColor: row.condition !== "IIIO" ? "black" : "",
+                  bgcolor: row.condition !== "IIIO" ? "white" : "",
                 }}
               >
                 <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
@@ -309,7 +311,17 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 px: 0,
               }}
             >
-              <Stack direction="row" justifyContent="center">
+              <Stack
+                direction="row"
+                justifyContent="center"
+                sx={{
+                  border: row.condition !== "IIIO" ? 2 : 0,
+                  borderColor: row.condition !== "IIIO" ? "black" : "",
+                  bgcolor: row.condition !== "IIIO" ? "white" : "",
+                  px: 0,
+                  maxWidth: "50px",
+                }}
+              >
                 <IconButton
                   aria-label="expand row"
                   size="small"
