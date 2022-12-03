@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 import {
   Button,
   useMediaQuery,
-  Box,
   Collapse,
   IconButton,
   Table,
@@ -16,14 +15,11 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Typography,
   Stack,
   Popover,
-  ButtonGroup,
   LinearProgress,
   Link as MuiLink,
-  Pagination,
   TablePagination,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -33,7 +29,7 @@ import ActionMaker from "./ActionMaker";
 
 import { statusColorGenerator, getFormattedDate } from "../utils/constant";
 import HistoryRow from "./HistoryRow";
-import { useRouter } from "next/router";
+
 import { useQrCart } from "../context/QrCartContext";
 import Link from "next/link";
 
@@ -77,8 +73,6 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
   const { data: sessionData } = useSession();
 
   const { increaseCartQuantity } = useQrCart();
-
-  const router = useRouter();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 

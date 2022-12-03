@@ -66,6 +66,7 @@ export function QrCartProvider({ children }: QrCartProviderProps) {
         });
       }
     });
+    localStorage.setItem("qr-code", JSON.stringify(cartItems));
   }
   function decreaseCartQuantity(id: string) {
     setCartItems((currItems) => {
@@ -81,36 +82,20 @@ export function QrCartProvider({ children }: QrCartProviderProps) {
         });
       }
     });
+    localStorage.setItem("qr-code", JSON.stringify(cartItems));
   }
   function removeFromCart(id: string) {
     setCartItems((currItems) => {
       return currItems.filter((item) => item.id !== id);
     });
+    localStorage.setItem("qr-code", JSON.stringify(cartItems));
   }
 
-  const [isReady, setIsReady] = useState(null);
-  const customFunctionRunRef = useRef(false);
-
   useEffect(() => {
-    const customEffect = async () => {
-      try {
-        setCartItems(getLocal("qr-code"));
-        return setIsReady(getLocal("qr-code"));
-      } catch {
-        return null;
-      }
-    };
-
-    customEffect();
+    const value = localStorage.getItem("qr-code");
+    const user = !!value ? JSON.parse(value) : [];
+    setCartItems(user);
   }, []);
-
-  useEffect(() => {
-    if (isReady !== null && !customFunctionRunRef.current) {
-      // won't run before isReady is non-null
-      // won't run after customFunctionRunRef true
-      localStorage.setItem("qr-code", JSON.stringify(cartItems));
-    }
-  }, [cartItems, isReady]);
 
   return (
     <QrCartContext.Provider
