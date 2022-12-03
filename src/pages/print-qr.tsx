@@ -27,11 +27,21 @@ const PrintQr = () => {
 
   // console.log(printItems);
 
+  const groupBy = <T, K extends keyof any>(arr: T[], key: (i: T) => K) =>
+    arr.reduce((groups, item) => {
+      (groups[key(item)] ||= []).push(item);
+      return groups;
+    }, {} as Record<K, T[]>);
+
+  const formattedCart = groupBy(cartItems, (i) => i.department);
+  const cartValues = Object.values(formattedCart).flat(2);
+  console.log(formattedCart);
+
   return (
     <Stack gap={3}>
       <Stack
         direction="row"
-        gap={0.6}
+        gap={2}
         ref={componentRef}
         sx={{
           flexWrap: "wrap",
@@ -39,8 +49,8 @@ const PrintQr = () => {
           py: 0.4,
         }}
       >
-        {cartItems &&
-          cartItems.map(({ id, quantity }) => {
+        {cartValues &&
+          cartValues.map(({ id, quantity }) => {
             return (
               <React.Fragment key={id}>
                 {Array(quantity)
