@@ -146,6 +146,23 @@ const Scanner = () => {
               </Stack>
             )}
 
+            {sessionData && (
+              <Link href={`/equiptment/${data.id}`}>
+                <a target="_blank" rel="noopener noreferrer" style={{ alignSelf: "center" }}>
+                  <IconButton>
+                    <KeyboardArrowRightIcon
+                      sx={{
+                        color: "white",
+                        "&:hover": {
+                          cursor: "pointer",
+                        },
+                      }}
+                    />
+                  </IconButton>
+                </a>
+              </Link>
+            )}
+
             {cameraResult && data === null && (
               <Stack>
                 <Typography>Qr Code does not exist on our end</Typography>

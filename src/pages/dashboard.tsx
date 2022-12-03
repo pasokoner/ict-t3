@@ -242,6 +242,7 @@ const Dashboard: NextPage = () => {
           sx={{
             flexWrap: "wrap",
             justifyContent: "space-evenly",
+            rowGap: 2,
           }}
         >
           <StatusSectionCard

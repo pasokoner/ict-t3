@@ -171,6 +171,8 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                   >
                     PRINT QR
                   </Button>
+
+                  <Typography>SN: {row.serial}</Typography>
                 </Stack>
               </Popover>
             </TableCell>
@@ -293,6 +295,8 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                   >
                     PRINT QR
                   </Button>
+
+                  <Typography>SN: {row.serial}</Typography>
                 </Stack>
               </Popover>
             </TableCell>
