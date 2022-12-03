@@ -37,8 +37,10 @@ const StatusSectionCard = ({ icon, title, count, color, setStatusFilter, statusF
         },
 
         ...(matches && {
+          py: 0.5,
+          px: 0.5,
           "& .MuiSvgIcon-root": {
-            fontSize: 30,
+            fontSize: 20,
             bgcolor: color,
             color: "white",
             borderRadius: "5px",
@@ -89,12 +91,12 @@ const StatusSectionCard = ({ icon, title, count, color, setStatusFilter, statusF
 
           <Typography
             fontWeight="bold"
-            fontSize={15}
+            fontSize={14}
             sx={{
               color: "primary.main",
             }}
           >
-            {count && count > 9999 ? "9999+" : count}
+            {count && count > 999 ? "999+" : count}
           </Typography>
         </Stack>
       )}

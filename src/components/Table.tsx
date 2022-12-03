@@ -106,8 +106,19 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
               ? "error.light"
               : ""
           }`,
-          "& > *": { borderBottom: "unset", py: 0.2 },
+
+          "& > *": { borderBottom: "unset" },
           "& .MuiTableCell-root": {
+            fontSize: { md: 16, xs: 14 },
+            py: 0.3,
+            color: `${row.condition !== "IIIO" ? "white" : "black"}`,
+          },
+          "& .MuiButton-root": {
+            color: `${row.condition !== "IIIO" ? "white" : "black"}`,
+            border: row.condition !== "IIIO" ? 2 : 0,
+          },
+
+          "& .MuiTypography-root": {
             fontSize: { md: 16, xs: 14 },
           },
         }}
@@ -198,7 +209,14 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 width: "125px",
               }}
             >
-              <Stack direction="row">
+              <Stack
+                direction="row"
+                sx={{
+                  border: row.condition !== "IIIO" ? 2 : 0,
+                  borderColor: "black",
+                  bgcolor: "white",
+                }}
+              >
                 <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
                   {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
@@ -224,63 +242,71 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
           <>
             <TableCell
               sx={{
-                width: "50px",
+                px: 0.3,
               }}
             >
               <Button
                 variant="text"
-                onClick={() => {
-                  router.push(`/equiptment/${row.id}`);
+                onClick={handleClick}
+                sx={{
+                  p: 0,
                 }}
               >
                 #{row.id.slice(0, 1) + "..."}
               </Button>
+
+              <Popover
+                id={id}
+                open={openPop}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+              >
+                <Stack
+                  gap={0.5}
+                  sx={{
+                    p: 1,
+                    borderRadius: "5px",
+                  }}
+                >
+                  <Link href={`/equiptment/${row.id}`} passHref>
+                    <MuiLink
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{
+                        m: "0 auto",
+                      }}
+                    >
+                      View Details
+                    </MuiLink>
+                  </Link>
+
+                  <Button
+                    onClick={() => {
+                      increaseCartQuantity(row.id, row.department);
+                    }}
+                  >
+                    PRINT QR
+                  </Button>
+                </Stack>
+              </Popover>
             </TableCell>
 
             <TableCell>
-              {row.name.length >= 25 && (
-                <Typography noWrap> {row.name.slice(0, 25) + "..."}</Typography>
+              {row.name.length >= 15 && (
+                <Typography noWrap> {row.name.slice(0, 15) + "..."}</Typography>
               )}
-              {row.name.length < 25 && <Typography noWrap> {row.name}</Typography>}
+              {row.name.length < 15 && <Typography noWrap> {row.name}</Typography>}
             </TableCell>
 
             <TableCell
               align="center"
               sx={{
                 width: "50px",
-              }}
-            >
-              {matches ? (
-                <Box
-                  sx={{
-                    bgcolor: statusColorGenerator(row.status),
-                    width: "45px",
-                    height: "10px",
-                    borderRadius: "5px",
-                    color: "white",
-                    // mr: "auto",
-                  }}
-                ></Box>
-              ) : (
-                <Typography
-                  align="center"
-                  noWrap
-                  sx={{
-                    bgcolor: statusColorGenerator(row.status),
-                    borderRadius: "5px",
-                    color: "white",
-                    width: "100px",
-                    ml: "auto",
-                  }}
-                >
-                  {row.status}
-                </Typography>
-              )}
-            </TableCell>
-            <TableCell
-              align="center"
-              sx={{
-                width: "50px",
+                px: 0,
               }}
             >
               <Stack direction="row" justifyContent="center">
@@ -428,7 +454,6 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
                 <>
                   <TableCell align="center">Item ID</TableCell>
                   <TableCell>Equiptment</TableCell>
-                  <TableCell align="center">Status</TableCell>
                   <TableCell align="center">Actions</TableCell>
                 </>
               )}

@@ -238,7 +238,6 @@ const Dashboard: NextPage = () => {
 
         <Stack
           mb={1}
-          gap={1}
           direction="row"
           sx={{
             flexWrap: "wrap",
