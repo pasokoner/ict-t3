@@ -104,7 +104,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
           "& > *": { borderBottom: "unset" },
           "& .MuiTableCell-root": {
             fontSize: { md: 16, xs: 14 },
-            py: 0.3,
+            py: 1,
             color: `${row.condition !== "IIIO" ? "white" : "black"}`,
             textShadow: `${row.condition !== "IIIO" ? "1px 1px 4px black" : ""}`,
           },
@@ -171,10 +171,11 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
               </Popover>
             </TableCell>
             <TableCell>
-              {row.name.length >= 45 && (
-                <Typography noWrap> {row.name.slice(0, 45) + "..."}</Typography>
+              {open && <Typography>{row.name}</Typography>}
+              {!open && row.name.length >= 75 && (
+                <Typography> {row.name.slice(0, 75) + "..."}</Typography>
               )}
-              {row.name.length < 45 && <Typography noWrap> {row.name}</Typography>}
+              {!open && row.name.length < 75 && <Typography> {row.name}</Typography>}
             </TableCell>
             <TableCell sx={{ minWidth: "120px" }}>{row.department}</TableCell>
             <TableCell
@@ -296,10 +297,11 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
             </TableCell>
 
             <TableCell>
-              {row.name.length >= 15 && (
+              {open && <Typography>{row.name}</Typography>}
+              {!open && row.name.length >= 15 && (
                 <Typography noWrap> {row.name.slice(0, 15) + "..."}</Typography>
               )}
-              {row.name.length < 15 && <Typography noWrap> {row.name}</Typography>}
+              {!open && row.name.length < 15 && <Typography noWrap> {row.name}</Typography>}
             </TableCell>
 
             <TableCell
