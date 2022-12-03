@@ -40,9 +40,9 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { conditions, departments } from "../utils/constant";
 
-import exportFromJSON from "export-from-json";
 import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
+import ExportButton from "../components/ExportButton";
 
 type FilterValues = {
   condition?: string;
@@ -201,23 +201,7 @@ const Dashboard: NextPage = () => {
           </Stack>
 
           <Stack direction="row" gap={1}>
-            <Button
-              variant="outlined"
-              size="small"
-              sx={{
-                whiteSpace: "nowrap",
-              }}
-              onClick={() => {
-                const data = [{ foo: "foo" }, { bar: "bar" }, { car: "bar" }, { gar: "bar" }];
-                const fileName = "download";
-                const exportType = exportFromJSON.types.csv;
-
-                exportFromJSON({ data, fileName, exportType });
-              }}
-            >
-              Export to Excel
-            </Button>
-
+            <ExportButton filter={filter} />
             {(sessionData?.user?.group === "GSO" || sessionData?.user?.group === "PITO") && (
               <Button
                 variant="contained"

@@ -508,6 +508,7 @@ export const equiptmentRouter = router({
         issuedTo: z.string().nullish(),
         usedBy: z.string().nullish(),
         currentUser: z.string().nullish(),
+        reminder: z.string().nullish(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -531,7 +532,6 @@ export const equiptmentRouter = router({
               equiptmentId: id,
               userId: ctx.session.user.id,
               date: new Date(),
-              reminder: null,
             },
           });
         }
@@ -544,10 +544,11 @@ export const equiptmentRouter = router({
       z.object({
         equiptmentId: z.string(),
         department: z.string(),
+        reminder: z.string().nullish(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { department, equiptmentId } = input;
+      const { department, equiptmentId, reminder } = input;
 
       await ctx.prisma.$transaction(async () => {
         const equiptment = await ctx.prisma.equipment.update({
@@ -557,6 +558,7 @@ export const equiptmentRouter = router({
 
           data: {
             department: department,
+            reminder: reminder,
           },
         });
 
@@ -569,7 +571,6 @@ export const equiptmentRouter = router({
               equiptmentId: id,
               userId: ctx.session.user.id,
               date: new Date(),
-              reminder: null,
             },
           });
         }
@@ -582,10 +583,11 @@ export const equiptmentRouter = router({
       z.object({
         equiptmentId: z.string(),
         condition: z.string(),
+        reminder: z.string().nullish(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { condition, equiptmentId } = input;
+      const { condition, reminder, equiptmentId } = input;
 
       await ctx.prisma.$transaction(async () => {
         const equiptment = await ctx.prisma.equipment.update({
@@ -595,6 +597,7 @@ export const equiptmentRouter = router({
 
           data: {
             condition: condition,
+            reminder: reminder,
           },
         });
 
@@ -607,7 +610,6 @@ export const equiptmentRouter = router({
               equiptmentId: id,
               userId: ctx.session.user.id,
               date: new Date(),
-              reminder: null,
             },
           });
         }

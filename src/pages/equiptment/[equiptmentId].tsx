@@ -21,6 +21,7 @@ import {
   Alert,
   Backdrop,
   LinearProgress,
+  Box,
 } from "@mui/material";
 import { conditions, getFormattedDate, statusColorGenerator } from "../../utils/constant";
 import ActionMaker from "../../components/ActionMaker";
@@ -39,6 +40,7 @@ type FormValues = {
   usedBy: string;
   condition: string;
   currentUser?: string;
+  reminder?: string;
 };
 
 const EquiptmentId = () => {
@@ -72,6 +74,10 @@ const EquiptmentId = () => {
         handleClick();
         setErrorOwnership("");
         setSnackbarMessage("Ownership changed!");
+        reset((formValues) => ({
+          ...formValues,
+          reminder: "",
+        }));
         refetch();
       },
     });
@@ -82,6 +88,10 @@ const EquiptmentId = () => {
         handleClick();
         setErrorDepartment("");
         setSnackbarMessage("Department changed!");
+        reset((formValues) => ({
+          ...formValues,
+          reminder: "",
+        }));
         refetch();
       },
     });
@@ -92,11 +102,15 @@ const EquiptmentId = () => {
         handleClick();
         setErrorCondition("");
         setSnackbarMessage("Condition changed!");
+        reset((formValues) => ({
+          ...formValues,
+          reminder: "",
+        }));
         refetch();
       },
     });
 
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { register, handleSubmit, reset } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = async ({
     issuedTo,
@@ -104,10 +118,12 @@ const EquiptmentId = () => {
     department,
     condition,
     currentUser,
+    reminder,
   }) => {
     if (!data?.current?.id) {
       return;
     }
+
     if (issuedTo || usedBy || currentUser) {
       if (
         (issuedTo ? issuedTo.trim() : null) === data?.current?.issuedTo &&
@@ -121,6 +137,7 @@ const EquiptmentId = () => {
           currentUser: currentUser ? currentUser.trim() : null,
           issuedTo: issuedTo ? issuedTo : null,
           equiptmentId: data.current.id,
+          reminder: reminder ? reminder.trim() : null,
         });
       }
     }
@@ -132,6 +149,7 @@ const EquiptmentId = () => {
         changeCondition({
           equiptmentId: data.current.id,
           condition: condition,
+          reminder: reminder ? reminder.trim() : null,
         });
       }
     }
@@ -143,6 +161,7 @@ const EquiptmentId = () => {
         changeDepartment({
           equiptmentId: data.current.id,
           department: department,
+          reminder: reminder ? reminder.trim() : null,
         });
       }
     }
@@ -259,7 +278,7 @@ const EquiptmentId = () => {
             variant="contained"
             disabled={ownershipLoading || departmentLoading || conditionLoading}
             onClick={() => {
-              setEditOwnership(true);
+              setEditOwnership((prevState) => !prevState);
               setEditDepartment(false);
               setEditCondition(false);
             }}
@@ -272,7 +291,7 @@ const EquiptmentId = () => {
             disabled={ownershipLoading || departmentLoading || conditionLoading}
             onClick={() => {
               setEditOwnership(false);
-              setEditDepartment(true);
+              setEditDepartment((prevState) => !prevState);
               setEditCondition(false);
             }}
           >
@@ -285,7 +304,7 @@ const EquiptmentId = () => {
             onClick={() => {
               setEditOwnership(false);
               setEditDepartment(false);
-              setEditCondition(true);
+              setEditCondition((prevState) => !prevState);
             }}
           >
             Condition
@@ -363,10 +382,25 @@ const EquiptmentId = () => {
                     variant="standard"
                     {...register("condition")}
                     defaultValue={data?.current?.condition}
-                    // {...register("department")}
                   >
                     {conditions.map(({ name, value }, i) => (
                       <MenuItem key={i} value={value}>
+                        <Box
+                          component="span"
+                          sx={{
+                            width: 20,
+                            height: 20,
+                            border: 2,
+                            mr: 1,
+                            ml: 2,
+                            backgroundColor:
+                              value === "IIIO"
+                                ? "white"
+                                : value === "NIIO"
+                                ? "error.light"
+                                : "info.light",
+                          }}
+                        ></Box>
                         {name}
                       </MenuItem>
                     ))}
@@ -378,6 +412,17 @@ const EquiptmentId = () => {
                   </Typography>
                 )}
               </>
+            )}
+
+            {(editDepartment || editOwnership || editCondition) && (
+              <TextField
+                variant="outlined"
+                label="Description"
+                {...register("reminder")}
+                helperText="Having a detailed explanation of your action helps you track changes."
+                multiline
+                rows={3}
+              />
             )}
 
             {(ownershipLoading || departmentLoading || conditionLoading) && <LinearProgress />}

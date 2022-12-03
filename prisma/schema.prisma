@@ -96,16 +96,16 @@ model VerificationToken {
 
 model Equipment {
   id          String   @id @default(uuid())
-  name        String   @db.LongText
   serial      String
+  name        String   @db.LongText
   department  String
   issuedTo    String?  @db.LongText
   usedBy      String?  @db.LongText
-  date        DateTime
-  reminder    String?  @db.LongText
-  status      String
-  condition   String
   currentUser String?
+  status      String
+  date        DateTime
+  condition   String
+  reminder    String?  @db.LongText
 
   userId String
 
@@ -116,16 +116,16 @@ model Equipment {
 
 model EquipmentHistory {
   id          String   @id @default(uuid())
-  name        String   @db.LongText
   serial      String
+  name        String   @db.LongText
   department  String
   issuedTo    String?  @db.LongText
   usedBy      String?  @db.LongText
-  date        DateTime
-  reminder    String?  @db.LongText
-  status      String
-  condition   String
   currentUser String?
+  status      String
+  date        DateTime
+  condition   String
+  reminder    String?  @db.LongText
 
   equiptmentId String
   userId       String
