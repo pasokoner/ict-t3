@@ -74,6 +74,16 @@ model User {
   role             Role?
   group            Groups?
   Equipment        Equipment[]
+  Qr               Qr[]
+}
+
+model Qr {
+  id         String @id
+  quantiy    Int
+  department String
+
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
 }
 
 model VerificationToken {

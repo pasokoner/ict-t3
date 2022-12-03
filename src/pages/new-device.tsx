@@ -57,6 +57,8 @@ const NewDevice = () => {
     },
   });
 
+  const { data: sessionData } = useSession();
+
   const [value, setValue] = useState<Dayjs | null>(null);
 
   const [parts, setParts] = useState<Parts[]>([]);
@@ -72,6 +74,7 @@ const NewDevice = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     console.log(data);
+
     if (value) {
       if (parts.length > 0) {
         mutate({
@@ -125,7 +128,7 @@ const NewDevice = () => {
         Add new equiptment
       </Typography>
 
-      <ImportButton />
+      {sessionData?.user?.role === "SUPERADMIN" && <ImportButton />}
 
       <Stack direction="column" gap={2}>
         <Typography

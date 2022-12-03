@@ -218,7 +218,7 @@ const Dashboard: NextPage = () => {
               Export to Excel
             </Button>
 
-            {sessionData?.user?.group === "GSO" && (
+            {(sessionData?.user?.group === "GSO" || sessionData?.user?.group === "PITO") && (
               <Button
                 variant="contained"
                 size="small"

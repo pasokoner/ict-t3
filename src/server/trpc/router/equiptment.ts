@@ -48,7 +48,7 @@ export const equiptmentRouter = router({
                 ...equiptment,
                 date: equiptment.date ? equiptment.date : new Date(),
                 reminder: equiptment.reminder ? equiptment.reminder : null,
-                condition: "IIIO",
+                condition: "NIIO",
                 parts: {
                   createMany: {
                     data: formattedParts,
@@ -81,7 +81,7 @@ export const equiptmentRouter = router({
                 ...equiptment,
                 date: equiptment.date ? equiptment.date : new Date(),
                 reminder: equiptment.reminder ? equiptment.reminder : null,
-                condition: "IIIO",
+                condition: "NIIO",
                 equipmentHistory: {
                   create: [
                     {

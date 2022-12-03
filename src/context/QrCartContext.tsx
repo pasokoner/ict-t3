@@ -1,5 +1,8 @@
-import { createContext, useContext, ReactNode, useState } from "react";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { createContext, useContext, ReactNode, useState, useEffect, useRef } from "react";
+// import { useLocalStorage } from "../hooks/useLocalStorage";
+
+import { get as getLocal } from "local-storage";
+
 import QrCart from "./components/QrCart";
 
 type QrCartProviderProps = {
@@ -31,7 +34,15 @@ export function useQrCart() {
 
 export function QrCartProvider({ children }: QrCartProviderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  // const [cartItems, setCartItems] = useLocalStorage<QrItem[]>("qr-cart", []);
+  // const [cartItems, setCartItems] = useLocalStorage<QrItem[]>("qr", []);
+  // const [cartItems, setCartItems] = useState<QrItem[]>(() => {
+  //   if (typeof window !== "undefined") {
+  //     return getLocal("qr-code");
+  //   }
+
+  //   return [];
+  // });
+
   const [cartItems, setCartItems] = useState<QrItem[]>([]);
 
   const cartQuantity = cartItems?.reduce((quantity, item) => item.quantity + quantity, 0);
@@ -76,6 +87,30 @@ export function QrCartProvider({ children }: QrCartProviderProps) {
       return currItems.filter((item) => item.id !== id);
     });
   }
+
+  const [isReady, setIsReady] = useState(null);
+  const customFunctionRunRef = useRef(false);
+
+  useEffect(() => {
+    const customEffect = async () => {
+      try {
+        setCartItems(getLocal("qr-code"));
+        return setIsReady(getLocal("qr-code"));
+      } catch {
+        return null;
+      }
+    };
+
+    customEffect();
+  }, []);
+
+  useEffect(() => {
+    if (isReady !== null && !customFunctionRunRef.current) {
+      // won't run before isReady is non-null
+      // won't run after customFunctionRunRef true
+      localStorage.setItem("qr-code", JSON.stringify(cartItems));
+    }
+  }, [cartItems, isReady]);
 
   return (
     <QrCartContext.Provider
