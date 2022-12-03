@@ -36,6 +36,7 @@
     "react-qr-code": "^2.0.8",
     "react-qr-image": "^1.1.0",
     "react-to-print": "^2.14.10",
+    "react-usestateref": "^1.0.8",
     "superjson": "1.9.1",
     "xlsx": "^0.18.5",
     "zod": "^3.18.0"

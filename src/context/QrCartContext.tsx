@@ -1,5 +1,7 @@
-import { createContext, useContext, ReactNode, useState, useEffect, useRef } from "react";
+import { createContext, useContext, ReactNode, useEffect, useState } from "react";
 // import { useLocalStorage } from "../hooks/useLocalStorage";
+
+import useStateRef from "react-usestateref";
 
 import { get as getLocal } from "local-storage";
 
@@ -43,9 +45,11 @@ export function QrCartProvider({ children }: QrCartProviderProps) {
   //   return [];
   // });
 
-  const [cartItems, setCartItems] = useState<QrItem[]>([]);
+  const [cartItems, setCartItems, cartRef] = useStateRef<QrItem[]>([]);
 
   const cartQuantity = cartItems?.reduce((quantity, item) => item.quantity + quantity, 0);
+
+  const [openLocal, setOpenLocal] = useState<boolean>();
 
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
@@ -66,7 +70,6 @@ export function QrCartProvider({ children }: QrCartProviderProps) {
         });
       }
     });
-    localStorage.setItem("qr-code", JSON.stringify(cartItems));
   }
   function decreaseCartQuantity(id: string) {
     setCartItems((currItems) => {
@@ -82,13 +85,11 @@ export function QrCartProvider({ children }: QrCartProviderProps) {
         });
       }
     });
-    localStorage.setItem("qr-code", JSON.stringify(cartItems));
   }
   function removeFromCart(id: string) {
     setCartItems((currItems) => {
       return currItems.filter((item) => item.id !== id);
     });
-    localStorage.setItem("qr-code", JSON.stringify(cartItems));
   }
 
   useEffect(() => {
@@ -96,6 +97,10 @@ export function QrCartProvider({ children }: QrCartProviderProps) {
     const user = !!value ? JSON.parse(value) : [];
     setCartItems(user);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("qr-code", JSON.stringify(cartRef.current));
+  }, [cartItems, cartRef]);
 
   return (
     <QrCartContext.Provider
