@@ -89,8 +89,8 @@ model Equipment {
   name        String   @db.LongText
   serial      String
   department  String
-  issuedTo    String   @db.LongText
-  usedBy      String   @db.LongText
+  issuedTo    String?  @db.LongText
+  usedBy      String?  @db.LongText
   date        DateTime
   reminder    String?  @db.LongText
   status      String
@@ -109,8 +109,8 @@ model EquipmentHistory {
   name        String   @db.LongText
   serial      String
   department  String
-  issuedTo    String   @db.LongText
-  usedBy      String   @db.LongText
+  issuedTo    String?  @db.LongText
+  usedBy      String?  @db.LongText
   date        DateTime
   reminder    String?  @db.LongText
   status      String

@@ -33,6 +33,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.38.0",
     "react-qr-code": "^2.0.8",
+    "react-qr-image": "^1.1.0",
     "react-to-print": "^2.14.10",
     "superjson": "1.9.1",
     "xlsx": "^0.18.5",

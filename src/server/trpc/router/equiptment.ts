@@ -9,10 +9,10 @@ export const equiptmentRouter = router({
           name: z.string().trim().min(1),
           serial: z.string().trim(),
           department: z.string().trim(),
-          issuedTo: z.string().trim(),
+          issuedTo: z.string().trim().nullish(),
           usedBy: z.string().trim(),
           status: z.string(),
-          // currentUser: z.string(),
+          currentUser: z.string().trim().nullish(),
           date: z.date().nullish(),
           reminder: z.string().trim().nullish(),
         }),
@@ -505,9 +505,9 @@ export const equiptmentRouter = router({
     .input(
       z.object({
         equiptmentId: z.string(),
-        issuedTo: z.string().optional(),
-        usedBy: z.string().optional(),
-        currentUser: z.string().optional(),
+        issuedTo: z.string().nullish(),
+        usedBy: z.string().nullish(),
+        currentUser: z.string().nullish(),
       })
     )
     .mutation(async ({ ctx, input }) => {

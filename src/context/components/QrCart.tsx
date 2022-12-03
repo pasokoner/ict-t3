@@ -33,9 +33,10 @@ const QrCart = (props: Props) => {
         }}
       >
         <Typography gutterBottom fontSize={30} align="center" fontWeight="medium">
-          Print Cart
+          Pending QR
         </Typography>
         <Divider />
+
         <List>
           {cartItems &&
             cartItems.map(({ id, quantity }) => (
@@ -53,6 +54,7 @@ const QrCart = (props: Props) => {
           }}
           sx={{
             mt: "auto",
+            p: 2,
           }}
         >
           Start Printing

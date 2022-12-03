@@ -19,8 +19,8 @@ const PrintableQr = (props: Props) => {
       justifyContent="center"
       alignItems="center"
       sx={{
-        maxWidth: 144,
-        p: 1,
+        maxWidth: 140,
+        p: 0.5,
         mb: "auto",
         border: 1,
       }}

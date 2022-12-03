@@ -21,6 +21,10 @@ import {
   Stack,
   Popover,
   ButtonGroup,
+  LinearProgress,
+  Link as MuiLink,
+  Pagination,
+  TablePagination,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -31,6 +35,7 @@ import { statusColorGenerator, getFormattedDate } from "../utils/constant";
 import HistoryRow from "./HistoryRow";
 import { useRouter } from "next/router";
 import { useQrCart } from "../context/QrCartContext";
+import Link from "next/link";
 
 type TableFormat = {
   id: string;
@@ -134,30 +139,33 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     borderRadius: "5px",
                   }}
                 >
-                  <ButtonGroup variant="text" orientation="vertical" size="small">
-                    <Button
-                      onClick={() => {
-                        router.push(`/equiptment/${row.id}`);
+                  <Link href={`/equiptment/${row.id}`} passHref>
+                    <MuiLink
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{
+                        m: "0 auto",
                       }}
                     >
                       View Details
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        increaseCartQuantity(row.id, row.department);
-                      }}
-                    >
-                      Add to print
-                    </Button>
-                  </ButtonGroup>
+                    </MuiLink>
+                  </Link>
+
+                  <Button
+                    onClick={() => {
+                      increaseCartQuantity(row.id, row.department);
+                    }}
+                  >
+                    PRINT QR
+                  </Button>
                 </Stack>
               </Popover>
             </TableCell>
             <TableCell>
-              {row.name.length >= 30 && (
-                <Typography noWrap> {row.name.slice(0, 30) + "..."}</Typography>
+              {row.name.length >= 45 && (
+                <Typography noWrap> {row.name.slice(0, 45) + "..."}</Typography>
               )}
-              {row.name.length < 30 && <Typography noWrap> {row.name}</Typography>}
+              {row.name.length < 45 && <Typography noWrap> {row.name}</Typography>}
             </TableCell>
             <TableCell sx={{ minWidth: "120px" }}>{row.department}</TableCell>
             <TableCell
@@ -336,7 +344,14 @@ type TableProps = {
 };
 
 export default function CollapsibleTable({ filter, countStatus }: TableProps) {
-  const { data: equiptment, refetch } = trpc.equiptment.all.useQuery(
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const {
+    data: equiptment,
+    refetch,
+    isLoading,
+  } = trpc.equiptment.all.useQuery(
     {
       status: filter.status,
       condition: filter.condition ? filter.condition : undefined,
@@ -355,6 +370,10 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
   }, [countStatus, refetch]);
 
   useEffect(() => {
+    setPage(0);
+  }, [filter]);
+
+  useEffect(() => {
     if (equiptment && equiptment.length > 0) {
       const format = equiptment
         .filter((data) => data.status === filter.status)
@@ -369,12 +388,24 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
             e.serial,
             e.condition
           );
-        });
+        })
+        .slice(page * rowsPerPage, page === 0 ? rowsPerPage : rowsPerPage * (page + 1));
       setFormattedData(format);
     } else {
       setFormattedData([]);
     }
-  }, [equiptment, filter]);
+  }, [equiptment, filter, page, rowsPerPage]);
+
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <>
@@ -411,6 +442,34 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
           </TableBody>
         </Table>
       </TableContainer>
+      {isLoading && <LinearProgress />}
+      {/* {!isLoading && (
+        <Button
+          variant="outlined"
+          onClick={() => {
+            setItemsLoaded((prevState) => prevState + 15);
+          }}
+          sx={{
+            mt: 2,
+          }}
+        >
+          Load 20 more+
+        </Button>
+      )} */}
+
+      {equiptment?.length === 0 && (
+        <Typography mt={2} align="center" color="error">
+          No Equiptment found!
+        </Typography>
+      )}
+      <TablePagination
+        component="div"
+        count={equiptment?.length ? equiptment.length : 0}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </>
   );
 }

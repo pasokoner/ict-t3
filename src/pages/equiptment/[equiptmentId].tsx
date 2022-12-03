@@ -9,7 +9,6 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 
 import {
-  Box,
   Button,
   FormControl,
   InputLabel,
@@ -21,11 +20,9 @@ import {
   Typography,
   Alert,
   Backdrop,
-  getTouchRippleUtilityClass,
-  IconButton,
+  LinearProgress,
 } from "@mui/material";
 import { conditions, getFormattedDate, statusColorGenerator } from "../../utils/constant";
-import QrMaker from "../../components/QrMaker";
 import ActionMaker from "../../components/ActionMaker";
 import { useSession } from "next-auth/react";
 
@@ -33,9 +30,8 @@ import { departments } from "../../utils/constant";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 
-import { useReactToPrint } from "react-to-print";
-
-import { useRef } from "react";
+import PrintableQr from "../../components/PrintableQr";
+import { useQrCart } from "../../context/QrCartContext";
 
 type FormValues = {
   department: string;
@@ -50,10 +46,7 @@ const EquiptmentId = () => {
 
   const { data: sessionData } = useSession();
 
-  const componentRef = useRef(null);
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
+  const { increaseCartQuantity } = useQrCart();
 
   const [editOwnership, setEditOwnership] = useState(false);
   const [editDepartment, setEditDepartment] = useState(false);
@@ -103,7 +96,7 @@ const EquiptmentId = () => {
       },
     });
 
-  const { register, handleSubmit, reset } = useForm<FormValues>();
+  const { register, handleSubmit } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = async ({
     issuedTo,
@@ -115,36 +108,20 @@ const EquiptmentId = () => {
     if (!data?.current?.id) {
       return;
     }
-    if (issuedTo && usedBy) {
-      if (issuedTo.trim() === data?.current?.issuedTo && usedBy.trim() === data?.current?.usedBy) {
+    if (issuedTo || usedBy || currentUser) {
+      if (
+        (issuedTo ? issuedTo.trim() : null) === data?.current?.issuedTo &&
+        (usedBy ? usedBy.trim() : null) === data?.current?.usedBy &&
+        (currentUser ? currentUser.trim() : null) === data?.current?.currentUser
+      ) {
         setErrorOwnership("You are trying to change nothing!");
-      } else if (
-        issuedTo.trim() !== data?.current?.issuedTo &&
-        usedBy.trim() !== data?.current?.usedBy
-      ) {
-        changeOwnership({ issuedTo: issuedTo, usedBy: usedBy, equiptmentId: data.current.id });
-      } else if (
-        issuedTo.trim() === data?.current?.issuedTo &&
-        usedBy.trim() !== data?.current?.usedBy
-      ) {
-        changeOwnership({ usedBy: usedBy, equiptmentId: data?.current?.id });
-      } else if (
-        issuedTo.trim() !== data?.current?.issuedTo &&
-        usedBy.trim() === data?.current?.usedBy
-      ) {
-        changeOwnership({ issuedTo: issuedTo, equiptmentId: data?.current?.id });
       } else {
-        const newOwner: { issuedTo?: string; usedBy?: string; currentUser?: string } = {};
-        if (issuedTo.trim() !== data?.current?.issuedTo) {
-          newOwner.issuedTo = issuedTo.trim();
-        }
-        if (usedBy.trim() !== data?.current?.usedBy) {
-          newOwner.issuedTo = issuedTo.trim();
-        }
-        if (currentUser && currentUser.trim() !== data?.current?.currentUser) {
-          newOwner.currentUser = currentUser.trim();
-        }
-        changeOwnership({ ...newOwner, equiptmentId: data.current.id });
+        changeOwnership({
+          usedBy: usedBy ? usedBy.trim() : null,
+          currentUser: currentUser ? currentUser.trim() : null,
+          issuedTo: issuedTo ? issuedTo : null,
+          equiptmentId: data.current.id,
+        });
       }
     }
 
@@ -202,8 +179,10 @@ const EquiptmentId = () => {
     return <Typography>No equiptment found!</Typography>;
   }
 
+  // console.log(data?.current?.currentUser, data?.current?.usedBy, data?.current?.issuedTo);
+
   return (
-    <Stack gap={2}>
+    <Stack gap={1.5}>
       <Typography
         sx={{
           p: 1,
@@ -230,33 +209,12 @@ const EquiptmentId = () => {
       >
         <Stack gap={1}>
           <Stack
-            justifyContent="center"
-            alignItems="center"
-            ref={componentRef}
+            direction="row"
             sx={{
-              maxWidth: 100,
               p: 1,
             }}
           >
-            <QrMaker value={data?.current?.id as string} />
-
-            <Typography
-              fontSize={10}
-              fontWeight="bold"
-              sx={{
-                wordBreak: "break-word",
-              }}
-            >
-              {data?.current?.department}
-            </Typography>
-            <Typography
-              fontSize={8}
-              sx={{
-                wordBreak: "break-word",
-              }}
-            >
-              {data?.current?.serial}
-            </Typography>
+            <PrintableQr id={data?.current?.id as string} />
           </Stack>
           <Stack direction="row" alignItems="center" gap={2}>
             <Stack direction="row" gap={1}>
@@ -273,7 +231,15 @@ const EquiptmentId = () => {
                 {data?.current?.status}
               </Typography>
             </Stack>
-            <Button variant="outlined" onClick={handlePrint}>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                increaseCartQuantity(
+                  data?.current?.id as string,
+                  data?.current?.department as string
+                );
+              }}
+            >
               Print
             </Button>
             <ActionMaker
@@ -291,6 +257,7 @@ const EquiptmentId = () => {
           <Button
             size="small"
             variant="contained"
+            disabled={ownershipLoading || departmentLoading || conditionLoading}
             onClick={() => {
               setEditOwnership(true);
               setEditDepartment(false);
@@ -302,6 +269,7 @@ const EquiptmentId = () => {
           <Button
             size="small"
             variant="contained"
+            disabled={ownershipLoading || departmentLoading || conditionLoading}
             onClick={() => {
               setEditOwnership(false);
               setEditDepartment(true);
@@ -313,6 +281,7 @@ const EquiptmentId = () => {
           <Button
             size="small"
             variant="contained"
+            disabled={ownershipLoading || departmentLoading || conditionLoading}
             onClick={() => {
               setEditOwnership(false);
               setEditDepartment(false);
@@ -333,7 +302,6 @@ const EquiptmentId = () => {
                     variant="standard"
                     label="Issued to:"
                     defaultValue={data?.current?.issuedTo}
-                    required
                     {...register("issuedTo")}
                   />
                   <TextField
@@ -341,7 +309,6 @@ const EquiptmentId = () => {
                     variant="standard"
                     label="Used by:"
                     defaultValue={data?.current?.usedBy}
-                    required
                     {...register("usedBy")}
                   />
                   <TextField
@@ -413,11 +380,25 @@ const EquiptmentId = () => {
               </>
             )}
 
+            {(ownershipLoading || departmentLoading || conditionLoading) && <LinearProgress />}
+
             <Stack direction="row" gap={1} justifyContent="center">
-              <Button size="small" color="error" variant="contained" onClick={handleCancel}>
+              <Button
+                size="small"
+                color="error"
+                variant="contained"
+                onClick={handleCancel}
+                disabled={ownershipLoading || departmentLoading || conditionLoading}
+              >
                 Cancel
               </Button>
-              <Button type="submit" color="success" variant="contained" size="small">
+              <Button
+                type="submit"
+                color="success"
+                variant="contained"
+                size="small"
+                disabled={ownershipLoading || departmentLoading || conditionLoading}
+              >
                 Save
               </Button>
             </Stack>
@@ -564,7 +545,18 @@ const EquiptmentId = () => {
       {data &&
         data.history.length > 0 &&
         data.history?.map(
-          ({ status, user, date, id, partsHistory, department, issuedTo, usedBy, reminder }) => (
+          ({
+            status,
+            user,
+            date,
+            id,
+            partsHistory,
+            department,
+            issuedTo,
+            usedBy,
+            reminder,
+            currentUser,
+          }) => (
             <Stack
               key={id}
               gap={0.5}
@@ -615,12 +607,17 @@ const EquiptmentId = () => {
                   <>
                     <Stack direction="row" gap={1}>
                       <Typography>Issued to: </Typography>
-                      <Typography>{issuedTo}</Typography>
+                      <Typography>{issuedTo ? issuedTo : "N/A"}</Typography>
                     </Stack>
 
                     <Stack direction="row" gap={1}>
                       <Typography>Used by: </Typography>
-                      <Typography>{usedBy}</Typography>
+                      <Typography>{usedBy ? usedBy : "N/A"}</Typography>
+                    </Stack>
+
+                    <Stack direction="row" gap={1}>
+                      <Typography>Current User: </Typography>
+                      <Typography>{currentUser ? currentUser : "N/A"}</Typography>
                     </Stack>
                   </>
                 )}
@@ -652,22 +649,20 @@ const EquiptmentId = () => {
             </Stack>
           )
         )}
-      {sessionData &&
-        ((sessionData.user?.role === "ADMIN" && sessionData.user?.group === "GSO") ||
-          (sessionData.user?.role === "SUPERADMIN" && sessionData.user?.group === "GSO")) && (
-          <Button
-            variant="outlined"
-            color="error"
-            onClick={() => {
-              setDeleting(true);
-            }}
-            sx={{
-              p: 3,
-            }}
-          >
-            DELETE EQUIPTMENT
-          </Button>
-        )}
+      {sessionData && sessionData.user?.role === "SUPERADMIN" && (
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => {
+            setDeleting(true);
+          }}
+          sx={{
+            p: 3,
+          }}
+        >
+          DELETE EQUIPTMENT
+        </Button>
+      )}
       {/* 
       <Button
         variant="outlined"

@@ -12,8 +12,6 @@ import { useReactToPrint } from "react-to-print";
 const PrintQr = () => {
   const { cartItems } = useQrCart();
 
-  console.log(cartItems);
-
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -33,11 +31,12 @@ const PrintQr = () => {
     <Stack gap={3}>
       <Stack
         direction="row"
-        gap={2}
+        gap={0.6}
         ref={componentRef}
         sx={{
           flexWrap: "wrap",
-          p: 2,
+          justifyContent: "space-evenly",
+          py: 0.4,
         }}
       >
         {cartItems &&

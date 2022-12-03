@@ -18,6 +18,7 @@ import {
   FormControl,
   Select,
   Box,
+  LinearProgress,
 } from "@mui/material";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -41,6 +42,7 @@ type FormValues = {
   issuedTo: string;
   usedBy: string;
   reminder: string;
+  currentUser: string;
 };
 
 type Parts = {
@@ -123,7 +125,7 @@ const NewDevice = () => {
         Add new equiptment
       </Typography>
 
-      {/* <ImportButton /> */}
+      <ImportButton />
 
       <Stack direction="column" gap={2}>
         <Typography
@@ -276,17 +278,14 @@ const NewDevice = () => {
 
         <Stack direction="row" justifyContent="space-between" gap={3}>
           <TextField
-            id="outlined-basic"
             variant="outlined"
             label="Issued to:"
             size="small"
             fullWidth
-            required
             {...register("issuedTo")}
           />
 
           <TextField
-            id="outlined-basic"
             variant="outlined"
             label="Used by:"
             size="small"
@@ -295,6 +294,14 @@ const NewDevice = () => {
             {...register("usedBy")}
           />
         </Stack>
+
+        <TextField
+          variant="outlined"
+          label="Current User:"
+          size="small"
+          fullWidth
+          {...register("currentUser")}
+        />
 
         <Stack direction="row" gap={3}>
           <FormControl fullWidth required>
@@ -364,9 +371,12 @@ const NewDevice = () => {
         )}
 
         {isLoading && (
-          <Button variant="outlined" disabled>
-            Processing request
-          </Button>
+          <>
+            <LinearProgress />
+            <Button variant="outlined" disabled>
+              Processing request
+            </Button>
+          </>
         )}
 
         {/* {isError && <Typography color="error">{JSON.parse(error.message)[0].message}</Typography>} */}

@@ -1,4 +1,6 @@
 import QRCode from "react-qr-code";
+import QRimage from "react-qr-image";
+import { Box } from "@mui/material";
 
 type Props = {
   value: string;
@@ -7,7 +9,7 @@ type Props = {
 const QrMaker = ({ value }: Props) => {
   return (
     <>
-      <QRCode
+      {/* <QRCode
         size={256}
         style={{
           height: "auto",
@@ -18,7 +20,26 @@ const QrMaker = ({ value }: Props) => {
         }}
         value={value}
         viewBox={`0 0 256 256`}
-      />
+      /> */}
+      <Box
+        sx={{
+          height: "auto",
+          maxWidth: "100%",
+          width: "100%",
+          m: "0 auto",
+        }}
+      >
+        <QRimage
+          text={value}
+          transparent={true}
+          background="white"
+          color="black"
+          margin={0}
+          size={4}
+        >
+          shesh
+        </QRimage>
+      </Box>
     </>
   );
 };
