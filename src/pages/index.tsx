@@ -9,7 +9,7 @@ const Home: NextPage = () => {
     <Stack>
       <Button
         onClick={() => {
-          signIn();
+          signIn("google");
         }}
       >
         Sign in
