@@ -11,9 +11,11 @@ interface Equiptment {
   newSerial?: string;
   department: string;
   reminder?: string;
-  issuedTo: string;
+  issuedTo?: string;
   usedBy?: string;
+  currentUser?: string;
   date: string;
+  acquisitionDate: string;
 }
 
 const ImportButton = () => {
@@ -29,40 +31,51 @@ const ImportButton = () => {
 
         const workbook = XLSX.read(data);
 
-        console.log(workbook);
-
         workbook.SheetNames.forEach((_, i) => {
           const worksheet = workbook.Sheets[`${workbook.SheetNames[i] as string}`];
           const jsonData = XLSX.utils.sheet_to_json<Equiptment>(worksheet as XLSX.WorkSheet);
 
           const formattedData = jsonData
-            .filter(
-              ({ name, oldSerial, newSerial, department, reminder, issuedTo, usedBy, date }) => {
-                if (
-                  name &&
-                  (oldSerial || newSerial) &&
-                  department &&
-                  (issuedTo || usedBy) &&
-                  new Date(date).toString() !== "Invalid Date"
-                ) {
-                  return true;
-                }
-
-                return false;
-              }
-            )
-            .map(({ name, oldSerial, newSerial, department, reminder, issuedTo, usedBy, date }) => {
-              return {
+            .filter(({ name }) => {
+              return name && name.trim().length > 1;
+            })
+            .map(
+              ({
                 name,
-                serial: newSerial ? newSerial : oldSerial ? oldSerial : "N/A",
+                oldSerial,
+                newSerial,
                 department,
                 reminder,
                 issuedTo,
-                usedBy: usedBy ? usedBy : issuedTo ? issuedTo : "N/A",
-                date: new Date(date),
-              };
-            });
-
+                usedBy,
+                date,
+                currentUser,
+                acquisitionDate,
+              }) => {
+                return {
+                  name,
+                  serial: newSerial ? newSerial : oldSerial ? oldSerial : "INVALID DATA",
+                  department: department ? department : "INVALID DATA",
+                  reminder: reminder ? reminder.toString() : null,
+                  issuedTo: issuedTo ? issuedTo : null,
+                  usedBy:
+                    usedBy && currentUser
+                      ? usedBy + " " + currentUser
+                      : usedBy
+                      ? usedBy
+                      : currentUser
+                      ? currentUser
+                      : null,
+                  date:
+                    new Date(date).toString() !== "Invalid Date"
+                      ? new Date(date)
+                      : new Date(acquisitionDate).toString() !== "Invalid Date"
+                      ? new Date(acquisitionDate)
+                      : new Date(0),
+                };
+              }
+            );
+          // console.log(jsonData);
           console.log(formattedData);
 
           if (formattedData.length > 0) {

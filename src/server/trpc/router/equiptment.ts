@@ -640,8 +640,8 @@ export const equiptmentRouter = router({
           name: z.string().trim().min(1),
           serial: z.string().trim(),
           department: z.string().trim(),
-          issuedTo: z.string().trim(),
-          usedBy: z.string().trim(),
+          issuedTo: z.string().trim().nullish(),
+          usedBy: z.string().trim().nullish(),
           date: z.date(),
           reminder: z.string().trim().nullish(),
         })
