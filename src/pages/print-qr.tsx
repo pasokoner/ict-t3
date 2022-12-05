@@ -10,7 +10,7 @@ import { useReactToPrint } from "react-to-print";
 // import _ from "lodash";
 
 const PrintQr = () => {
-  const { cartItems } = useQrCart();
+  const { cartItems, removeFromCart } = useQrCart();
 
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
@@ -56,7 +56,9 @@ const PrintQr = () => {
                 {Array(quantity)
                   .fill(0)
                   .map((_, i) => (
-                    <PrintableQr key={`${i}${id}`} id={id} />
+                    <React.Fragment key={`${i}${id}`}>
+                      <PrintableQr id={id} />
+                    </React.Fragment>
                   ))}
               </React.Fragment>
             );

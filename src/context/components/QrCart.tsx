@@ -12,7 +12,7 @@ type Props = {
 const QrCart = (props: Props) => {
   const { isOpen } = props;
 
-  const { closeCart, cartItems } = useQrCart();
+  const { closeCart, cartItems, removeFromCart } = useQrCart();
 
   const router = useRouter();
 
@@ -42,6 +42,16 @@ const QrCart = (props: Props) => {
             cartItems.map(({ id, quantity }) => (
               <React.Fragment key={id}>
                 <QrCartItem id={id} quantity={quantity} />
+                <Button
+                  fullWidth
+                  size="small"
+                  color="error"
+                  onClick={() => {
+                    removeFromCart(id);
+                  }}
+                >
+                  remove
+                </Button>
                 <Divider sx={{ mt: 1 }} />
               </React.Fragment>
             ))}
