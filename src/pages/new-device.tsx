@@ -315,11 +315,13 @@ const NewDevice = () => {
               label="Department"
               {...register("department")}
             >
-              {departments.map(({ acronym, name }, i) => (
-                <MenuItem key={i} value={acronym}>
-                  {acronym} - {name}
-                </MenuItem>
-              ))}
+              {departments
+                .sort((a, b) => a.acronym.localeCompare(b.acronym))
+                .map(({ acronym, name }, i) => (
+                  <MenuItem key={i} value={acronym}>
+                    {acronym} - {name}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
 
