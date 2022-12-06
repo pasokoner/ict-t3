@@ -309,7 +309,7 @@ const Dashboard: NextPage = () => {
             <Stack gap={0.5}>
               <Typography>Condition</Typography>
               <FormControl fullWidth>
-                <Select size="small" variant="standard" {...register("condition")}>
+                <Select size="small" variant="standard" defaultValue={filter?.condition} {...register("condition")}>
                   <MenuItem value="">None</MenuItem>
                   {conditions.map(({ value, name }, i) => (
                     <MenuItem key={i} value={value}>
@@ -322,7 +322,7 @@ const Dashboard: NextPage = () => {
             <Stack gap={0.5}>
               <Typography>Department</Typography>
               <FormControl fullWidth>
-                <Select size="small" variant="standard" {...register("department")}>
+                <Select size="small" variant="standard" defaultValue={filter?.department} {...register("department")}>
                   <MenuItem value="">None</MenuItem>
                   {departments
                     .sort((a, b) => a.acronym.localeCompare(b.acronym))
