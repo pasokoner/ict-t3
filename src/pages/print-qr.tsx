@@ -1,3 +1,7 @@
+import { GetServerSideProps } from "next";
+
+import { getSession } from "next-auth/react";
+
 import React, { useState, ReactNode, useEffect, useMemo, useRef } from "react";
 
 import { Stack, Button } from "@mui/material";
@@ -79,3 +83,29 @@ const PrintQr = () => {
 };
 
 export default PrintQr;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  if (!session?.user?.role && !session?.user?.group) {
+    return {
+      redirect: {
+        destination: "/unauthorized",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+};
