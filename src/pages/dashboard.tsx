@@ -324,11 +324,13 @@ const Dashboard: NextPage = () => {
               <FormControl fullWidth>
                 <Select size="small" variant="standard" {...register("department")}>
                   <MenuItem value="">None</MenuItem>
-                  {departments.map(({ acronym, name }, i) => (
-                    <MenuItem key={i} value={acronym}>
-                      {acronym} - {name}
-                    </MenuItem>
-                  ))}
+                  {departments
+                    .sort((a, b) => a.acronym.localeCompare(b.acronym))
+                    .map(({ acronym, name }, i) => (
+                      <MenuItem key={i} value={acronym}>
+                        {acronym} - {name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Stack>

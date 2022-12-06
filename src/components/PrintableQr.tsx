@@ -42,7 +42,7 @@ const PrintableQr = (props: Props) => {
           wordBreak: "break-word",
         }}
       >
-        {data?.serial}
+        {data?.serial.slice(0, 19)}
       </Typography>
     </Stack>
   );

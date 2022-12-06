@@ -6,6 +6,7 @@ import useStateRef from "react-usestateref";
 import { get as getLocal } from "local-storage";
 
 import QrCart from "./components/QrCart";
+import { trpc } from "../utils/trpc";
 
 type QrCartProviderProps = {
   children: ReactNode;
@@ -18,6 +19,7 @@ type QrCartContext = {
   increaseCartQuantity: (id: string, department: string) => void;
   decreaseCartQuantity: (id: string) => void;
   removeFromCart: (id: string) => void;
+  emptyCart: () => void;
   cartQuantity: number;
   cartItems: QrItem[];
 };
@@ -92,6 +94,10 @@ export function QrCartProvider({ children }: QrCartProviderProps) {
     });
   }
 
+  function emptyCart() {
+    setCartItems([]);
+  }
+
   useEffect(() => {
     const value = localStorage.getItem("qr-code");
     const user = !!value ? JSON.parse(value) : [];
@@ -109,6 +115,7 @@ export function QrCartProvider({ children }: QrCartProviderProps) {
         increaseCartQuantity,
         decreaseCartQuantity,
         removeFromCart,
+        emptyCart,
         openCart,
         closeCart,
         cartItems,

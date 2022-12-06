@@ -385,6 +385,8 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const { increaseCartQuantity, emptyCart } = useQrCart();
+
   const {
     data: equiptment,
     refetch,
@@ -398,6 +400,8 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
     },
     { refetchOnWindowFocus: false }
   );
+
+  const { data: sessionData } = useSession();
 
   const [formattedData, setFormattedData] = useState<TableFormat[]>();
 
@@ -445,8 +449,32 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
     setPage(0);
   };
 
+  const addAllToCart = () => {
+    equiptment?.forEach(({ id, department }) => {
+      increaseCartQuantity(id, department);
+    });
+  };
+
   return (
     <>
+      {sessionData?.user?.role === "SUPERADMIN" && (
+        <>
+          <Button
+            onClick={() => {
+              addAllToCart();
+            }}
+          >
+            Add all to cart
+          </Button>
+          <Button
+            onClick={() => {
+              emptyCart();
+            }}
+          >
+            empty cart
+          </Button>
+        </>
+      )}
       <TableContainer>
         <Table aria-label="collapsible table">
           <TableHead>

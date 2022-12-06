@@ -292,7 +292,7 @@ export const equiptmentRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      const { serial, ...exceptSerial } = input;
+      const { serial, department, ...exceptSerial } = input;
       const { status } = exceptSerial;
 
       const equiptment = await ctx.prisma.equipment.findMany({
@@ -300,6 +300,9 @@ export const equiptmentRouter = router({
           ...exceptSerial,
           serial: {
             contains: serial,
+          },
+          department: {
+            contains: department,
           },
         },
 
