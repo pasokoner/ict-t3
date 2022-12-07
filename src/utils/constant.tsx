@@ -104,7 +104,6 @@ export const departments = [
   { name: "OFFICE OF THE STRATEGIC MANAGEMENT", acronym: "OSM" },
   { name: "OFFICE OF THE VICE GOVERNOR", acronym: "VICEGOV" },
   { name: "PROVINCIAL POPULATION OFFICE", acronym: "POPCOM" },
-  { name: "SANGGUNIANG PANLALAWINAG", acronym: "SP" },
 ];
 
 export const conditions = [
