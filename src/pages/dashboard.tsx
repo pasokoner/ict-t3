@@ -5,7 +5,7 @@ import { getSession, useSession } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
@@ -65,6 +65,8 @@ const Dashboard: NextPage = () => {
     status: string;
   }>({ status: sessionData?.user?.group === "PITO" ? "For repair" : "Condemned" });
 
+  const [serial, setSerial] = useState("");
+
   const [enableFilter, setEnableFilter] = useState(false);
 
   const matches = useMediaQuery("(max-width:900px)");
@@ -85,6 +87,18 @@ const Dashboard: NextPage = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+
+  useEffect(() => {
+    const clearSearch = setTimeout(() => {
+      setFilter((prevState) => {
+        return { ...prevState, serial: serial };
+      });
+    }, 500);
+
+    return () => {
+      clearTimeout(clearSearch);
+    };
+  }, [serial]);
 
   if (isLoading) {
     return <></>;
@@ -279,8 +293,11 @@ const Dashboard: NextPage = () => {
           <TextField
             size="small"
             label="Search Serial Number"
-            disabled={!enableFilter}
-            {...register("serial")}
+            {...register("serial", {
+              onChange: (e: React.FormEvent<HTMLInputElement>) => {
+                setSerial(e.currentTarget.value);
+              },
+            })}
             sx={{
               flexGrow: 1,
             }}
@@ -309,7 +326,12 @@ const Dashboard: NextPage = () => {
             <Stack gap={0.5}>
               <Typography>Condition</Typography>
               <FormControl fullWidth>
-                <Select size="small" variant="standard" defaultValue={filter?.condition} {...register("condition")}>
+                <Select
+                  size="small"
+                  variant="standard"
+                  defaultValue={filter?.condition}
+                  {...register("condition")}
+                >
                   <MenuItem value="">None</MenuItem>
                   {conditions.map(({ value, name }, i) => (
                     <MenuItem key={i} value={value}>
@@ -322,7 +344,12 @@ const Dashboard: NextPage = () => {
             <Stack gap={0.5}>
               <Typography>Department</Typography>
               <FormControl fullWidth>
-                <Select size="small" variant="standard" defaultValue={filter?.department} {...register("department")}>
+                <Select
+                  size="small"
+                  variant="standard"
+                  defaultValue={filter?.department}
+                  {...register("department")}
+                >
                   <MenuItem value="">None</MenuItem>
                   {departments
                     .sort((a, b) => a.acronym.localeCompare(b.acronym))
