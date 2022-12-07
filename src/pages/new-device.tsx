@@ -9,8 +9,6 @@ import { useState } from "react";
 import {
   Typography,
   Stack,
-  IconButton,
-  ButtonGroup,
   Button,
   TextField,
   InputLabel,
@@ -34,6 +32,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import QrMaker from "../components/QrMaker";
 import { departments } from "../utils/constant";
 import ImportButton from "../components/ImportButton";
+import { useRouter } from "next/router";
 
 type FormValues = {
   name: string;
@@ -57,6 +56,7 @@ const NewDevice = () => {
     },
   });
 
+  const router = useRouter();
   const { data: sessionData } = useSession();
 
   const [value, setValue] = useState<Dayjs | null>(null);
