@@ -52,7 +52,8 @@ function createData(
   status: string,
   parts: boolean,
   serial: string,
-  condition: string
+  condition: string,
+  currentUser: string
 ) {
   return {
     id,
@@ -63,6 +64,7 @@ function createData(
     parts,
     serial,
     condition,
+    currentUser,
   };
 }
 
@@ -108,6 +110,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
               <Button
                 variant="text"
                 onClick={handleClick}
+                fullWidth
                 sx={{
                   color: `${row.condition === "NIIO" ? "white" : "black"}`,
                   border: 2,
@@ -177,6 +180,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                   </Button>
 
                   <Typography>SN: {row.serial}</Typography>
+                  <Typography>USER: {row.currentUser ? row.currentUser : "N/A"}</Typography>
                 </Stack>
               </Popover>
             </TableCell>
@@ -456,7 +460,8 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
             e.status,
             e.parts,
             e.serial,
-            e.condition
+            e.condition,
+            e.currentUser
           );
         })
         .slice(page * rowsPerPage, page === 0 ? rowsPerPage : rowsPerPage * (page + 1));
@@ -542,19 +547,6 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
         </Table>
       </TableContainer>
       {isLoading && <LinearProgress />}
-      {/* {!isLoading && (
-        <Button
-          variant="outlined"
-          onClick={() => {
-            setItemsLoaded((prevState) => prevState + 15);
-          }}
-          sx={{
-            mt: 2,
-          }}
-        >
-          Load 20 more+
-        </Button>
-      )} */}
 
       {equiptment?.length === 0 && (
         <Typography mt={2} align="center" color="error">
@@ -568,6 +560,11 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{
+          ...(matches && {
+            margin: "0 auto",
+          }),
+        }}
       />
     </>
   );

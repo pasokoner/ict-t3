@@ -38,9 +38,7 @@ const Layout = ({ children }: Props) => {
         <Box
           component="main"
           sx={{
-            minHeight: "100vh",
             width: "100%",
-
             ...(sessionData && {
               maxWidth: "xl",
               py: 12,
