@@ -114,8 +114,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 fullWidth
                 sx={{
                   color: `${row.condition === "NIIO" ? "white" : "black"}`,
-                  border: 2,
-                  borderColor: "black",
+
                   p: 1,
                   bgcolor: `${
                     row.parts
@@ -260,8 +259,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 fullWidth
                 sx={{
                   color: `${row.condition === "NIIO" ? "white" : "black"}`,
-                  border: 2,
-                  borderColor: "black",
+
                   p: 1,
                   bgcolor: `${
                     row.parts
