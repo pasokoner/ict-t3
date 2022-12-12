@@ -3,11 +3,19 @@ import { createTheme } from "@mui/material/styles";
 export const muiTheme = createTheme({
   palette: {
     primary: {
-      main: "#131B4F",
+      main: "#469597",
     },
 
     info: {
-      main: "#e3d100",
+      main: "#d8b974",
+    },
+
+    warning: {
+      main: "#da8a56",
+    },
+
+    error: {
+      main: "#96421d",
     },
 
     regular: {

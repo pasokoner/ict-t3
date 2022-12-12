@@ -204,9 +204,10 @@ const EquiptmentId = () => {
     <Stack gap={1.5}>
       <Typography
         sx={{
-          p: 1,
+          py: 1,
+          px: 2,
           borderRadius: 1,
-          bgcolor: "primary.main",
+          bgcolor: "#3c8da4",
           color: "white",
           fontSize: { md: 35, xs: 28 },
         }}
@@ -221,8 +222,8 @@ const EquiptmentId = () => {
             py: 0.2,
             px: 1,
             borderRadius: 1,
-            bgcolor: "primary.light",
-            color: "white",
+            bgcolor: "grey.400",
+            fontWeight: "500",
           },
         }}
       >
@@ -236,13 +237,14 @@ const EquiptmentId = () => {
             <PrintableQr id={data?.current?.id as string} />
           </Stack>
           <Stack direction="row" alignItems="center" gap={2}>
-            <Stack direction="row" gap={1}>
+            <Stack direction="row" gap={1} alignItems="center">
               <Typography>Status:</Typography>
               <Typography
                 noWrap
                 sx={{
                   bgcolor: statusColorGenerator(data?.current?.status as string),
                   borderRadius: "5px",
+                  p: 1,
                   color: "white",
                   mr: "auto",
                 }}
@@ -394,11 +396,7 @@ const EquiptmentId = () => {
                             mr: 1,
                             ml: 2,
                             backgroundColor:
-                              value === "IIIO"
-                                ? "white"
-                                : value === "NIIO"
-                                ? "error.light"
-                                : "info.light",
+                              value === "IIIO" ? "white" : value === "NIIO" ? "#ff5959" : "#fff700",
                           }}
                         ></Box>
                         {name}
@@ -535,7 +533,7 @@ const EquiptmentId = () => {
           </>
         )}
 
-        <Typography sx={{ p: 1, borderRadius: 1, bgcolor: "primary.main", color: "white" }}>
+        <Typography sx={{ px: 2, py: 1, borderRadius: 1, bgcolor: "#3c8da4", color: "white" }}>
           Issuance Details
         </Typography>
         <Stack
@@ -583,7 +581,7 @@ const EquiptmentId = () => {
 
       <Typography
         variant="h6"
-        sx={{ p: 1, borderRadius: 1, bgcolor: "primary.main", color: "white" }}
+        sx={{ px: 2, py: 1, borderRadius: 1, bgcolor: "#3c8da4", color: "white" }}
       >
         History
       </Typography>
@@ -607,19 +605,17 @@ const EquiptmentId = () => {
               gap={0.5}
               sx={{
                 "& .MuiTypography-subtitle1": {
-                  p: 0.5,
+                  px: 2,
+                  py: 1,
                   borderRadius: 1,
-                  bgcolor: "error.light",
+                  bgcolor: "primary.light",
                   color: "white",
                 },
               }}
             >
               <Typography variant="subtitle1">{getFormattedDate(new Date(date))}</Typography>
 
-              <Stack
-                gap={0.3}
-                sx={{ p: 0.5, borderRadius: 1, bgcolor: "primary.light", color: "white" }}
-              >
+              <Stack gap={0.3} sx={{ px: 2, py: 1.5, borderRadius: 1, bgcolor: "#f4f4f4" }}>
                 <Stack direction="row" gap={1}>
                   <Typography>Handler: </Typography>
                   <Typography>{user.name}</Typography>
@@ -632,6 +628,7 @@ const EquiptmentId = () => {
                     noWrap
                     sx={{
                       bgcolor: statusColorGenerator(status),
+                      p: 0.3,
                       borderRadius: "5px",
                       color: "white",
                       mr: "auto",
@@ -676,7 +673,7 @@ const EquiptmentId = () => {
                         key={id}
                         sx={{
                           bgcolor: statusColorGenerator(status),
-                          p: 0.3,
+                          p: 1,
                           color: "white",
                         }}
                       >

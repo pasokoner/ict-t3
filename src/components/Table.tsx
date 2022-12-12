@@ -91,27 +91,10 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
     <>
       <TableRow
         sx={{
-          bgcolor: `${
-            row.parts
-              ? "info.light"
-              : row.condition === "IINO"
-              ? "info.main"
-              : row.condition === "NIIO"
-              ? "error.light"
-              : ""
-          }`,
-
           "& > *": { borderBottom: "unset" },
           "& .MuiTableCell-root": {
             fontSize: { md: 16, xs: 14 },
             py: 1,
-            color: `${row.condition !== "IIIO" ? "white" : "black"}`,
-            textShadow: `${row.condition !== "IIIO" ? "1px 1px 4px black" : ""}`,
-          },
-          "& .MuiButton-root": {
-            color: `${row.condition !== "IIIO" ? "white" : "black"}`,
-            border: row.condition !== "IIIO" ? 2 : 0,
-            textShadow: `${row.condition !== "IIIO" ? "1px 1px 4px black" : ""}`,
           },
 
           "& .MuiTypography-root": {
@@ -121,13 +104,40 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
       >
         {!matches && (
           <>
-            <TableCell
-              sx={{
-                width: "50px",
-              }}
-            >
-              <Button variant="text" onClick={handleClick}>
-                #{row.id.slice(0, 5) + "..."}
+            <TableCell sx={{ width: "50px" }}>
+              <Button
+                variant="text"
+                onClick={handleClick}
+                sx={{
+                  color: `${row.condition === "NIIO" ? "white" : "black"}`,
+                  border: 2,
+                  borderColor: "black",
+                  p: 1,
+                  bgcolor: `${
+                    row.parts
+                      ? "info.light"
+                      : row.condition === "IINO"
+                      ? "#fff700"
+                      : row.condition === "NIIO"
+                      ? "#ff5959"
+                      : ""
+                  }`,
+
+                  "&:hover": {
+                    color: `${row.condition === "NIIO" ? "white" : "black"}`,
+                    bgcolor: `${
+                      row.parts
+                        ? "info.light"
+                        : row.condition === "IINO"
+                        ? "#eee700"
+                        : row.condition === "NIIO"
+                        ? "#ff7373"
+                        : ""
+                    }`,
+                  },
+                }}
+              >
+                {row.id.slice(-5)}
               </Button>
               <Popover
                 id={id}
@@ -196,6 +206,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 sx={{
                   bgcolor: statusColorGenerator(row.status),
                   borderRadius: "5px",
+                  p: 1,
                   color: "white",
                   mr: "auto",
                 }}
@@ -208,14 +219,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 width: "125px",
               }}
             >
-              <Stack
-                direction="row"
-                sx={{
-                  border: row.condition !== "IIIO" ? 2 : 0,
-                  borderColor: row.condition !== "IIIO" ? "black" : "",
-                  bgcolor: row.condition !== "IIIO" ? "white" : "",
-                }}
-              >
+              <Stack direction="row">
                 <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
                   {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
@@ -242,16 +246,43 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
             <TableCell
               sx={{
                 px: 0.3,
+                width: "50px",
               }}
             >
               <Button
                 variant="text"
                 onClick={handleClick}
+                fullWidth
                 sx={{
-                  p: 0,
+                  color: `${row.condition === "NIIO" ? "white" : "black"}`,
+                  border: 2,
+                  borderColor: "black",
+                  p: 1,
+                  bgcolor: `${
+                    row.parts
+                      ? "info.light"
+                      : row.condition === "IINO"
+                      ? "#fff700"
+                      : row.condition === "NIIO"
+                      ? "#ff5959"
+                      : ""
+                  }`,
+
+                  "&:hover": {
+                    color: `${row.condition === "NIIO" ? "white" : "black"}`,
+                    bgcolor: `${
+                      row.parts
+                        ? "info.light"
+                        : row.condition === "IINO"
+                        ? "#eee700"
+                        : row.condition === "NIIO"
+                        ? "#ff7373"
+                        : ""
+                    }`,
+                  },
                 }}
               >
-                #{row.id.slice(0, 1) + "..."}
+                {row.id.slice(-5)}
               </Button>
 
               <Popover
@@ -315,9 +346,6 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 direction="row"
                 justifyContent="center"
                 sx={{
-                  border: row.condition !== "IIIO" ? 2 : 0,
-                  borderColor: row.condition !== "IIIO" ? "black" : "",
-                  bgcolor: row.condition !== "IIIO" ? "white" : "",
                   px: 0,
                   maxWidth: "50px",
                 }}
@@ -475,7 +503,13 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
           </Button>
         </>
       )}
-      <TableContainer>
+      <TableContainer
+        sx={{
+          "& .MuiTableHead-root": {
+            bgcolor: "#f4f4f4",
+          },
+        }}
+      >
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
@@ -492,7 +526,7 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
               )}
               {matches && (
                 <>
-                  <TableCell align="center">Item ID</TableCell>
+                  <TableCell>Item ID</TableCell>
                   <TableCell>Equiptment</TableCell>
                   <TableCell align="center">Actions</TableCell>
                 </>

@@ -189,7 +189,7 @@ const Dashboard: NextPage = () => {
                     sx={{
                       width: 20,
                       height: 20,
-                      backgroundColor: "info.light",
+                      backgroundColor: "#fff700",
                       border: 2,
                     }}
                   ></Box>
@@ -202,7 +202,7 @@ const Dashboard: NextPage = () => {
                     sx={{
                       width: 20,
                       height: 20,
-                      backgroundColor: "error.light",
+                      backgroundColor: "#ff5959",
                       border: 2,
                     }}
                   ></Box>
@@ -247,7 +247,7 @@ const Dashboard: NextPage = () => {
             count={itemsData?.inInventory}
             title="In inventory"
             icon={<InventoryIcon />}
-            color="success.main"
+            color="primary.main"
             setStatusFilter={setStatusFilter}
             statusFilter={filter.status}
           />
@@ -256,7 +256,7 @@ const Dashboard: NextPage = () => {
             count={itemsData?.forRepair}
             title="For repair"
             icon={<BuildIcon />}
-            color="#e3d100"
+            color="info.main"
             setStatusFilter={setStatusFilter}
             statusFilter={filter.status}
           />
@@ -335,6 +335,18 @@ const Dashboard: NextPage = () => {
                   <MenuItem value="">None</MenuItem>
                   {conditions.map(({ value, name }, i) => (
                     <MenuItem key={i} value={value}>
+                      <Box
+                        component="span"
+                        sx={{
+                          width: 20,
+                          height: 20,
+                          border: 2,
+                          mr: 1,
+                          ml: 2,
+                          backgroundColor:
+                            value === "IIIO" ? "white" : value === "NIIO" ? "#ff5959" : "#fff700",
+                        }}
+                      ></Box>
                       {name}
                     </MenuItem>
                   ))}

@@ -13,7 +13,7 @@ export const drawerSettings = [
 
 export const statusColorGenerator = (status: string) => {
   if (status === "In inventory") {
-    return "success.main";
+    return "primary.main";
   }
 
   if (status === "For repair") {

@@ -193,20 +193,20 @@ export default function ResponsiveDrawer(props: Props) {
           sx={{
             display: { xs: "block", sm: "block", md: "none" },
             "& .MuiDrawer-paper": {
-              color: "regular.white",
-              bgcolor: "primary.main",
+              color: "black",
+              bgcolor: "#f4f4f4",
               boxSizing: "border-box",
               width: drawerWidth,
             },
 
             "& .MuiListItem-root": {
               "&:hover": {
-                bgcolor: "primary.light",
+                bgcolor: "grey.200",
               },
             },
 
             "& .MuiSvgIcon-root": {
-              color: "regular.white",
+              color: "primary.main",
             },
           }}
         >
@@ -218,20 +218,20 @@ export default function ResponsiveDrawer(props: Props) {
             display: { xs: "none", sm: "none", md: "block" },
 
             "& .MuiDrawer-paper": {
-              color: "regular.white",
-              bgcolor: "primary.main",
+              color: "black",
+              bgcolor: "f4f4f4",
               boxSizing: "border-box",
               width: drawerWidth,
             },
 
             "& .MuiListItem-root": {
               "&:hover": {
-                bgcolor: "primary.light",
+                bgcolor: "grey.200",
               },
             },
 
             "& .MuiSvgIcon-root": {
-              color: "regular.white",
+              color: "primary.main",
             },
           }}
           open
