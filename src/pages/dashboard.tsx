@@ -179,7 +179,7 @@ const Dashboard: NextPage = () => {
                   borderRadius: "5px",
                 }}
               >
-                <Typography>EQUIPTMENT GUIDE</Typography>
+                <Typography>EQUIPMENT GUIDE</Typography>
                 <Stack direction="row" gap={2}>
                   <Box
                     component="span"
@@ -383,7 +383,7 @@ const Dashboard: NextPage = () => {
             <FormGroup>
               <FormControlLabel
                 control={<Switch />}
-                label="Unchecked Equiptment"
+                label="Unchecked Equipment"
                 {...register("unchecked")}
               />
             </FormGroup>

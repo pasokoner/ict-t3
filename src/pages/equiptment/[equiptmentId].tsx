@@ -458,7 +458,7 @@ const EquiptmentId = () => {
           }}
         >
           <Stack>
-            <Typography variant="subtitle1">Equiptment Name</Typography>
+            <Typography variant="subtitle1">Equipment Name</Typography>
             <Typography variant="subtitle2">{data?.current?.name}</Typography>
           </Stack>
 
@@ -702,7 +702,7 @@ const EquiptmentId = () => {
             p: 3,
           }}
         >
-          DELETE EQUIPTMENT
+          DELETE EQUIPMENT
         </Button>
       )}
       {/* 
@@ -727,7 +727,7 @@ const EquiptmentId = () => {
               p: 3,
             }}
           >
-            Delete this equiptment permanently?
+            Delete this equipment permanently?
           </Typography>
 
           <Button

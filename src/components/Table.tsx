@@ -523,7 +523,7 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
               {!matches && (
                 <>
                   <TableCell>Item ID</TableCell>
-                  <TableCell>Equiptment</TableCell>
+                  <TableCell>Equipment</TableCell>
                   <TableCell>Department</TableCell>
 
                   <TableCell>Last checked</TableCell>
@@ -534,7 +534,7 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
               {matches && (
                 <>
                   <TableCell>Item ID</TableCell>
-                  <TableCell>Equiptment</TableCell>
+                  <TableCell>Equipment</TableCell>
                   <TableCell align="center">Actions</TableCell>
                 </>
               )}
@@ -552,7 +552,7 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
 
       {equiptment?.length === 0 && (
         <Typography mt={2} align="center" color="error">
-          No Equiptment found!
+          No Equipment found!
         </Typography>
       )}
       <TablePagination
