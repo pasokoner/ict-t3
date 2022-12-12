@@ -189,7 +189,7 @@ const Dashboard: NextPage = () => {
                     sx={{
                       width: 20,
                       height: 20,
-                      backgroundColor: "#fff700",
+                      backgroundColor: "#fce063",
                       border: 2,
                     }}
                   ></Box>
@@ -202,7 +202,7 @@ const Dashboard: NextPage = () => {
                     sx={{
                       width: 20,
                       height: 20,
-                      backgroundColor: "#ff5959",
+                      backgroundColor: "#f27b57",
                       border: 2,
                     }}
                   ></Box>
@@ -344,7 +344,7 @@ const Dashboard: NextPage = () => {
                           mr: 1,
                           ml: 2,
                           backgroundColor:
-                            value === "IIIO" ? "white" : value === "NIIO" ? "#ff5959" : "#fff700",
+                            value === "IIIO" ? "white" : value === "NIIO" ? "#f27b57" : "#fce063",
                         }}
                       ></Box>
                       {name}

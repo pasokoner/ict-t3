@@ -120,9 +120,9 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     row.parts
                       ? "info.light"
                       : row.condition === "IINO"
-                      ? "#fff700"
+                      ? "#fce063"
                       : row.condition === "NIIO"
-                      ? "#ff5959"
+                      ? "#f27b57"
                       : ""
                   }`,
 
@@ -132,9 +132,9 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                       row.parts
                         ? "info.light"
                         : row.condition === "IINO"
-                        ? "#eee700"
+                        ? "#fce063"
                         : row.condition === "NIIO"
-                        ? "#ff7373"
+                        ? "#f27b57"
                         : ""
                     }`,
                   },
@@ -265,9 +265,9 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     row.parts
                       ? "info.light"
                       : row.condition === "IINO"
-                      ? "#fff700"
+                      ? "#fce063"
                       : row.condition === "NIIO"
-                      ? "#ff5959"
+                      ? "#f27b57"
                       : ""
                   }`,
 
@@ -277,9 +277,9 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                       row.parts
                         ? "info.light"
                         : row.condition === "IINO"
-                        ? "#eee700"
+                        ? "#fce063"
                         : row.condition === "NIIO"
-                        ? "#ff7373"
+                        ? "#f27b57"
                         : ""
                     }`,
                   },
