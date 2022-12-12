@@ -328,6 +328,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                   </Button>
 
                   <Typography>SN: {row.serial}</Typography>
+                  <Typography>USER: {row.currentUser ? row.currentUser : "N/A"}</Typography>
                 </Stack>
               </Popover>
             </TableCell>
