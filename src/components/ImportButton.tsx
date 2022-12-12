@@ -13,7 +13,7 @@ interface Equiptment {
   reminder?: string;
   issuedTo?: string;
   usedBy?: string;
-  currentUser?: string;
+  currentUser?: string | number;
   date: string;
   acquisitionDate: string;
 }
@@ -60,11 +60,11 @@ const ImportButton = () => {
                   issuedTo: issuedTo ? issuedTo : null,
                   usedBy:
                     usedBy && currentUser
-                      ? usedBy + " " + currentUser
+                      ? `${usedBy}  ${currentUser}`
                       : usedBy
                       ? usedBy
                       : currentUser
-                      ? currentUser
+                      ? `${currentUser}`
                       : null,
                   date:
                     new Date(date).toString() !== "Invalid Date"
@@ -92,13 +92,13 @@ const ImportButton = () => {
         IMPORT
         <input type="file" hidden onChange={handleFile} />
       </Button>
-      <Button
+      {/* <Button
         onClick={() => {
           resetEquiptment();
         }}
       >
         Reset
-      </Button>
+      </Button> */}
     </>
   );
 };

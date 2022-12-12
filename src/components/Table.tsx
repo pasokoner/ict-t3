@@ -409,6 +409,7 @@ type TableProps = {
     condition?: string;
     department?: string;
     serial?: string;
+    unchecked: boolean;
   };
   countStatus?: number;
 };
@@ -429,6 +430,7 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
       condition: filter.condition ? filter.condition : undefined,
       department: filter.department ? filter.department : undefined,
       serial: filter.serial ? filter.serial : undefined,
+      unchecked: filter.unchecked,
     },
     { refetchOnWindowFocus: false }
   );

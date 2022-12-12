@@ -24,6 +24,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Switch,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
 import CollapsibleTable from "../components/Table";
 import StatusSectionCard from "../components/StatusSectionCard";
@@ -48,6 +51,7 @@ type FilterValues = {
   condition?: string;
   department?: string;
   serial?: string;
+  unchecked: boolean;
 };
 
 const Dashboard: NextPage = () => {
@@ -63,7 +67,11 @@ const Dashboard: NextPage = () => {
     department?: string;
     serial?: string;
     status: string;
-  }>({ status: sessionData?.user?.group === "PITO" ? "For repair" : "Condemned" });
+    unchecked: boolean;
+  }>({
+    status: sessionData?.user?.group === "PITO" ? "For repair" : "Condemned",
+    unchecked: false,
+  });
 
   const [serial, setSerial] = useState("");
 
@@ -105,6 +113,7 @@ const Dashboard: NextPage = () => {
   }
 
   const applyFilter: SubmitHandler<FilterValues> = async (data) => {
+    console.log(data);
     setFilter((prevState) => {
       return { ...prevState, ...data };
     });
@@ -322,7 +331,6 @@ const Dashboard: NextPage = () => {
             }}
           >
             <Typography fontWeight="bold">Filter Equiptment</Typography>
-
             <Stack gap={0.5}>
               <Typography>Condition</Typography>
               <FormControl fullWidth>
@@ -371,6 +379,14 @@ const Dashboard: NextPage = () => {
                 </Select>
               </FormControl>
             </Stack>
+
+            <FormGroup>
+              <FormControlLabel
+                control={<Switch />}
+                label="Unchecked Equiptment"
+                {...register("unchecked")}
+              />
+            </FormGroup>
 
             <Button variant="outlined" type="submit">
               Apply Filter

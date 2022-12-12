@@ -289,22 +289,37 @@ export const equiptmentRouter = router({
         condition: z.string().optional(),
         department: z.string().optional(),
         serial: z.string().optional(),
+        unchecked: z.boolean(),
       })
     )
     .query(async ({ ctx, input }) => {
-      const { serial, department, ...exceptSerial } = input;
+      const { serial, department, unchecked, ...exceptSerial } = input;
       const { status } = exceptSerial;
 
+      const query = unchecked
+        ? {
+            ...exceptSerial,
+            serial: {
+              contains: serial,
+            },
+            department: {
+              contains: department,
+            },
+
+            OR: [{ currentUser: null }, { currentUser: "" }],
+          }
+        : {
+            ...exceptSerial,
+            serial: {
+              contains: serial,
+            },
+            department: {
+              contains: department,
+            },
+          };
+
       const equiptment = await ctx.prisma.equipment.findMany({
-        where: {
-          ...exceptSerial,
-          serial: {
-            contains: serial,
-          },
-          department: {
-            contains: department,
-          },
-        },
+        where: query,
 
         orderBy: {
           date: "desc",
