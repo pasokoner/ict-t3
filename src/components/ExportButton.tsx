@@ -13,6 +13,7 @@ type Props = {
     condition?: string;
     department?: string;
     serial?: string;
+    unchecked: boolean;
   };
 };
 
@@ -23,6 +24,7 @@ const ExportButton = ({ filter }: Props) => {
       condition: filter.condition ? filter.condition : undefined,
       department: filter.department ? filter.department : undefined,
       serial: filter.serial ? filter.serial : undefined,
+      unchecked: filter.unchecked,
     },
     { refetchOnWindowFocus: false }
   );
