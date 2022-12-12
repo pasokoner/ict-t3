@@ -42,6 +42,7 @@ type TableFormat = {
   parts: boolean;
   serial: string;
   condition: string;
+  currentUser: string;
 };
 
 function createData(
@@ -461,7 +462,7 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
             e.parts,
             e.serial,
             e.condition,
-            e.currentUser
+            e.currentUser as string
           );
         })
         .slice(page * rowsPerPage, page === 0 ? rowsPerPage : rowsPerPage * (page + 1));
