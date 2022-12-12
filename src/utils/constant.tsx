@@ -29,7 +29,7 @@ export const statusColorGenerator = (status: string) => {
   }
 
   if (status === "Department" || status === "Ownership" || status === "Condition") {
-    return "#2A3990";
+    return "#DA8A56";
   }
 
   if (status === "Condemned") {
