@@ -301,7 +301,7 @@ const Dashboard: NextPage = () => {
         <Stack direction="row" gap={1}>
           <TextField
             size="small"
-            label="Search Serial Number"
+            label="Search here"
             {...register("serial", {
               onChange: (e: React.FormEvent<HTMLInputElement>) => {
                 setSerial(e.currentTarget.value);

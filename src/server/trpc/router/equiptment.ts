@@ -296,27 +296,52 @@ export const equiptmentRouter = router({
       const { serial, department, unchecked, ...exceptSerial } = input;
       const { status } = exceptSerial;
 
+      console.log(serial);
+
       const query = unchecked
         ? {
             ...exceptSerial,
-            serial: {
-              contains: serial,
-            },
+
+            OR: [
+              { issuedTo: { contains: serial ? serial : "" } },
+              { usedBy: { contains: serial ? serial : "" } },
+              { currentUser: { contains: serial ? serial : "" } },
+              {
+                serial: {
+                  contains: serial ? serial : "",
+                },
+              },
+            ],
+
+            AND: [
+              {
+                OR: [{ currentUser: null }, { currentUser: "" }],
+              },
+            ],
+
             department: {
               contains: department,
             },
-
-            OR: [{ currentUser: null }, { currentUser: "" }],
           }
         : {
             ...exceptSerial,
-            serial: {
-              contains: serial,
-            },
+            OR: [
+              { issuedTo: { contains: serial ? serial : "" } },
+              { usedBy: { contains: serial ? serial : "" } },
+              { currentUser: { contains: serial ? serial : "" } },
+              {
+                serial: {
+                  contains: serial ? serial : "",
+                },
+              },
+            ],
+
             department: {
               contains: department,
             },
           };
+
+      console.log(query);
 
       const equiptment = await ctx.prisma.equipment.findMany({
         where: query,
