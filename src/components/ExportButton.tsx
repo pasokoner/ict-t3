@@ -12,7 +12,7 @@ type Props = {
     status: string;
     condition?: string;
     department?: string;
-    serial?: string;
+    searchQuery?: string;
     unchecked: boolean;
   };
 };
@@ -23,7 +23,7 @@ const ExportButton = ({ filter }: Props) => {
       status: filter.status,
       condition: filter.condition ? filter.condition : undefined,
       department: filter.department ? filter.department : undefined,
-      serial: filter.serial ? filter.serial : undefined,
+      searchQuery: filter.searchQuery ? filter.searchQuery : undefined,
       unchecked: filter.unchecked,
     },
     { refetchOnWindowFocus: false }
