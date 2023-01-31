@@ -398,7 +398,7 @@ const Dashboard: NextPage = () => {
 };
 
 export default Dashboard;
- 
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
 
