@@ -114,7 +114,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 fullWidth
                 sx={{
                   color: `${row.condition === "NIIO" ? "white" : "black"}`,
-
+                  border: 1,
                   p: 1,
                   bgcolor: `${
                     row.parts
@@ -259,7 +259,7 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 fullWidth
                 sx={{
                   color: `${row.condition === "NIIO" ? "white" : "black"}`,
-
+                  border: 1,
                   p: 1,
                   bgcolor: `${
                     row.parts
@@ -408,7 +408,7 @@ type TableProps = {
     status: string;
     condition?: string;
     department?: string;
-    serial?: string;
+    searchQuery?: string;
     unchecked: boolean;
   };
   countStatus?: number;
@@ -429,7 +429,7 @@ export default function CollapsibleTable({ filter, countStatus }: TableProps) {
       status: filter.status,
       condition: filter.condition ? filter.condition : undefined,
       department: filter.department ? filter.department : undefined,
-      serial: filter.serial ? filter.serial : undefined,
+      searchQuery: filter.searchQuery ? filter.searchQuery : undefined,
       unchecked: filter.unchecked,
     },
     { refetchOnWindowFocus: false }

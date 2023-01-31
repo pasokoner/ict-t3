@@ -65,7 +65,7 @@ const Dashboard: NextPage = () => {
   const [filter, setFilter] = useState<{
     condition?: string;
     department?: string;
-    serial?: string;
+    searchQuery?: string;
     status: string;
     unchecked: boolean;
   }>({
@@ -73,7 +73,7 @@ const Dashboard: NextPage = () => {
     unchecked: false,
   });
 
-  const [serial, setSerial] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [enableFilter, setEnableFilter] = useState(false);
 
@@ -81,7 +81,7 @@ const Dashboard: NextPage = () => {
 
   const router = useRouter();
 
-  const { register, handleSubmit, reset } = useForm<FilterValues>();
+  const { register, handleSubmit } = useForm<FilterValues>();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -99,21 +99,20 @@ const Dashboard: NextPage = () => {
   useEffect(() => {
     const clearSearch = setTimeout(() => {
       setFilter((prevState) => {
-        return { ...prevState, serial: serial };
+        return { ...prevState, searchQuery: searchQuery };
       });
     }, 500);
 
     return () => {
       clearTimeout(clearSearch);
     };
-  }, [serial]);
+  }, [searchQuery]);
 
   if (isLoading) {
     return <></>;
   }
 
   const applyFilter: SubmitHandler<FilterValues> = async (data) => {
-    console.log(data);
     setFilter((prevState) => {
       return { ...prevState, ...data };
     });
@@ -124,8 +123,6 @@ const Dashboard: NextPage = () => {
       return { ...prevState, status: status };
     });
   };
-
-  console.log(filter);
 
   return (
     <Box>
@@ -300,15 +297,15 @@ const Dashboard: NextPage = () => {
         <Divider />
         <Stack direction="row" gap={1}>
           <TextField
-            size="small"
-            label="Search here"
+            label="Search by name"
             {...register("serial", {
               onChange: (e: React.FormEvent<HTMLInputElement>) => {
-                setSerial(e.currentTarget.value);
+                setSearchQuery(e.currentTarget.value);
               },
             })}
             sx={{
               flexGrow: 1,
+              mb: 2,
             }}
           />
           <IconButton

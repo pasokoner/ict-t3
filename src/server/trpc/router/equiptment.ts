@@ -288,29 +288,28 @@ export const equiptmentRouter = router({
         status: z.string(),
         condition: z.string().optional(),
         department: z.string().optional(),
-        serial: z.string().optional(),
+        searchQuery: z.string().optional(),
         unchecked: z.boolean(),
       })
     )
     .query(async ({ ctx, input }) => {
-      const { serial, department, unchecked, ...exceptSerial } = input;
+      const { searchQuery, department, unchecked, ...exceptSerial } = input;
       const { status } = exceptSerial;
-
-      console.log(serial);
 
       const query = unchecked
         ? {
             ...exceptSerial,
 
             OR: [
-              { issuedTo: { contains: serial ? serial : "" } },
-              { usedBy: { contains: serial ? serial : "" } },
-              { currentUser: { contains: serial ? serial : "" } },
+              { issuedTo: { contains: searchQuery ? searchQuery : "" } },
+              { usedBy: { contains: searchQuery ? searchQuery : "" } },
+              { currentUser: { contains: searchQuery ? searchQuery : "" } },
               {
                 serial: {
-                  contains: serial ? serial : "",
+                  contains: searchQuery ? searchQuery : "",
                 },
               },
+              { name: { contains: searchQuery ? searchQuery : "" } },
             ],
 
             AND: [
@@ -326,22 +325,21 @@ export const equiptmentRouter = router({
         : {
             ...exceptSerial,
             OR: [
-              { issuedTo: { contains: serial ? serial : "" } },
-              { usedBy: { contains: serial ? serial : "" } },
-              { currentUser: { contains: serial ? serial : "" } },
+              { issuedTo: { contains: searchQuery ? searchQuery : "" } },
+              { usedBy: { contains: searchQuery ? searchQuery : "" } },
+              { currentUser: { contains: searchQuery ? searchQuery : "" } },
               {
                 serial: {
-                  contains: serial ? serial : "",
+                  contains: searchQuery ? searchQuery : "",
                 },
               },
+              { name: { contains: searchQuery ? searchQuery : "" } },
             ],
 
             department: {
               contains: department,
             },
           };
-
-      console.log(query);
 
       const equiptment = await ctx.prisma.equipment.findMany({
         where: query,
