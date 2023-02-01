@@ -151,7 +151,7 @@ const Dashboard: NextPage = () => {
             }),
           }}
         >
-          <Stack direction="row" gap={2}>
+          <Stack direction="row">
             <Typography variant="h4" fontWeight="bold" color="primary">
               DASHBOARD
             </Typography>

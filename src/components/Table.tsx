@@ -307,7 +307,11 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                 onClose={handleClose}
                 anchorOrigin={{
                   vertical: "bottom",
-                  horizontal: "left",
+                  horizontal: "center",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "center",
                 }}
               >
                 <Stack
@@ -317,12 +321,22 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     borderRadius: "5px",
                   }}
                 >
+                  <Typography fontWeight={700} align="center">
+                    {row.serial}
+                  </Typography>
+                  <Typography align="center" gutterBottom>
+                    {row.currentUser ? row.currentUser : "N/A"}
+                  </Typography>
                   <Link href={`/equiptment/${row.id}`} passHref>
                     <MuiLink
                       target="_blank"
                       rel="noopener noreferrer"
                       sx={{
-                        m: "0 auto",
+                        w: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        py: 0.5,
+                        border: 2,
                       }}
                     >
                       View Details
@@ -333,12 +347,10 @@ function Row(props: { row: ReturnType<typeof createData>; matches: boolean }) {
                     onClick={() => {
                       increaseCartQuantity(row.id, row.department);
                     }}
+                    variant="contained"
                   >
                     PRINT QR
                   </Button>
-
-                  <Typography>SN: {row.serial}</Typography>
-                  <Typography>USER: {row.currentUser ? row.currentUser : "N/A"}</Typography>
                 </Stack>
               </Popover>
             </TableCell>

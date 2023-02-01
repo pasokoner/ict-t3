@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { getSession, useSession } from "next-auth/react";
 
+import { useState } from "react";
+
 import { trpc } from "../../utils/trpc";
 
 import { Divider, IconButton, Stack, Typography, Box, CircularProgress } from "@mui/material";
@@ -15,6 +17,9 @@ const Admin = () => {
   const { data: sessionData } = useSession();
   const { data: groupMember } = trpc.auth.getAdminGroupMember.useQuery();
 
+  const [editUser, setEditUser] = useState(false);
+  const [editAdmin, setEditAdmin] = useState(false);
+
   if (!sessionData) {
     return (
       <Box
@@ -25,7 +30,7 @@ const Admin = () => {
     );
   }
 
-  if (sessionData?.user?.role !== "ADMIN") {
+  if (sessionData?.user?.role === "USER") {
     return (
       <Box
         sx={{
@@ -87,15 +92,17 @@ const Admin = () => {
                 Admins
               </Typography>
 
-              <IconButton>
-                <ManageAccountsIcon
-                  sx={{
-                    "&.MuiSvgIcon-root": {
-                      color: "#007d8e",
-                    },
-                  }}
-                />
-              </IconButton>
+              {sessionData?.user?.role === "SUPERADMIN" && (
+                <IconButton onClick={() => setEditAdmin((prevState) => !prevState)}>
+                  <ManageAccountsIcon
+                    sx={{
+                      "&.MuiSvgIcon-root": {
+                        color: "#007d8e",
+                      },
+                    }}
+                  />
+                </IconButton>
+              )}
             </Stack>
 
             <Stack
@@ -114,6 +121,7 @@ const Admin = () => {
                       key={member.id}
                       image={member.image as string}
                       name={member.name as string}
+                      enableRemove={editAdmin}
                     />
                   ))}
             </Stack>
@@ -137,7 +145,7 @@ const Admin = () => {
                 Users
               </Typography>
 
-              <IconButton>
+              <IconButton onClick={() => setEditUser((prevState) => !prevState)}>
                 <ManageAccountsIcon
                   sx={{
                     "&.MuiSvgIcon-root": {
@@ -164,6 +172,7 @@ const Admin = () => {
                       key={member.id}
                       image={member.image as string}
                       name={member.name as string}
+                      enableRemove={editUser}
                     />
                   ))}
             </Stack>

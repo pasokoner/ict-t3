@@ -360,7 +360,7 @@ export const equiptmentRouter = router({
           },
         });
 
-        if (parts && parts.length > 0) {
+        if (parts) {
           const formattedParts = parts
             .filter(
               (part) =>
@@ -376,8 +376,8 @@ export const equiptmentRouter = router({
               };
             });
 
-          if (formattedParts.length > 0) {
-            if (equiptment.length > 0) {
+          if (formattedParts) {
+            if (equiptment) {
               const formattedEquiptment = equiptment.map((e) => {
                 return { ...e, parts: false };
               });
@@ -393,6 +393,107 @@ export const equiptmentRouter = router({
       return equiptment.map((e) => {
         return { ...e, parts: false };
       });
+    }),
+  getBatch: protectedProcedure
+    .input(
+      z.object({
+        status: z.string(),
+        condition: z.string().optional(),
+        department: z.string().optional(),
+        searchQuery: z.string().optional(),
+        unchecked: z.boolean(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { searchQuery, department, unchecked, ...exceptSerial } = input;
+      const { status } = exceptSerial;
+
+      const query = unchecked
+        ? {
+            ...exceptSerial,
+
+            OR: [
+              { issuedTo: { contains: searchQuery ? searchQuery : "" } },
+              { usedBy: { contains: searchQuery ? searchQuery : "" } },
+              { currentUser: { contains: searchQuery ? searchQuery : "" } },
+              {
+                serial: {
+                  contains: searchQuery ? searchQuery : "",
+                },
+              },
+              { name: { contains: searchQuery ? searchQuery : "" } },
+            ],
+
+            AND: [
+              {
+                OR: [{ currentUser: null }, { currentUser: "" }],
+              },
+            ],
+
+            department: {
+              contains: department,
+            },
+          }
+        : {
+            ...exceptSerial,
+            OR: [
+              { issuedTo: { contains: searchQuery ? searchQuery : "" } },
+              { usedBy: { contains: searchQuery ? searchQuery : "" } },
+              { currentUser: { contains: searchQuery ? searchQuery : "" } },
+              {
+                serial: {
+                  contains: searchQuery ? searchQuery : "",
+                },
+              },
+              { name: { contains: searchQuery ? searchQuery : "" } },
+            ],
+
+            department: {
+              contains: department,
+            },
+          };
+
+      if (status === "Condemned" || status === "To condemn") {
+        const equiptment = await ctx.prisma.equipment.findMany({
+          where: {
+            ...query,
+            OR: [
+              {
+                parts: {
+                  some: {
+                    status: status,
+                  },
+                },
+              },
+            ],
+          },
+          orderBy: {
+            date: "desc",
+          },
+          include: {
+            parts: true,
+          },
+        });
+
+        return equiptment
+          .filter((e) => !(e.status === "To Condemn" || e.status === "Condemned"))
+          .map((e) => {
+            if (e.parts) {
+            }
+          });
+      } else {
+        const equiptment = await ctx.prisma.equipment.findMany({
+          where: query,
+
+          orderBy: {
+            date: "desc",
+          },
+        });
+
+        return equiptment.map((e) => {
+          return { ...e, parts: false };
+        });
+      }
     }),
   getHistory: protectedProcedure
     .input(
