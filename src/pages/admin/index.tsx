@@ -18,7 +18,6 @@ const Admin = () => {
   const { data: groupMember } = trpc.auth.getAdminGroupMember.useQuery();
 
   const [editUser, setEditUser] = useState(false);
-  const [editAdmin, setEditAdmin] = useState(false);
 
   if (!sessionData) {
     return (
@@ -30,7 +29,7 @@ const Admin = () => {
     );
   }
 
-  if (sessionData?.user?.role === "USER") {
+  if (sessionData?.user?.role !== "ADMIN") {
     return (
       <Box
         sx={{
@@ -91,18 +90,6 @@ const Admin = () => {
               <Typography fontSize={17} color="primary.light">
                 Admins
               </Typography>
-
-              {sessionData?.user?.role === "SUPERADMIN" && (
-                <IconButton onClick={() => setEditAdmin((prevState) => !prevState)}>
-                  <ManageAccountsIcon
-                    sx={{
-                      "&.MuiSvgIcon-root": {
-                        color: "#007d8e",
-                      },
-                    }}
-                  />
-                </IconButton>
-              )}
             </Stack>
 
             <Stack
@@ -121,7 +108,6 @@ const Admin = () => {
                       key={member.id}
                       image={member.image as string}
                       name={member.name as string}
-                      enableRemove={editAdmin}
                     />
                   ))}
             </Stack>

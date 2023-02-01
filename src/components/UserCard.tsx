@@ -15,7 +15,7 @@ import PersonOffIcon from "@mui/icons-material/PersonOff";
 type Props = {
   name: string;
   image: string;
-  enableRemove: boolean;
+  enableRemove?: boolean;
 };
 
 export default function UserCard({ name, image, enableRemove }: Props) {

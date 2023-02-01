@@ -25,6 +25,9 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 const SuperAdmin = () => {
   const [group, setGroup] = useState<"PITO" | "GSO">("PITO");
 
+  const [editUser, setEditUser] = useState(false);
+  const [editAdmin, setEditAdmin] = useState(false);
+
   const { data: sessionData } = useSession();
 
   const { data: groupMember } = trpc.auth.getByGroup.useQuery({ group: group });
@@ -120,7 +123,7 @@ const SuperAdmin = () => {
                 Admins
               </Typography>
 
-              <IconButton>
+              <IconButton onClick={() => setEditAdmin((prevState) => !prevState)}>
                 <ManageAccountsIcon
                   sx={{
                     "&.MuiSvgIcon-root": {
@@ -170,7 +173,7 @@ const SuperAdmin = () => {
                 Users
               </Typography>
 
-              <IconButton>
+              <IconButton onClick={() => setEditUser((prevState) => !prevState)}>
                 <ManageAccountsIcon
                   sx={{
                     "&.MuiSvgIcon-root": {
