@@ -28,7 +28,12 @@ export const statusColorGenerator = (status: string) => {
     return "warning.main";
   }
 
-  if (status === "Department" || status === "Ownership" || status === "Condition") {
+  if (
+    status === "Department" ||
+    status === "Ownership" ||
+    status === "Condition" ||
+    status === "Edit Name"
+  ) {
     return "#DA8A56";
   }
 

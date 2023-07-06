@@ -39,6 +39,7 @@ type FormValues = {
   issuedTo: string;
   usedBy: string;
   condition: string;
+  equiptmentName: string;
   currentUser?: string;
   reminder?: string;
 };
@@ -53,10 +54,12 @@ const EquiptmentId = () => {
   const [editOwnership, setEditOwnership] = useState(false);
   const [editDepartment, setEditDepartment] = useState(false);
   const [editCondition, setEditCondition] = useState(false);
+  const [editEquiptmentName, setEditEquiptmentName] = useState(false);
 
   const [errorOwnership, setErrorOwnership] = useState("");
   const [errorDepartment, setErrorDepartment] = useState("");
   const [errorCondition, setErrorCondition] = useState("");
+  const [errorEquiptmentName, setErrorEquiptmentName] = useState("");
 
   const { data, isLoading, refetch } = trpc.equiptment.getDetails.useQuery({
     id: router.query.equiptmentId as string,
@@ -110,6 +113,20 @@ const EquiptmentId = () => {
       },
     });
 
+  const { mutate: changeEquiptmentName, isLoading: equiptmentNameLoading } =
+    trpc.equiptment.equitpmentName.useMutation({
+      onSuccess: () => {
+        handleClick();
+        setErrorEquiptmentName("");
+        setSnackbarMessage("Equiptment name changed!");
+        reset((formValues) => ({
+          ...formValues,
+          reminder: "",
+        }));
+        refetch();
+      },
+    });
+
   const { register, handleSubmit, reset } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = async ({
@@ -119,6 +136,7 @@ const EquiptmentId = () => {
     condition,
     currentUser,
     reminder,
+    equiptmentName,
   }) => {
     if (!data?.current?.id) {
       return;
@@ -165,12 +183,24 @@ const EquiptmentId = () => {
         });
       }
     }
+
+    if (equiptmentName) {
+      if (equiptmentName.trim() === data?.current?.name) {
+        setErrorEquiptmentName("You are trying to change nothing!");
+      } else {
+        changeEquiptmentName({
+          equiptmentId: data.current.id,
+          updatedName: equiptmentName,
+        });
+      }
+    }
   };
 
   const handleCancel = () => {
     setEditDepartment(false);
     setEditOwnership(false);
     setEditCondition(false);
+    setEditEquiptmentName(false);
   };
 
   const [open, setOpen] = useState(false);
@@ -278,11 +308,14 @@ const EquiptmentId = () => {
           <Button
             size="small"
             variant="contained"
-            disabled={ownershipLoading || departmentLoading || conditionLoading}
+            disabled={
+              ownershipLoading || departmentLoading || conditionLoading || equiptmentNameLoading
+            }
             onClick={() => {
               setEditOwnership((prevState) => !prevState);
               setEditDepartment(false);
               setEditCondition(false);
+              setEditEquiptmentName(false);
             }}
           >
             Ownership
@@ -290,11 +323,14 @@ const EquiptmentId = () => {
           <Button
             size="small"
             variant="contained"
-            disabled={ownershipLoading || departmentLoading || conditionLoading}
+            disabled={
+              ownershipLoading || departmentLoading || conditionLoading || equiptmentNameLoading
+            }
             onClick={() => {
               setEditOwnership(false);
               setEditDepartment((prevState) => !prevState);
               setEditCondition(false);
+              setEditEquiptmentName(false);
             }}
           >
             Department
@@ -302,18 +338,36 @@ const EquiptmentId = () => {
           <Button
             size="small"
             variant="contained"
-            disabled={ownershipLoading || departmentLoading || conditionLoading}
+            disabled={
+              ownershipLoading || departmentLoading || conditionLoading || equiptmentNameLoading
+            }
             onClick={() => {
               setEditOwnership(false);
               setEditDepartment(false);
               setEditCondition((prevState) => !prevState);
+              setEditEquiptmentName(false);
             }}
           >
             Condition
           </Button>
+          <Button
+            size="small"
+            variant="contained"
+            disabled={
+              ownershipLoading || departmentLoading || conditionLoading || equiptmentNameLoading
+            }
+            onClick={() => {
+              setEditOwnership(false);
+              setEditDepartment(false);
+              setEditCondition(false);
+              setEditEquiptmentName((prevState) => !prevState);
+            }}
+          >
+            Equipment Name
+          </Button>
         </Stack>
 
-        {(editDepartment || editOwnership || editCondition) && (
+        {(editDepartment || editOwnership || editCondition || editEquiptmentName) && (
           <Stack component="form" m={1} gap={2} onSubmit={handleSubmit(onSubmit)}>
             {editOwnership && (
               <>
@@ -412,6 +466,23 @@ const EquiptmentId = () => {
               </>
             )}
 
+            {editEquiptmentName && (
+              <>
+                <TextField
+                  size="small"
+                  variant="standard"
+                  label="Issued to:"
+                  defaultValue={data?.current?.name}
+                  {...register("equiptmentName")}
+                />
+                {errorCondition && (
+                  <Typography color="error" mt={-1} fontSize={14}>
+                    {errorCondition}
+                  </Typography>
+                )}
+              </>
+            )}
+
             {(editDepartment || editOwnership || editCondition) && (
               <TextField
                 variant="outlined"
@@ -423,7 +494,10 @@ const EquiptmentId = () => {
               />
             )}
 
-            {(ownershipLoading || departmentLoading || conditionLoading) && <LinearProgress />}
+            {(ownershipLoading ||
+              departmentLoading ||
+              conditionLoading ||
+              equiptmentNameLoading) && <LinearProgress />}
 
             <Stack direction="row" gap={1} justifyContent="center">
               <Button
@@ -431,7 +505,9 @@ const EquiptmentId = () => {
                 color="error"
                 variant="contained"
                 onClick={handleCancel}
-                disabled={ownershipLoading || departmentLoading || conditionLoading}
+                disabled={
+                  ownershipLoading || departmentLoading || conditionLoading || equiptmentNameLoading
+                }
               >
                 Cancel
               </Button>
@@ -440,7 +516,9 @@ const EquiptmentId = () => {
                 color="success"
                 variant="contained"
                 size="small"
-                disabled={ownershipLoading || departmentLoading || conditionLoading}
+                disabled={
+                  ownershipLoading || departmentLoading || conditionLoading || equiptmentNameLoading
+                }
               >
                 Save
               </Button>

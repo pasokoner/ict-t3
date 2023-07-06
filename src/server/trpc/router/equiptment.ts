@@ -759,6 +759,43 @@ export const equiptmentRouter = router({
 
       return {};
     }),
+  equitpmentName: protectedProcedure
+    .input(
+      z.object({
+        equiptmentId: z.string(),
+        updatedName: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { updatedName, equiptmentId } = input;
+
+      await ctx.prisma.$transaction(async () => {
+        const equiptment = await ctx.prisma.equipment.update({
+          where: {
+            id: equiptmentId,
+          },
+
+          data: {
+            name: updatedName,
+          },
+        });
+
+        if (equiptment) {
+          const { id, ...exceptId } = equiptment;
+          const equiptmentHistoryData = await ctx.prisma.equipmentHistory.create({
+            data: {
+              ...exceptId,
+              status: "Edit Name",
+              equiptmentId: id,
+              userId: ctx.session.user.id,
+              date: new Date(),
+            },
+          });
+        }
+      });
+
+      return {};
+    }),
   delete: protectedProcedure
     .input(z.object({ equiptmentId: z.string() }))
     .mutation(async ({ ctx, input }) => {
